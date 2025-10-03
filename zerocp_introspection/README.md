@@ -13,7 +13,7 @@ introspection/                          ← 独立组件
 │   ├── introspection_types.hpp         ← 数据类型定义
 │   ├── introspection_server.hpp        ← 服务端接口
 │   └── introspection_client.hpp        ← 客户端接口
-└── src/                                ← 实现文件
+└── source/                             ← 实现文件
     ├── introspection_server.cpp        ← 服务端实现
     └── introspection_client.cpp        ← 客户端实现
 ```

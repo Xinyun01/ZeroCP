@@ -14,8 +14,8 @@ file(GLOB_RECURSE DAEMON_HEADERS
 
 # 收集所有源文件
 file(GLOB_RECURSE DAEMON_SOURCES
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/*.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/source/*.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/source/*.c
 )
 
 # 添加守护进程可执行文件
@@ -30,7 +30,7 @@ target_include_directories(daemon
     PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/include
     PRIVATE
-        ${CMAKE_CURRENT_SOURCE_DIR}/src
+        ${CMAKE_CURRENT_SOURCE_DIR}/source
 )
 
 # 编译选项

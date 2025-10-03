@@ -10,8 +10,8 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 # 源文件
 set(INTROSPECTION_SOURCES
-    src/introspection_server.cpp
-    src/introspection_client.cpp
+    source/introspection_server.cpp
+    source/introspection_client.cpp
 )
 
 # 头文件
