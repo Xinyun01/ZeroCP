@@ -1,0 +1,1 @@
+/usr/bin/c++ -O3 -DNDEBUG CMakeFiles/introspection_tool.dir/introspection_main.cpp.o -o ../../bin/introspection  ../../lib/libintrospection.a -lncurses -ltinfo -lpthread 

@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/introspection.dir/src/main.cpp.o CMakeFiles/introspection.dir/src/tool.cpp.o CMakeFiles/introspection.dir/src/monitor.cpp.o CMakeFiles/introspection.dir/src/tui.cpp.o -o bin/introspection  -lncurses -ltinfo -lpthread 
