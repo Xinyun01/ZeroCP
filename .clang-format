@@ -1,0 +1,57 @@
+---
+# 基于 LLVM 风格，自定义行宽为 120
+BasedOnStyle: LLVM
+
+# 行宽限制
+ColumnLimit: 120
+
+# 语言设置
+Language: Cpp
+Standard: c++17
+
+# 缩进设置
+IndentWidth: 4
+TabWidth: 4
+UseTab: Never
+AccessModifierOffset: -4
+NamespaceIndentation: None
+
+# 换行设置
+AllowShortFunctionsOnASingleLine: Inline
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLoopsOnASingleLine: false
+AllowShortBlocksOnASingleLine: Empty
+AllowShortCaseLabelsOnASingleLine: false
+
+# 参数和参数列表换行
+BinPackArguments: true
+BinPackParameters: true
+AlignAfterOpenBracket: Align
+AllowAllArgumentsOnNextLine: true
+AllowAllParametersOfDeclarationOnNextLine: true
+
+# 宏定义换行
+AlignEscapedNewlines: Right
+
+# 指针和引用对齐
+PointerAlignment: Left
+ReferenceAlignment: Left
+
+# 大括号换行
+BreakBeforeBraces: Attach
+
+# 注释
+ReflowComments: true
+
+# 包含头文件排序
+SortIncludes: CaseInsensitive
+IncludeBlocks: Regroup
+
+# 空行
+MaxEmptyLinesToKeep: 2
+KeepEmptyLinesAtTheStartOfBlocks: false
+
+# 其他
+SpaceAfterCStyleCast: false
+SpaceBeforeParens: ControlStatements
+SpacesInAngles: false
