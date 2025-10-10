@@ -1,75 +1,70 @@
 #ifndef LOGSTREAM_HPP
 #define LOGSTREAM_HPP
 
-#include <iostream>
-#include <sstream>
+#include "logging.hpp"
 #include <string>
+#include <memory>
 
 namespace ZeroCP
 {
 namespace Log
 {
+
+/// @brief 日志流类 - 用于构建日志消息
+/// @note 提示：在析构时将完整的日志消息提交到后端
 class LogStream
 {
 public:
+    /// @brief 构造函数
+    /// @param file 源文件名
+    /// @param line 行号
+    /// @param function 函数名
+    /// @param logLevel 日志级别
+    LogStream(const char* file, int line, const char* function, LogLevel logLevel) noexcept;
 
-LogStream(const char* file, const int line, const char* function, LogLevel logLevel) noexcept;
-LogStream(const LogStream&) = delete;
-LogStream(LogStream&&) = delete;
+    /// @brief 析构函数 - 在这里将日志消息提交到后端
+    /// @note 提示：需要格式化消息（包含时间戳、文件名、行号等）并提交到后端
+    ~LogStream() noexcept;
 
-LogStream& operator=(const LogStream&) = delete;
-LogStream& operator=(LogStream&&) = delete;
+    // 禁止拷贝和移动
+    LogStream(const LogStream&) = delete;
+    LogStream& operator=(const LogStream&) = delete;
+    LogStream(LogStream&&) = delete;
+    LogStream& operator=(LogStream&&) = delete;
 
+    // ========== 重载运算符以处理各种类型 ==========
+    
+    /// @brief 重载运算符以处理C风格字符串
+    LogStream& operator<<(const char* str) noexcept;
 
+    /// @brief 重载运算符以处理std::string类型
+    LogStream& operator<<(const std::string& str) noexcept;
 
- // Start of Selection
- // 重载运算符以处理C风格字符串
- LogStream& operator<<(const char* str) noexcept;
+    /// @brief 重载运算符以处理int类型
+    LogStream& operator<<(int value) noexcept;
 
- // 重载运算符以处理std::string类型
- LogStream& operator<<(const std::string& str) noexcept;
+    /// @brief 重载运算符以处理unsigned int类型
+    LogStream& operator<<(unsigned int value) noexcept;
 
- // 重载运算符以处理int类型
- LogStream& operator<<(const int& value) noexcept;
+    /// @brief 重载运算符以处理long类型
+    LogStream& operator<<(long value) noexcept;
 
- // 重载运算符以处理double类型
- LogStream& operator<<(const double& value) noexcept;
+    /// @brief 重载运算符以处理unsigned long类型
+    LogStream& operator<<(unsigned long value) noexcept;
 
- // 重载运算符以处理bool类型
- LogStream& operator<<(const bool& value) noexcept;
+    /// @brief 重载运算符以处理double类型
+    LogStream& operator<<(double value) noexcept;
 
- // 重载运算符以处理char类型
- LogStream& operator<<(const char& value) noexcept;
+    /// @brief 重载运算符以处理bool类型
+    LogStream& operator<<(bool value) noexcept;
 
- // 重载运算符以处理unsigned char类型
- LogStream& operator<<(const unsigned char& value) noexcept;
+private:
+    // 使用 Pimpl 模式隐藏实现细节
+    class Impl;
+    std::unique_ptr<Impl> impl_;
+};
 
- // 重载运算符以处理short类型
- LogStream& operator<<(const short& value) noexcept;
+} // namespace Log
+} // namespace ZeroCP
 
- // 重载运算符以处理unsigned short类型
- LogStream& operator<<(const unsigned short& value) noexcept;
-
- // 重载运算符以处理long类型
- LogStream& operator<<(const long& value) noexcept;
-
- // 重载运算符以处理unsigned long类型
- LogStream& operator<<(const unsigned long& value) noexcept;
-
- // 重载运算符以处理long long类型
- LogStream& operator<<(const long long& value) noexcept;
-
- // 重载运算符以处理unsigned long long类型
- LogStream& operator<<(const unsigned long long& value) noexcept;
-
-
-~LogStream();
-
-LogStream& self() noexcept;
-
-
-}
-}
-}
-
-#endif
+#endif // LOGSTREAM_HPP

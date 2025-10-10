@@ -1,0 +1,3 @@
+/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/example/build/CMakeFiles/test_logstream.dir
+/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/example/build/CMakeFiles/edit_cache.dir
+/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/example/build/CMakeFiles/rebuild_cache.dir
