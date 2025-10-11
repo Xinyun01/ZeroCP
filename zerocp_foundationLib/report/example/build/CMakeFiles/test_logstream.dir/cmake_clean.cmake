@@ -1,4 +1,6 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/test_logstream.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/lockfree_ringbuffer.cpp.o"
+  "CMakeFiles/test_logstream.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/lockfree_ringbuffer.cpp.o.d"
   "CMakeFiles/test_logstream.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/log_backend.cpp.o"
   "CMakeFiles/test_logstream.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/log_backend.cpp.o.d"
   "CMakeFiles/test_logstream.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logging.cpp.o"

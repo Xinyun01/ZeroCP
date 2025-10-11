@@ -31,8 +31,18 @@ public:
     /// @brief 停止后台线程
     void stop() noexcept;
     
-    /// @brief 提交日志消息到队列
+    /// @brief 提交日志消息到队列（非阻塞，队列满时丢弃）
     void submitLog(const char* data, size_t len) noexcept;
+    
+    /// @brief 提交日志消息到队列（零拷贝版本）
+    void submitLogZeroCopy(const char* data, size_t len) noexcept;
+    
+    /// @brief 提交日志消息到队列（阻塞版本，保证不丢失）
+    /// @param data 日志数据
+    /// @param len 数据长度
+    /// @param timeout_us 超时时间（微秒），0表示无限等待
+    /// @return true=成功, false=超时
+    bool submitLogBlocking(const char* data, size_t len, uint64_t timeout_us = 0) noexcept;
     
     /// @brief 获取丢弃的日志数量
     uint64_t getDroppedCount() const noexcept { return dropped_count_.load(); }
@@ -58,10 +68,10 @@ private:
 
     // 数据成员
     std::thread worker_thread;                      // 后台工作线程
-    std::atomic<bool> running_{false};                   // 运行标志
-    std::atomic<uint64_t> dropped_count_{0};             // 丢弃的日志数量
-    std::atomic<uint64_t> processed_count_{0};           // 已处理的日志数量
-    LockFreeRingBuffer<LogMessage, 1024> ring_buffer_;   // 无锁队列（最多1024条消息）
+    std::atomic<bool> running_{false};                          // 运行标志
+    std::atomic<uint64_t> dropped_count_{0};                    // 丢弃的日志数量
+    std::atomic<uint64_t> processed_count_{0};                  // 已处理的日志数量
+    LockFreeRingBuffer<LogMessage, LOG_QUEUE_CAPACITY> ring_buffer_;   // 无锁队列
 };
 
 } // namespace Log

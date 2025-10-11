@@ -69,10 +69,38 @@ include CMakeFiles/test_logstream.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/test_logstream.dir/flags.make
 
+CMakeFiles/test_logstream.dir/test_logstream.cpp.o: CMakeFiles/test_logstream.dir/flags.make
+CMakeFiles/test_logstream.dir/test_logstream.cpp.o: ../test_logstream.cpp
+CMakeFiles/test_logstream.dir/test_logstream.cpp.o: CMakeFiles/test_logstream.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/example/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/test_logstream.dir/test_logstream.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/test_logstream.dir/test_logstream.cpp.o -MF CMakeFiles/test_logstream.dir/test_logstream.cpp.o.d -o CMakeFiles/test_logstream.dir/test_logstream.cpp.o -c /home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/example/test_logstream.cpp
+
+CMakeFiles/test_logstream.dir/test_logstream.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/test_logstream.dir/test_logstream.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/example/test_logstream.cpp > CMakeFiles/test_logstream.dir/test_logstream.cpp.i
+
+CMakeFiles/test_logstream.dir/test_logstream.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/test_logstream.dir/test_logstream.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/example/test_logstream.cpp -o CMakeFiles/test_logstream.dir/test_logstream.cpp.s
+
+CMakeFiles/test_logstream.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/lockfree_ringbuffer.cpp.o: CMakeFiles/test_logstream.dir/flags.make
+CMakeFiles/test_logstream.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/lockfree_ringbuffer.cpp.o: /home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/lockfree_ringbuffer.cpp
+CMakeFiles/test_logstream.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/lockfree_ringbuffer.cpp.o: CMakeFiles/test_logstream.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/example/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/test_logstream.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/lockfree_ringbuffer.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/test_logstream.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/lockfree_ringbuffer.cpp.o -MF CMakeFiles/test_logstream.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/lockfree_ringbuffer.cpp.o.d -o CMakeFiles/test_logstream.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/lockfree_ringbuffer.cpp.o -c /home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/lockfree_ringbuffer.cpp
+
+CMakeFiles/test_logstream.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/lockfree_ringbuffer.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/test_logstream.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/lockfree_ringbuffer.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/lockfree_ringbuffer.cpp > CMakeFiles/test_logstream.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/lockfree_ringbuffer.cpp.i
+
+CMakeFiles/test_logstream.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/lockfree_ringbuffer.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/test_logstream.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/lockfree_ringbuffer.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/lockfree_ringbuffer.cpp -o CMakeFiles/test_logstream.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/lockfree_ringbuffer.cpp.s
+
 CMakeFiles/test_logstream.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logging.cpp.o: CMakeFiles/test_logstream.dir/flags.make
 CMakeFiles/test_logstream.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logging.cpp.o: /home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logging.cpp
 CMakeFiles/test_logstream.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logging.cpp.o: CMakeFiles/test_logstream.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/example/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/test_logstream.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logging.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/example/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/test_logstream.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logging.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/test_logstream.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logging.cpp.o -MF CMakeFiles/test_logstream.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logging.cpp.o.d -o CMakeFiles/test_logstream.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logging.cpp.o -c /home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logging.cpp
 
 CMakeFiles/test_logstream.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logging.cpp.i: cmake_force
@@ -86,7 +114,7 @@ CMakeFiles/test_logstream.dir/home/xinyun/Infrastructure/zero_copy_framework/zer
 CMakeFiles/test_logstream.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logstream.cpp.o: CMakeFiles/test_logstream.dir/flags.make
 CMakeFiles/test_logstream.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logstream.cpp.o: /home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logstream.cpp
 CMakeFiles/test_logstream.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logstream.cpp.o: CMakeFiles/test_logstream.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/example/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/test_logstream.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logstream.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/example/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/test_logstream.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logstream.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/test_logstream.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logstream.cpp.o -MF CMakeFiles/test_logstream.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logstream.cpp.o.d -o CMakeFiles/test_logstream.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logstream.cpp.o -c /home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logstream.cpp
 
 CMakeFiles/test_logstream.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logstream.cpp.i: cmake_force
@@ -100,7 +128,7 @@ CMakeFiles/test_logstream.dir/home/xinyun/Infrastructure/zero_copy_framework/zer
 CMakeFiles/test_logstream.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/log_backend.cpp.o: CMakeFiles/test_logstream.dir/flags.make
 CMakeFiles/test_logstream.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/log_backend.cpp.o: /home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/log_backend.cpp
 CMakeFiles/test_logstream.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/log_backend.cpp.o: CMakeFiles/test_logstream.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/example/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/test_logstream.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/log_backend.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/example/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/test_logstream.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/log_backend.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/test_logstream.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/log_backend.cpp.o -MF CMakeFiles/test_logstream.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/log_backend.cpp.o.d -o CMakeFiles/test_logstream.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/log_backend.cpp.o -c /home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/log_backend.cpp
 
 CMakeFiles/test_logstream.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/log_backend.cpp.i: cmake_force
@@ -111,37 +139,25 @@ CMakeFiles/test_logstream.dir/home/xinyun/Infrastructure/zero_copy_framework/zer
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/test_logstream.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/log_backend.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/log_backend.cpp -o CMakeFiles/test_logstream.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/log_backend.cpp.s
 
-CMakeFiles/test_logstream.dir/test_logstream.cpp.o: CMakeFiles/test_logstream.dir/flags.make
-CMakeFiles/test_logstream.dir/test_logstream.cpp.o: ../test_logstream.cpp
-CMakeFiles/test_logstream.dir/test_logstream.cpp.o: CMakeFiles/test_logstream.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/example/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/test_logstream.dir/test_logstream.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/test_logstream.dir/test_logstream.cpp.o -MF CMakeFiles/test_logstream.dir/test_logstream.cpp.o.d -o CMakeFiles/test_logstream.dir/test_logstream.cpp.o -c /home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/example/test_logstream.cpp
-
-CMakeFiles/test_logstream.dir/test_logstream.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/test_logstream.dir/test_logstream.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/example/test_logstream.cpp > CMakeFiles/test_logstream.dir/test_logstream.cpp.i
-
-CMakeFiles/test_logstream.dir/test_logstream.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/test_logstream.dir/test_logstream.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/example/test_logstream.cpp -o CMakeFiles/test_logstream.dir/test_logstream.cpp.s
-
 # Object files for target test_logstream
 test_logstream_OBJECTS = \
+"CMakeFiles/test_logstream.dir/test_logstream.cpp.o" \
+"CMakeFiles/test_logstream.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/lockfree_ringbuffer.cpp.o" \
 "CMakeFiles/test_logstream.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logging.cpp.o" \
 "CMakeFiles/test_logstream.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logstream.cpp.o" \
-"CMakeFiles/test_logstream.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/log_backend.cpp.o" \
-"CMakeFiles/test_logstream.dir/test_logstream.cpp.o"
+"CMakeFiles/test_logstream.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/log_backend.cpp.o"
 
 # External object files for target test_logstream
 test_logstream_EXTERNAL_OBJECTS =
 
+test_logstream: CMakeFiles/test_logstream.dir/test_logstream.cpp.o
+test_logstream: CMakeFiles/test_logstream.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/lockfree_ringbuffer.cpp.o
 test_logstream: CMakeFiles/test_logstream.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logging.cpp.o
 test_logstream: CMakeFiles/test_logstream.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logstream.cpp.o
 test_logstream: CMakeFiles/test_logstream.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/log_backend.cpp.o
-test_logstream: CMakeFiles/test_logstream.dir/test_logstream.cpp.o
 test_logstream: CMakeFiles/test_logstream.dir/build.make
 test_logstream: CMakeFiles/test_logstream.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/example/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Linking CXX executable test_logstream"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/example/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Linking CXX executable test_logstream"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/test_logstream.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

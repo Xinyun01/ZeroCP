@@ -43,10 +43,16 @@ void LogBackend::stop() noexcept
 void LogBackend::submitLog(const char* data, size_t len) noexcept
 {
     try {
-        // 1. 创建 LogMessage 对象
+        // 1. 先检查队列是否已满，避免不必要的消息构造
+        if (ring_buffer_.isFull()) {
+            dropped_count_.fetch_add(1, std::memory_order_relaxed);
+            return;
+        }
+        
+        // 2. 创建 LogMessage 对象
         LogMessage msg;
         
-        // 2. 直接设置消息内容，避免字符串复制
+        // 3. 直接设置消息内容，避免字符串复制
         if (len > 0 && data != nullptr) {
             size_t copy_len = std::min(len, LogMessage::MAX_MESSAGE_SIZE - 1);
             memcpy(msg.message, data, copy_len);
@@ -54,9 +60,9 @@ void LogBackend::submitLog(const char* data, size_t len) noexcept
             msg.length = copy_len;
         }
         
-        // 3. 尝试推入队列
+        // 4. 尝试推入队列
         if (!ring_buffer_.tryPush(msg)) {
-            // 队列满了，增加丢弃计数
+            // 队列满了（可能在检查后被其他线程填满），增加丢弃计数
             dropped_count_.fetch_add(1, std::memory_order_relaxed);
         }
     } catch (...) {
@@ -99,10 +105,9 @@ void LogBackend::workerThread() noexcept
 void LogBackend::processLogMessage(const LogMessage& msg) noexcept
 {
     try {
-        // 获取消息内容并输出到控制台
-        std::string message = msg.getMessage();
-        if (!message.empty()) {
-            std::cout << message;
+        // 直接输出到控制台，避免创建临时 string 对象
+        if (msg.length > 0) {
+            std::cout.write(msg.message, msg.length);
             std::flush(std::cout);
         }
     } catch (...) {

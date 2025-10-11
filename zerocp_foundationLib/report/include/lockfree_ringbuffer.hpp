@@ -12,15 +12,26 @@ namespace ZeroCP
 namespace Log
 {
 
+/// @brief 日志队列容量（必须是2的幂）
+constexpr size_t LOG_QUEUE_CAPACITY = 1024;
+
 /// @brief 日志消息结构
 struct LogMessage
 {
-    static constexpr size_t MAX_MESSAGE_SIZE = 512;  // 最大消息长度
+    static constexpr size_t MAX_MESSAGE_SIZE = 256;  // 最大消息长度
     
     char message[MAX_MESSAGE_SIZE];  // 消息内容
     size_t length{0};                // 实际消息长度
     
     LogMessage() noexcept = default;
+    
+    /// @brief 拷贝构造函数（优化版：只拷贝实际长度）
+    /// @note 显式定义以避免拷贝整个 256 字节，只拷贝实际使用的部分
+    LogMessage(const LogMessage& other) noexcept;
+    
+    /// @brief 拷贝赋值运算符（优化版：只拷贝实际长度）
+    /// @note 显式定义以避免拷贝整个 256 字节，只拷贝实际使用的部分
+    LogMessage& operator=(const LogMessage& other) noexcept;
     
     /// @brief 设置消息内容
     void setMessage(const std::string& msg) noexcept;
@@ -93,10 +104,16 @@ public:
     void commitPop() noexcept;
 
 private:
-    // TODO: 实现数据成员
-    // 提示：需要写索引、读索引（使用 std::atomic）和数据缓冲区
-    // 提示：考虑使用 cache line 对齐（alignas）避免伪共享
+    // 数据成员：使用 cache line 对齐避免伪共享
+    alignas(64) std::atomic<size_t> write_index_;  // 写索引
+    alignas(64) std::atomic<size_t> read_index_;   // 读索引
+    std::array<T, Size> buffer_;                   // 数据缓冲区
+
 };
+
+// ==================== 实现部分 ====================
+// 模板实现在 .inl 文件中
+#include "lockfree_ringbuffer.inl"
 
 } // namespace Log
 } // namespace ZeroCP

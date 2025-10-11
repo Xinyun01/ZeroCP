@@ -117,6 +117,32 @@ depend:
 .PHONY : depend
 
 #=============================================================================
+# Target rules for targets named complete_demo
+
+# Build rule for target.
+complete_demo: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 complete_demo
+.PHONY : complete_demo
+
+# fast build rule for target.
+complete_demo/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/complete_demo.dir/build.make CMakeFiles/complete_demo.dir/build
+.PHONY : complete_demo/fast
+
+#=============================================================================
+# Target rules for targets named test_backend
+
+# Build rule for target.
+test_backend: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test_backend
+.PHONY : test_backend
+
+# fast build rule for target.
+test_backend/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_backend.dir/build.make CMakeFiles/test_backend.dir/build
+.PHONY : test_backend/fast
+
+#=============================================================================
 # Target rules for targets named test_logstream
 
 # Build rule for target.
@@ -129,12 +155,119 @@ test_logstream/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_logstream.dir/build.make CMakeFiles/test_logstream.dir/build
 .PHONY : test_logstream/fast
 
+#=============================================================================
+# Target rules for targets named test_fixed_buffer
+
+# Build rule for target.
+test_fixed_buffer: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test_fixed_buffer
+.PHONY : test_fixed_buffer
+
+# fast build rule for target.
+test_fixed_buffer/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_fixed_buffer.dir/build.make CMakeFiles/test_fixed_buffer.dir/build
+.PHONY : test_fixed_buffer/fast
+
+#=============================================================================
+# Target rules for targets named test_startup
+
+# Build rule for target.
+test_startup: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test_startup
+.PHONY : test_startup
+
+# fast build rule for target.
+test_startup/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_startup.dir/build.make CMakeFiles/test_startup.dir/build
+.PHONY : test_startup/fast
+
+#=============================================================================
+# Target rules for targets named test_comprehensive
+
+# Build rule for target.
+test_comprehensive: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test_comprehensive
+.PHONY : test_comprehensive
+
+# fast build rule for target.
+test_comprehensive/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_comprehensive.dir/build.make CMakeFiles/test_comprehensive.dir/build
+.PHONY : test_comprehensive/fast
+
+complete_demo.o: complete_demo.cpp.o
+.PHONY : complete_demo.o
+
+# target to build an object file
+complete_demo.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/complete_demo.dir/build.make CMakeFiles/complete_demo.dir/complete_demo.cpp.o
+.PHONY : complete_demo.cpp.o
+
+complete_demo.i: complete_demo.cpp.i
+.PHONY : complete_demo.i
+
+# target to preprocess a source file
+complete_demo.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/complete_demo.dir/build.make CMakeFiles/complete_demo.dir/complete_demo.cpp.i
+.PHONY : complete_demo.cpp.i
+
+complete_demo.s: complete_demo.cpp.s
+.PHONY : complete_demo.s
+
+# target to generate assembly for a file
+complete_demo.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/complete_demo.dir/build.make CMakeFiles/complete_demo.dir/complete_demo.cpp.s
+.PHONY : complete_demo.cpp.s
+
+home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/lockfree_ringbuffer.o: home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/lockfree_ringbuffer.cpp.o
+.PHONY : home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/lockfree_ringbuffer.o
+
+# target to build an object file
+home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/lockfree_ringbuffer.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/complete_demo.dir/build.make CMakeFiles/complete_demo.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/lockfree_ringbuffer.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_backend.dir/build.make CMakeFiles/test_backend.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/lockfree_ringbuffer.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_logstream.dir/build.make CMakeFiles/test_logstream.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/lockfree_ringbuffer.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_fixed_buffer.dir/build.make CMakeFiles/test_fixed_buffer.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/lockfree_ringbuffer.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_startup.dir/build.make CMakeFiles/test_startup.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/lockfree_ringbuffer.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_comprehensive.dir/build.make CMakeFiles/test_comprehensive.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/lockfree_ringbuffer.cpp.o
+.PHONY : home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/lockfree_ringbuffer.cpp.o
+
+home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/lockfree_ringbuffer.i: home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/lockfree_ringbuffer.cpp.i
+.PHONY : home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/lockfree_ringbuffer.i
+
+# target to preprocess a source file
+home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/lockfree_ringbuffer.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/complete_demo.dir/build.make CMakeFiles/complete_demo.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/lockfree_ringbuffer.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_backend.dir/build.make CMakeFiles/test_backend.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/lockfree_ringbuffer.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_logstream.dir/build.make CMakeFiles/test_logstream.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/lockfree_ringbuffer.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_fixed_buffer.dir/build.make CMakeFiles/test_fixed_buffer.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/lockfree_ringbuffer.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_startup.dir/build.make CMakeFiles/test_startup.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/lockfree_ringbuffer.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_comprehensive.dir/build.make CMakeFiles/test_comprehensive.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/lockfree_ringbuffer.cpp.i
+.PHONY : home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/lockfree_ringbuffer.cpp.i
+
+home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/lockfree_ringbuffer.s: home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/lockfree_ringbuffer.cpp.s
+.PHONY : home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/lockfree_ringbuffer.s
+
+# target to generate assembly for a file
+home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/lockfree_ringbuffer.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/complete_demo.dir/build.make CMakeFiles/complete_demo.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/lockfree_ringbuffer.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_backend.dir/build.make CMakeFiles/test_backend.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/lockfree_ringbuffer.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_logstream.dir/build.make CMakeFiles/test_logstream.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/lockfree_ringbuffer.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_fixed_buffer.dir/build.make CMakeFiles/test_fixed_buffer.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/lockfree_ringbuffer.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_startup.dir/build.make CMakeFiles/test_startup.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/lockfree_ringbuffer.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_comprehensive.dir/build.make CMakeFiles/test_comprehensive.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/lockfree_ringbuffer.cpp.s
+.PHONY : home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/lockfree_ringbuffer.cpp.s
+
 home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/log_backend.o: home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/log_backend.cpp.o
 .PHONY : home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/log_backend.o
 
 # target to build an object file
 home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/log_backend.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/complete_demo.dir/build.make CMakeFiles/complete_demo.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/log_backend.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_backend.dir/build.make CMakeFiles/test_backend.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/log_backend.cpp.o
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_logstream.dir/build.make CMakeFiles/test_logstream.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/log_backend.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_fixed_buffer.dir/build.make CMakeFiles/test_fixed_buffer.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/log_backend.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_startup.dir/build.make CMakeFiles/test_startup.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/log_backend.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_comprehensive.dir/build.make CMakeFiles/test_comprehensive.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/log_backend.cpp.o
 .PHONY : home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/log_backend.cpp.o
 
 home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/log_backend.i: home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/log_backend.cpp.i
@@ -142,7 +275,12 @@ home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/sourc
 
 # target to preprocess a source file
 home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/log_backend.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/complete_demo.dir/build.make CMakeFiles/complete_demo.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/log_backend.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_backend.dir/build.make CMakeFiles/test_backend.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/log_backend.cpp.i
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_logstream.dir/build.make CMakeFiles/test_logstream.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/log_backend.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_fixed_buffer.dir/build.make CMakeFiles/test_fixed_buffer.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/log_backend.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_startup.dir/build.make CMakeFiles/test_startup.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/log_backend.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_comprehensive.dir/build.make CMakeFiles/test_comprehensive.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/log_backend.cpp.i
 .PHONY : home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/log_backend.cpp.i
 
 home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/log_backend.s: home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/log_backend.cpp.s
@@ -150,7 +288,12 @@ home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/sourc
 
 # target to generate assembly for a file
 home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/log_backend.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/complete_demo.dir/build.make CMakeFiles/complete_demo.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/log_backend.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_backend.dir/build.make CMakeFiles/test_backend.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/log_backend.cpp.s
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_logstream.dir/build.make CMakeFiles/test_logstream.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/log_backend.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_fixed_buffer.dir/build.make CMakeFiles/test_fixed_buffer.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/log_backend.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_startup.dir/build.make CMakeFiles/test_startup.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/log_backend.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_comprehensive.dir/build.make CMakeFiles/test_comprehensive.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/log_backend.cpp.s
 .PHONY : home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/log_backend.cpp.s
 
 home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logging.o: home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logging.cpp.o
@@ -158,7 +301,12 @@ home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/sourc
 
 # target to build an object file
 home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logging.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/complete_demo.dir/build.make CMakeFiles/complete_demo.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logging.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_backend.dir/build.make CMakeFiles/test_backend.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logging.cpp.o
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_logstream.dir/build.make CMakeFiles/test_logstream.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logging.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_fixed_buffer.dir/build.make CMakeFiles/test_fixed_buffer.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logging.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_startup.dir/build.make CMakeFiles/test_startup.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logging.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_comprehensive.dir/build.make CMakeFiles/test_comprehensive.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logging.cpp.o
 .PHONY : home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logging.cpp.o
 
 home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logging.i: home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logging.cpp.i
@@ -166,7 +314,12 @@ home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/sourc
 
 # target to preprocess a source file
 home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logging.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/complete_demo.dir/build.make CMakeFiles/complete_demo.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logging.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_backend.dir/build.make CMakeFiles/test_backend.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logging.cpp.i
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_logstream.dir/build.make CMakeFiles/test_logstream.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logging.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_fixed_buffer.dir/build.make CMakeFiles/test_fixed_buffer.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logging.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_startup.dir/build.make CMakeFiles/test_startup.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logging.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_comprehensive.dir/build.make CMakeFiles/test_comprehensive.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logging.cpp.i
 .PHONY : home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logging.cpp.i
 
 home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logging.s: home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logging.cpp.s
@@ -174,7 +327,12 @@ home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/sourc
 
 # target to generate assembly for a file
 home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logging.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/complete_demo.dir/build.make CMakeFiles/complete_demo.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logging.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_backend.dir/build.make CMakeFiles/test_backend.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logging.cpp.s
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_logstream.dir/build.make CMakeFiles/test_logstream.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logging.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_fixed_buffer.dir/build.make CMakeFiles/test_fixed_buffer.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logging.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_startup.dir/build.make CMakeFiles/test_startup.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logging.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_comprehensive.dir/build.make CMakeFiles/test_comprehensive.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logging.cpp.s
 .PHONY : home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logging.cpp.s
 
 home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logstream.o: home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logstream.cpp.o
@@ -182,7 +340,12 @@ home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/sourc
 
 # target to build an object file
 home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logstream.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/complete_demo.dir/build.make CMakeFiles/complete_demo.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logstream.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_backend.dir/build.make CMakeFiles/test_backend.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logstream.cpp.o
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_logstream.dir/build.make CMakeFiles/test_logstream.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logstream.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_fixed_buffer.dir/build.make CMakeFiles/test_fixed_buffer.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logstream.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_startup.dir/build.make CMakeFiles/test_startup.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logstream.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_comprehensive.dir/build.make CMakeFiles/test_comprehensive.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logstream.cpp.o
 .PHONY : home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logstream.cpp.o
 
 home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logstream.i: home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logstream.cpp.i
@@ -190,7 +353,12 @@ home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/sourc
 
 # target to preprocess a source file
 home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logstream.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/complete_demo.dir/build.make CMakeFiles/complete_demo.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logstream.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_backend.dir/build.make CMakeFiles/test_backend.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logstream.cpp.i
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_logstream.dir/build.make CMakeFiles/test_logstream.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logstream.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_fixed_buffer.dir/build.make CMakeFiles/test_fixed_buffer.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logstream.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_startup.dir/build.make CMakeFiles/test_startup.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logstream.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_comprehensive.dir/build.make CMakeFiles/test_comprehensive.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logstream.cpp.i
 .PHONY : home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logstream.cpp.i
 
 home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logstream.s: home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logstream.cpp.s
@@ -198,8 +366,85 @@ home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/sourc
 
 # target to generate assembly for a file
 home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logstream.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/complete_demo.dir/build.make CMakeFiles/complete_demo.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logstream.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_backend.dir/build.make CMakeFiles/test_backend.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logstream.cpp.s
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_logstream.dir/build.make CMakeFiles/test_logstream.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logstream.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_fixed_buffer.dir/build.make CMakeFiles/test_fixed_buffer.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logstream.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_startup.dir/build.make CMakeFiles/test_startup.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logstream.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_comprehensive.dir/build.make CMakeFiles/test_comprehensive.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logstream.cpp.s
 .PHONY : home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logstream.cpp.s
+
+test_backend.o: test_backend.cpp.o
+.PHONY : test_backend.o
+
+# target to build an object file
+test_backend.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_backend.dir/build.make CMakeFiles/test_backend.dir/test_backend.cpp.o
+.PHONY : test_backend.cpp.o
+
+test_backend.i: test_backend.cpp.i
+.PHONY : test_backend.i
+
+# target to preprocess a source file
+test_backend.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_backend.dir/build.make CMakeFiles/test_backend.dir/test_backend.cpp.i
+.PHONY : test_backend.cpp.i
+
+test_backend.s: test_backend.cpp.s
+.PHONY : test_backend.s
+
+# target to generate assembly for a file
+test_backend.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_backend.dir/build.make CMakeFiles/test_backend.dir/test_backend.cpp.s
+.PHONY : test_backend.cpp.s
+
+test_comprehensive.o: test_comprehensive.cpp.o
+.PHONY : test_comprehensive.o
+
+# target to build an object file
+test_comprehensive.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_comprehensive.dir/build.make CMakeFiles/test_comprehensive.dir/test_comprehensive.cpp.o
+.PHONY : test_comprehensive.cpp.o
+
+test_comprehensive.i: test_comprehensive.cpp.i
+.PHONY : test_comprehensive.i
+
+# target to preprocess a source file
+test_comprehensive.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_comprehensive.dir/build.make CMakeFiles/test_comprehensive.dir/test_comprehensive.cpp.i
+.PHONY : test_comprehensive.cpp.i
+
+test_comprehensive.s: test_comprehensive.cpp.s
+.PHONY : test_comprehensive.s
+
+# target to generate assembly for a file
+test_comprehensive.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_comprehensive.dir/build.make CMakeFiles/test_comprehensive.dir/test_comprehensive.cpp.s
+.PHONY : test_comprehensive.cpp.s
+
+test_fixed_buffer.o: test_fixed_buffer.cpp.o
+.PHONY : test_fixed_buffer.o
+
+# target to build an object file
+test_fixed_buffer.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_fixed_buffer.dir/build.make CMakeFiles/test_fixed_buffer.dir/test_fixed_buffer.cpp.o
+.PHONY : test_fixed_buffer.cpp.o
+
+test_fixed_buffer.i: test_fixed_buffer.cpp.i
+.PHONY : test_fixed_buffer.i
+
+# target to preprocess a source file
+test_fixed_buffer.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_fixed_buffer.dir/build.make CMakeFiles/test_fixed_buffer.dir/test_fixed_buffer.cpp.i
+.PHONY : test_fixed_buffer.cpp.i
+
+test_fixed_buffer.s: test_fixed_buffer.cpp.s
+.PHONY : test_fixed_buffer.s
+
+# target to generate assembly for a file
+test_fixed_buffer.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_fixed_buffer.dir/build.make CMakeFiles/test_fixed_buffer.dir/test_fixed_buffer.cpp.s
+.PHONY : test_fixed_buffer.cpp.s
 
 test_logstream.o: test_logstream.cpp.o
 .PHONY : test_logstream.o
@@ -225,6 +470,30 @@ test_logstream.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_logstream.dir/build.make CMakeFiles/test_logstream.dir/test_logstream.cpp.s
 .PHONY : test_logstream.cpp.s
 
+test_startup.o: test_startup.cpp.o
+.PHONY : test_startup.o
+
+# target to build an object file
+test_startup.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_startup.dir/build.make CMakeFiles/test_startup.dir/test_startup.cpp.o
+.PHONY : test_startup.cpp.o
+
+test_startup.i: test_startup.cpp.i
+.PHONY : test_startup.i
+
+# target to preprocess a source file
+test_startup.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_startup.dir/build.make CMakeFiles/test_startup.dir/test_startup.cpp.i
+.PHONY : test_startup.cpp.i
+
+test_startup.s: test_startup.cpp.s
+.PHONY : test_startup.s
+
+# target to generate assembly for a file
+test_startup.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_startup.dir/build.make CMakeFiles/test_startup.dir/test_startup.cpp.s
+.PHONY : test_startup.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -233,7 +502,18 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
+	@echo "... complete_demo"
+	@echo "... test_backend"
+	@echo "... test_comprehensive"
+	@echo "... test_fixed_buffer"
 	@echo "... test_logstream"
+	@echo "... test_startup"
+	@echo "... complete_demo.o"
+	@echo "... complete_demo.i"
+	@echo "... complete_demo.s"
+	@echo "... home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/lockfree_ringbuffer.o"
+	@echo "... home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/lockfree_ringbuffer.i"
+	@echo "... home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/lockfree_ringbuffer.s"
 	@echo "... home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/log_backend.o"
 	@echo "... home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/log_backend.i"
 	@echo "... home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/log_backend.s"
@@ -243,9 +523,21 @@ help:
 	@echo "... home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logstream.o"
 	@echo "... home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logstream.i"
 	@echo "... home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logstream.s"
+	@echo "... test_backend.o"
+	@echo "... test_backend.i"
+	@echo "... test_backend.s"
+	@echo "... test_comprehensive.o"
+	@echo "... test_comprehensive.i"
+	@echo "... test_comprehensive.s"
+	@echo "... test_fixed_buffer.o"
+	@echo "... test_fixed_buffer.i"
+	@echo "... test_fixed_buffer.s"
 	@echo "... test_logstream.o"
 	@echo "... test_logstream.i"
 	@echo "... test_logstream.s"
+	@echo "... test_startup.o"
+	@echo "... test_startup.i"
+	@echo "... test_startup.s"
 .PHONY : help
 
 
