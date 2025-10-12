@@ -17,50 +17,68 @@ LockFreeRingBuffer<T, Size>::LockFreeRingBuffer() noexcept
 template<typename T, size_t Size>
 bool LockFreeRingBuffer<T, Size>::tryPush(const T& item) noexcept
 {
-    // 1. 读取当前的写索引和读索引
+    // 使用 CAS 循环来处理多生产者竞争
     size_t current_write = write_index_.load(std::memory_order_relaxed);
-    size_t current_read = read_index_.load(std::memory_order_acquire);
     
-    // 2. 计算下一个写位置
-    size_t next_write = (current_write + 1) & (Size - 1);  // 使用位运算取模
-    
-    // 3. 检查队列是否已满（下一个写位置等于读位置表示满）
-    if (next_write == current_read) {
-        return false;  // 队列满
+    while (true) {
+        // 1. 读取当前的读索引
+        size_t current_read = read_index_.load(std::memory_order_acquire);
+        
+        // 2. 计算下一个写位置
+        size_t next_write = (current_write + 1) & (Size - 1);
+        
+        // 3. 检查队列是否已满（下一个写位置等于读位置表示满）
+        if (next_write == current_read) {
+            return false;  // 队列满
+        }
+        
+        // 4. 尝试使用 CAS 原子地预留写位置
+        if (write_index_.compare_exchange_weak(
+                current_write, next_write,
+                std::memory_order_release,
+                std::memory_order_relaxed)) {
+            // CAS 成功，我们已经预留了 current_write 位置
+            // 5. 写入数据
+            buffer_[current_write] = item;
+            return true;
+        }
+        
+        // CAS 失败，current_write 已被更新为新值，重试
+        // compare_exchange_weak 会自动更新 current_write 为最新值
     }
-    
-    // 4. 写入数据
-    buffer_[current_write] = item;
-    
-    // 5. 更新写索引（使用 release 保证写入可见性）
-    write_index_.store(next_write, std::memory_order_release);
-    
-    return true;
 }
 
 // ========== tryPop 实现 ==========
 template<typename T, size_t Size>
 bool LockFreeRingBuffer<T, Size>::tryPop(T& item) noexcept
 {
-    // 1. 读取当前的读索引和写索引
+    // 使用 CAS 循环来处理多消费者竞争
     size_t current_read = read_index_.load(std::memory_order_relaxed);
-    size_t current_write = write_index_.load(std::memory_order_acquire);
     
-    // 2. 检查队列是否为空（读索引等于写索引表示空）
-    if (current_read == current_write) {
-        return false;  // 队列空
+    while (true) {
+        // 1. 读取当前的写索引
+        size_t current_write = write_index_.load(std::memory_order_acquire);
+        
+        // 2. 检查队列是否为空（读索引等于写索引表示空）
+        if (current_read == current_write) {
+            return false;  // 队列空
+        }
+        
+        // 3. 尝试使用 CAS 原子地预留读位置
+        size_t next_read = (current_read + 1) & (Size - 1);
+        if (read_index_.compare_exchange_weak(
+                current_read, next_read,
+                std::memory_order_release,
+                std::memory_order_relaxed)) {
+            // CAS 成功，我们已经预留了 current_read 位置
+            // 4. 读取数据
+            item = buffer_[current_read];
+            return true;
+        }
+        
+        // CAS 失败，current_read 已被更新为新值，重试
+        // compare_exchange_weak 会自动更新 current_read 为最新值
     }
-    
-    // 3. 读取数据
-    item = buffer_[current_read];
-    
-    // 4. 计算下一个读位置
-    size_t next_read = (current_read + 1) & (Size - 1);  // 使用位运算取模
-    
-    // 5. 更新读索引（使用 release 保证读取完成的可见性）
-    read_index_.store(next_read, std::memory_order_release);
-    
-    return true;
 }
 
 // ========== isEmpty 实现 ==========

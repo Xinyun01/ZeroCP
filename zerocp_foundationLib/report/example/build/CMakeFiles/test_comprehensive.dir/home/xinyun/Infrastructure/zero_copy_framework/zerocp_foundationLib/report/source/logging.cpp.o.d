@@ -1,5 +1,5 @@
-CMakeFiles/complete_demo.dir/complete_demo.cpp.o: \
- /home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/example/complete_demo.cpp \
+CMakeFiles/test_comprehensive.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logging.cpp.o: \
+ /home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logging.cpp \
  /usr/include/stdc-predef.h \
  /home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/example/../include/logging.hpp \
  /usr/include/c++/13/cstdint \
@@ -157,29 +157,17 @@ CMakeFiles/complete_demo.dir/complete_demo.cpp.o: \
  /usr/include/c++/13/bits/basic_string.tcc \
  /usr/include/c++/13/bits/memory_resource.h /usr/include/c++/13/cstddef \
  /usr/include/c++/13/bits/uses_allocator_args.h \
- /usr/include/c++/13/iostream /usr/include/c++/13/ostream \
- /usr/include/c++/13/ios /usr/include/c++/13/bits/ios_base.h \
- /usr/include/c++/13/bits/locale_classes.h \
- /usr/include/c++/13/bits/locale_classes.tcc \
- /usr/include/c++/13/system_error \
- /usr/include/x86_64-linux-gnu/c++/13/bits/error_constants.h \
- /usr/include/c++/13/stdexcept /usr/include/c++/13/streambuf \
- /usr/include/c++/13/bits/streambuf.tcc \
- /usr/include/c++/13/bits/basic_ios.h \
- /usr/include/c++/13/bits/locale_facets.h /usr/include/c++/13/cwctype \
- /usr/include/wctype.h /usr/include/x86_64-linux-gnu/bits/wctype-wchar.h \
- /usr/include/x86_64-linux-gnu/c++/13/bits/ctype_base.h \
- /usr/include/c++/13/bits/streambuf_iterator.h \
- /usr/include/x86_64-linux-gnu/c++/13/bits/ctype_inline.h \
- /usr/include/c++/13/bits/locale_facets.tcc \
- /usr/include/c++/13/bits/basic_ios.tcc \
- /usr/include/c++/13/bits/ostream.tcc /usr/include/c++/13/istream \
- /usr/include/c++/13/bits/istream.tcc /usr/include/c++/13/thread \
- /usr/include/c++/13/bits/std_thread.h \
+ /home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/example/../include/logsteam.hpp \
+ /home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/example/../include/logging.hpp \
+ /home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/example/../include/log_backend.hpp \
+ /usr/include/c++/13/thread /usr/include/c++/13/bits/std_thread.h \
  /usr/include/c++/13/bits/this_thread_sleep.h \
  /usr/include/c++/13/bits/chrono.h /usr/include/c++/13/ratio \
  /usr/include/c++/13/limits /usr/include/c++/13/ctime \
- /usr/include/c++/13/bits/parse_numbers.h /usr/include/c++/13/chrono \
- /usr/include/c++/13/vector /usr/include/c++/13/bits/stl_vector.h \
- /usr/include/c++/13/bits/stl_bvector.h \
- /usr/include/c++/13/bits/vector.tcc
+ /usr/include/c++/13/bits/parse_numbers.h \
+ /home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/example/../include/lockfree_ringbuffer.hpp \
+ /usr/include/c++/13/array /usr/include/c++/13/compare \
+ /usr/include/c++/13/cstring /usr/include/string.h /usr/include/strings.h \
+ /usr/include/x86_64-linux-gnu/bits/strings_fortified.h \
+ /usr/include/x86_64-linux-gnu/bits/string_fortified.h \
+ /home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/example/../include/lockfree_ringbuffer.inl

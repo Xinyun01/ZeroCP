@@ -9,7 +9,6 @@
 // 前向声明
 namespace ZeroCP {
 namespace Log {
-    class LogStream;
     class LogBackend;
 }
 }
@@ -94,6 +93,9 @@ private:
 
 } // namespace Log
 } // namespace ZeroCP
+
+// 包含 LogStream 完整定义以支持宏中的使用
+#include "logsteam.hpp"
 
 /// @brief 日志记录宏
 /// @param[in] level 用于日志消息的日志级别
