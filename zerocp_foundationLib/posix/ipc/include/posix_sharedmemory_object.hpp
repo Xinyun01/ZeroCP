@@ -2,6 +2,7 @@
 #define PosixSharedMemoryObject_HPP
 
 #include "builder.hpp"
+#include "filesystem.hpp"
 namespace ZeroCP
 {
 
@@ -59,10 +60,10 @@ class PosixSharedMemoryObjectBuilder
     /// 共享内存的打开模式：创建、删除并重新创建、创建或打开已存在的、打开已存在的。
     ZeroCP_Builder_Implementation(OpenMode, openMode, OpenMode::OpenExisting)
     /// 共享内存的权限设置（如读、写、无权限等）
-    ZeroCP_Builder_Implementation(uint8_t,permissions,0U);
+    ZeroCP_Builder_Implementation(Perms,Perms,permissions::None);
 
 public:
-    expected<PosixSharedMemoryObject,PosixSharedMemoryObjectError> create() const;
+    expected<PosixSharedMemoryObject,PosixSharedMemoryObjectError> create() noexcept;
 }
 
 }    
