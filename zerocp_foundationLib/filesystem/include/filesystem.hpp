@@ -1,3 +1,9 @@
+#pragma once
+
+#include <cstdint>
+#include <string>
+#include <type_traits>
+
 namespace ZeroCP
 {
 
@@ -65,7 +71,15 @@ constexpr uint16_t to_mode(Perms p) noexcept {
     return static_cast<uint16_t>(p);
 }
 
-addLeadingSlash
+// 添加前导斜杠（如果名称不为空且不以斜杠开头）
+inline std::string addLeadingSlash(const std::string& name) noexcept
+{
+    if (!name.empty() && name[0] != '/')
+    {
+        return "/" + name;
+    }
+    return name;
+}
 
 }
 

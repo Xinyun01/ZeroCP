@@ -1,0 +1,4 @@
+/home/xinyun/Infrastructure/zero_copy_framework/test/report/build/CMakeFiles/test_comprehensive.dir
+/home/xinyun/Infrastructure/zero_copy_framework/test/report/build/CMakeFiles/test_performance.dir
+/home/xinyun/Infrastructure/zero_copy_framework/test/report/build/CMakeFiles/edit_cache.dir
+/home/xinyun/Infrastructure/zero_copy_framework/test/report/build/CMakeFiles/rebuild_cache.dir

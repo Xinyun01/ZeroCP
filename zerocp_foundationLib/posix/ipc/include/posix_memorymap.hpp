@@ -1,5 +1,11 @@
 #ifndef ZEROCP_POSIX_MEMORYMAP_HPP
 #define ZEROCP_POSIX_MEMORYMAP_HPP
+#include "filesystem.hpp"
+#include <expected>
+#include <utility>
+#include <optional>
+#include <cstdint>
+#include <sys/mman.h>
 #include "builder.hpp"
 // void *mmap(void *addr,           // 建议的映射地址
 //     size_t length,        // 映射长度
@@ -9,6 +15,9 @@
 //     off_t offset);        // 文件偏移
 namespace ZeroCP
 {
+/// @brief 共享内存文件描述符类型
+using shm_handle_t = int;
+
 namespace Details
 {
 
@@ -43,15 +52,18 @@ enum class PosixMemoryMapFlags : int32_t
 // POSIX 内存映射保护位
 enum class PosixMemoryMapProt : int8_t
 {
-    PROT_NONE = PROT_NONE,                 // 无访问权限
-    PROT_READ = PROT_READ,                 // 只读权限
-    PROT_WRITE = PROT_WRITE,               // 可写权限
-    PROT_EXEC = PROT_EXEC,                 // 可执行权限
-    PROT_READ_WRITE = PROT_READ | PROT_WRITE, // 读写权限
-    PROT_READ_EXEC = PROT_READ | PROT_EXEC,   // 读执行权限
+    None = PROT_NONE,                 // 无访问权限
+    Read = PROT_READ,                 // 只读权限
+    Write = PROT_WRITE,               // 可写权限
+    Exec = PROT_EXEC,                 // 可执行权限
+    ReadWrite = PROT_READ | PROT_WRITE, // 读写权限
+    ReadExec = PROT_READ | PROT_EXEC,   // 读执行权限
 };
 
-class PosixSharedMemoryBuilder
+class PosixMemoryMap;
+class PosixMemoryMapBuilder;
+
+class PosixMemoryMapBuilder
 {
     // 内存映射的起始地址，默认为nullptr
     ZeroCP_Builder_Implementation(void*, baseMemory, nullptr);
@@ -60,40 +72,45 @@ class PosixSharedMemoryBuilder
     ZeroCP_Builder_Implementation(uint64_t, memoryLength, 0);
 
     // 保护标志，默认为只读（PROT_READ）
-    ZeroCP_Builder_Implementation(uint8_t, prot, PosixMemoryMapProt::PROT_READ);
+    ZeroCP_Builder_Implementation(int, prot, PROT_READ);
 
     // 映射标志，默认为共享（MAP_SHARED）
-    ZeroCP_Builder_Implementation(int32_t, flags, PosixMemoryMapFlags::SHARE_CHANGES);
+    ZeroCP_Builder_Implementation(int32_t, flags, MAP_SHARED);
 
     // 文件描述符，默认为-1（无效）
-    ZeroCP_Builder_Implementation(shm_handle_t,fileDescriptor, -1);
+    ZeroCP_Builder_Implementation(shm_handle_t, fileDescriptor, -1);
 
     // 映射的偏移量，默认为0
     ZeroCP_Builder_Implementation(uint64_t, offset_, 0);
 
+public:
     // 创建并返回PosixMemoryMap对象
-    expected<PosixMemoryMap, PosixMemoryMapError> create() noexcept;
-
-}
+    std::expected<Details::PosixMemoryMap, PosixMemoryMapError> create() noexcept;
+};
 
 class PosixMemoryMap
 {
 public:
     PosixMemoryMap(const PosixMemoryMap&) = delete;
     PosixMemoryMap& operator=(const PosixMemoryMap&) = delete;
-    PosixMemoryMap(PosixMemoryMap&&) noexcept = default;
-    PosixMemoryMap& operator=(PosixMemoryMap&&) noexcept = default;
+    PosixMemoryMap(PosixMemoryMap&&) noexcept;
+    PosixMemoryMap& operator=(PosixMemoryMap&&) noexcept;
     ~PosixMemoryMap();
-    void* getBaseMemory() const noexcept;
-    size_t getMemorySize() const noexcept;
+    
+    void* getBaseAddress() const noexcept;
+    uint64_t getLength() const noexcept;
+    
+    friend class PosixMemoryMapBuilder;
+    
 private:
+    PosixMemoryMap(void* baseMemory, size_t memoryLength) noexcept;
+    
     void* m_baseAddress{nullptr};
     uint64_t m_length{0U};
-}
+};
 
-}
-
-}
+} // namespace Details
+} // namespace ZeroCP
 
 
 #endif // ZEROCP_POSIX_MEMORYMAP_HPP

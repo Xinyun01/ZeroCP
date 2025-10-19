@@ -769,20 +769,7 @@ report/
 │   ├── logstream.cpp                  # 日志流实现（512字节缓冲区）
 │   ├── log_backend.cpp                # 后端处理实现（工作线程）
 │   └── lockfree_ringbuffer.cpp        # LogMessage 拷贝优化实现
-│
-├── example/                           # 示例代码目录
-│   ├── complete_demo.cpp              # 完整功能演示
-│   ├── test_backend.cpp               # 后端单元测试
-│   ├── test_logstream.cpp             # 日志流单元测试
-│   ├── test_fixed_buffer.cpp          # 固定缓冲区测试
-│   ├── test_startup.cpp               # 启动流程测试
-│   └── CMakeLists.txt                 # 示例构建配置
-│
-├── build_and_run.sh                   # 快速编译运行脚本
-├── test_fixed_buffer.sh               # 固定缓冲区测试脚本
-├── STL_USAGE_ANALYSIS.md              # STL 使用分析文档
-└── README.md                          # 本文档
-```
+│```
 
 ### 文件职责说明
 

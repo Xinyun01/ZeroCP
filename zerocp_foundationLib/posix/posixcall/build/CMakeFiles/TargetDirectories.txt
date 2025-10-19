@@ -1,0 +1,4 @@
+/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/posix/posixcall/build/CMakeFiles/test_posix_call.dir
+/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/posix/posixcall/build/CMakeFiles/test_system_calls.dir
+/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/posix/posixcall/build/CMakeFiles/edit_cache.dir
+/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/posix/posixcall/build/CMakeFiles/rebuild_cache.dir

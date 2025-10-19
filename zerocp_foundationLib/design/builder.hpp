@@ -23,21 +23,11 @@
 #define ZeroCP_Builder_Implementation(type, name, defaultvalue)                    \
 public:                                                                            \
     /**                                                                            \
-     * @brief builder setter —— 左值引用方式                                         \
+     * @brief builder setter —— 值传递方式（适用于所有类型包括指针）                    \
      * @param value 赋值内容                                                        \
      * @return 当前对象右值引用                                                      \
      */                                                                            \
-    decltype(auto) name(type& value) && noexcept                                   \
-    {                                                                              \
-        m_##name = value;                                                          \
-        return std::move(*this);                                                   \
-    }                                                                              \
-    /**                                                                            \
-     * @brief builder setter —— 右值引用方式                                         \
-     * @param value 赋值内容                                                        \
-     * @return 当前对象右值引用                                                      \
-     */                                                                            \
-    decltype(auto) name(type&& value) && noexcept                                  \
+    decltype(auto) name(type value) && noexcept                                    \
     {                                                                              \
         m_##name = std::move(value);                                               \
         return std::move(*this);                                                   \

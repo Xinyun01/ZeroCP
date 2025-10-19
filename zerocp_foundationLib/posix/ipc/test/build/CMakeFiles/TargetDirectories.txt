@@ -1,0 +1,3 @@
+/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/posix/ipc/test/build/CMakeFiles/test_posix_sharedmemory.dir
+/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/posix/ipc/test/build/CMakeFiles/edit_cache.dir
+/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/posix/ipc/test/build/CMakeFiles/rebuild_cache.dir

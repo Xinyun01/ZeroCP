@@ -1,0 +1,2 @@
+/usr/bin/ar qc libzerocp_ipc.a CMakeFiles/zerocp_ipc.dir/source/posix_memorymap.cpp.o CMakeFiles/zerocp_ipc.dir/source/posix_sharedmemory.cpp.o CMakeFiles/zerocp_ipc.dir/source/posix_sharedmemory_object.cpp.o
+/usr/bin/ranlib libzerocp_ipc.a
