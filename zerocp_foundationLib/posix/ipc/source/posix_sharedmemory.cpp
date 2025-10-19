@@ -13,8 +13,6 @@ namespace ZeroCP
 namespace Details
 {
 
-using ZeroCP::Log::LogLevel;
-
 // 将 AccessMode 和 OpenMode 转换为 POSIX 的 O_* 标志
 int convertToOflags(AccessMode accessMode, OpenMode openMode) noexcept
 {
@@ -67,7 +65,7 @@ std::expected<PosixSharedMemory, PosixSharedMemoryError> PosixSharedMemoryBuilde
 {
     if (m_name.empty())
     {
-        ZEROCP_LOG(LogLevel::Error, "Shared memory name is empty");
+        ZEROCP_LOG(Error, "Shared memory name is empty");
         return std::unexpected(PosixSharedMemoryError::EMPTY_NAME);
     }
     
@@ -78,7 +76,7 @@ std::expected<PosixSharedMemory, PosixSharedMemoryError> PosixSharedMemoryBuilde
     // 检查拥有所有权但访问模式为只读的不兼容情况
     if (hasOwnership && m_accessMode == AccessMode::ReadOnly)
     {
-        ZEROCP_LOG(LogLevel::Error, "Cannot create shared-memory file \"" << m_name << "\" in read-only mode. "
+        ZEROCP_LOG(Error, "Cannot create shared-memory file \"" << m_name << "\" in read-only mode. "
                                                   << "Initializing a new file requires write access");
         return std::unexpected(PosixSharedMemoryError::INCOMPATIBLE_OPEN_AND_ACCESS_MODE);
     }
@@ -93,7 +91,7 @@ std::expected<PosixSharedMemory, PosixSharedMemoryError> PosixSharedMemoryBuilde
         // 忽略删除失败的错误，因为可能共享内存不存在
         if (!unlinkResult.has_value() && unlinkResult.error().errnum != ENOENT)
         {
-            ZEROCP_LOG(LogLevel::Warn, "Failed to unlink existing shared memory: " << strerror(unlinkResult.error().errnum));
+            ZEROCP_LOG(Warn, "Failed to unlink existing shared memory: " << strerror(unlinkResult.error().errnum));
         }
     }
 
@@ -127,7 +125,7 @@ std::expected<PosixSharedMemory, PosixSharedMemoryError> PosixSharedMemoryBuilde
             }
             else
             {
-                ZEROCP_LOG(LogLevel::Error, "Failed to open existing shared memory: " << strerror(retryResult.error().errnum));
+                ZEROCP_LOG(Error, "Failed to open existing shared memory: " << strerror(retryResult.error().errnum));
                 return std::unexpected(PosixSharedMemoryError::INVALID_NAME);
             }
         }
@@ -143,7 +141,7 @@ std::expected<PosixSharedMemory, PosixSharedMemoryError> PosixSharedMemoryBuilde
                 case EACCES:
                     return std::unexpected(PosixSharedMemoryError::INSUFFICIENT_PERMISSIONS);
                 default:
-                    ZEROCP_LOG(LogLevel::Error, "Failed to open shared memory: " << strerror(result.error().errnum));
+                    ZEROCP_LOG(Error, "Failed to open shared memory: " << strerror(result.error().errnum));
                     return std::unexpected(PosixSharedMemoryError::UNKNOWN_ERROR);
             }
         }
@@ -163,7 +161,7 @@ std::expected<PosixSharedMemory, PosixSharedMemoryError> PosixSharedMemoryBuilde
         
         if (!ftruncateResult.has_value())
         {
-            ZEROCP_LOG(LogLevel::Error, "Failed to set shared memory size: " << strerror(ftruncateResult.error().errnum));
+            ZEROCP_LOG(Error, "Failed to set shared memory size: " << strerror(ftruncateResult.error().errnum));
 
             // 如果设置大小失败，需要清理已创建的资源
             // 关闭文件描述符
@@ -173,7 +171,7 @@ std::expected<PosixSharedMemory, PosixSharedMemoryError> PosixSharedMemoryBuilde
             
             if (!closeResult.has_value())
             {
-                ZEROCP_LOG(LogLevel::Error, "Unable to close filedescriptor (close failed): " 
+                ZEROCP_LOG(Error, "Unable to close filedescriptor (close failed): " 
                     << strerror(closeResult.error().errnum) << " for SharedMemory \"" << m_name << "\"");
             }
 
@@ -184,7 +182,7 @@ std::expected<PosixSharedMemory, PosixSharedMemoryError> PosixSharedMemoryBuilde
             
             if (!unlinkResult.has_value())
             {
-                ZEROCP_LOG(LogLevel::Error, "Unable to remove previously created SharedMemory \""
+                ZEROCP_LOG(Error, "Unable to remove previously created SharedMemory \""
                     << m_name << "\". This may be a SharedMemory leak.");
             }
 
@@ -207,7 +205,7 @@ uint64_t PosixSharedMemory::getMemorySize() const noexcept
     }
     else
     {
-        ZEROCP_LOG(LogLevel::Error, "fstat failed for handle " << m_handle << ": " << strerror(errno));
+        ZEROCP_LOG(Error, "fstat failed for handle " << m_handle << ": " << strerror(errno));
     }
     return 0;
 }
@@ -232,7 +230,7 @@ PosixSharedMemory::~PosixSharedMemory()
         
         if (!closeResult.has_value())
         {
-            ZEROCP_LOG(LogLevel::Error, "Failed to close shared memory handle: " << strerror(closeResult.error().errnum));
+            ZEROCP_LOG(Error, "Failed to close shared memory handle: " << strerror(closeResult.error().errnum));
         }
         
         // 如果拥有所有权，需要删除共享内存对象
@@ -245,7 +243,7 @@ PosixSharedMemory::~PosixSharedMemory()
             
             if (!unlinkResult.has_value())
             {
-                ZEROCP_LOG(LogLevel::Error, "Failed to unlink shared memory: " << strerror(unlinkResult.error().errnum));
+                ZEROCP_LOG(Error, "Failed to unlink shared memory: " << strerror(unlinkResult.error().errnum));
             }
         }
     }

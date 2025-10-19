@@ -129,12 +129,26 @@ test_posix_sharedmemory/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_posix_sharedmemory.dir/build.make CMakeFiles/test_posix_sharedmemory.dir/build
 .PHONY : test_posix_sharedmemory/fast
 
+#=============================================================================
+# Target rules for targets named test_cross_process_shm
+
+# Build rule for target.
+test_cross_process_shm: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test_cross_process_shm
+.PHONY : test_cross_process_shm
+
+# fast build rule for target.
+test_cross_process_shm/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_cross_process_shm.dir/build.make CMakeFiles/test_cross_process_shm.dir/build
+.PHONY : test_cross_process_shm/fast
+
 home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/posix/ipc/source/posix_memorymap.o: home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/posix/ipc/source/posix_memorymap.cpp.o
 .PHONY : home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/posix/ipc/source/posix_memorymap.o
 
 # target to build an object file
 home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/posix/ipc/source/posix_memorymap.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_posix_sharedmemory.dir/build.make CMakeFiles/test_posix_sharedmemory.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/posix/ipc/source/posix_memorymap.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_cross_process_shm.dir/build.make CMakeFiles/test_cross_process_shm.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/posix/ipc/source/posix_memorymap.cpp.o
 .PHONY : home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/posix/ipc/source/posix_memorymap.cpp.o
 
 home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/posix/ipc/source/posix_memorymap.i: home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/posix/ipc/source/posix_memorymap.cpp.i
@@ -143,6 +157,7 @@ home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/posix/ipc/so
 # target to preprocess a source file
 home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/posix/ipc/source/posix_memorymap.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_posix_sharedmemory.dir/build.make CMakeFiles/test_posix_sharedmemory.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/posix/ipc/source/posix_memorymap.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_cross_process_shm.dir/build.make CMakeFiles/test_cross_process_shm.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/posix/ipc/source/posix_memorymap.cpp.i
 .PHONY : home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/posix/ipc/source/posix_memorymap.cpp.i
 
 home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/posix/ipc/source/posix_memorymap.s: home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/posix/ipc/source/posix_memorymap.cpp.s
@@ -151,6 +166,7 @@ home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/posix/ipc/so
 # target to generate assembly for a file
 home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/posix/ipc/source/posix_memorymap.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_posix_sharedmemory.dir/build.make CMakeFiles/test_posix_sharedmemory.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/posix/ipc/source/posix_memorymap.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_cross_process_shm.dir/build.make CMakeFiles/test_cross_process_shm.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/posix/ipc/source/posix_memorymap.cpp.s
 .PHONY : home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/posix/ipc/source/posix_memorymap.cpp.s
 
 home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/posix/ipc/source/posix_sharedmemory.o: home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/posix/ipc/source/posix_sharedmemory.cpp.o
@@ -159,6 +175,7 @@ home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/posix/ipc/so
 # target to build an object file
 home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/posix/ipc/source/posix_sharedmemory.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_posix_sharedmemory.dir/build.make CMakeFiles/test_posix_sharedmemory.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/posix/ipc/source/posix_sharedmemory.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_cross_process_shm.dir/build.make CMakeFiles/test_cross_process_shm.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/posix/ipc/source/posix_sharedmemory.cpp.o
 .PHONY : home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/posix/ipc/source/posix_sharedmemory.cpp.o
 
 home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/posix/ipc/source/posix_sharedmemory.i: home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/posix/ipc/source/posix_sharedmemory.cpp.i
@@ -167,6 +184,7 @@ home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/posix/ipc/so
 # target to preprocess a source file
 home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/posix/ipc/source/posix_sharedmemory.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_posix_sharedmemory.dir/build.make CMakeFiles/test_posix_sharedmemory.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/posix/ipc/source/posix_sharedmemory.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_cross_process_shm.dir/build.make CMakeFiles/test_cross_process_shm.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/posix/ipc/source/posix_sharedmemory.cpp.i
 .PHONY : home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/posix/ipc/source/posix_sharedmemory.cpp.i
 
 home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/posix/ipc/source/posix_sharedmemory.s: home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/posix/ipc/source/posix_sharedmemory.cpp.s
@@ -175,6 +193,7 @@ home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/posix/ipc/so
 # target to generate assembly for a file
 home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/posix/ipc/source/posix_sharedmemory.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_posix_sharedmemory.dir/build.make CMakeFiles/test_posix_sharedmemory.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/posix/ipc/source/posix_sharedmemory.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_cross_process_shm.dir/build.make CMakeFiles/test_cross_process_shm.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/posix/ipc/source/posix_sharedmemory.cpp.s
 .PHONY : home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/posix/ipc/source/posix_sharedmemory.cpp.s
 
 home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/lockfree_ringbuffer.o: home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/lockfree_ringbuffer.cpp.o
@@ -183,6 +202,7 @@ home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/sourc
 # target to build an object file
 home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/lockfree_ringbuffer.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_posix_sharedmemory.dir/build.make CMakeFiles/test_posix_sharedmemory.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/lockfree_ringbuffer.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_cross_process_shm.dir/build.make CMakeFiles/test_cross_process_shm.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/lockfree_ringbuffer.cpp.o
 .PHONY : home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/lockfree_ringbuffer.cpp.o
 
 home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/lockfree_ringbuffer.i: home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/lockfree_ringbuffer.cpp.i
@@ -191,6 +211,7 @@ home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/sourc
 # target to preprocess a source file
 home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/lockfree_ringbuffer.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_posix_sharedmemory.dir/build.make CMakeFiles/test_posix_sharedmemory.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/lockfree_ringbuffer.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_cross_process_shm.dir/build.make CMakeFiles/test_cross_process_shm.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/lockfree_ringbuffer.cpp.i
 .PHONY : home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/lockfree_ringbuffer.cpp.i
 
 home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/lockfree_ringbuffer.s: home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/lockfree_ringbuffer.cpp.s
@@ -199,6 +220,7 @@ home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/sourc
 # target to generate assembly for a file
 home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/lockfree_ringbuffer.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_posix_sharedmemory.dir/build.make CMakeFiles/test_posix_sharedmemory.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/lockfree_ringbuffer.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_cross_process_shm.dir/build.make CMakeFiles/test_cross_process_shm.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/lockfree_ringbuffer.cpp.s
 .PHONY : home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/lockfree_ringbuffer.cpp.s
 
 home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/log_backend.o: home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/log_backend.cpp.o
@@ -207,6 +229,7 @@ home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/sourc
 # target to build an object file
 home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/log_backend.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_posix_sharedmemory.dir/build.make CMakeFiles/test_posix_sharedmemory.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/log_backend.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_cross_process_shm.dir/build.make CMakeFiles/test_cross_process_shm.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/log_backend.cpp.o
 .PHONY : home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/log_backend.cpp.o
 
 home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/log_backend.i: home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/log_backend.cpp.i
@@ -215,6 +238,7 @@ home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/sourc
 # target to preprocess a source file
 home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/log_backend.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_posix_sharedmemory.dir/build.make CMakeFiles/test_posix_sharedmemory.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/log_backend.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_cross_process_shm.dir/build.make CMakeFiles/test_cross_process_shm.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/log_backend.cpp.i
 .PHONY : home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/log_backend.cpp.i
 
 home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/log_backend.s: home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/log_backend.cpp.s
@@ -223,6 +247,7 @@ home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/sourc
 # target to generate assembly for a file
 home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/log_backend.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_posix_sharedmemory.dir/build.make CMakeFiles/test_posix_sharedmemory.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/log_backend.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_cross_process_shm.dir/build.make CMakeFiles/test_cross_process_shm.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/log_backend.cpp.s
 .PHONY : home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/log_backend.cpp.s
 
 home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logging.o: home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logging.cpp.o
@@ -231,6 +256,7 @@ home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/sourc
 # target to build an object file
 home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logging.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_posix_sharedmemory.dir/build.make CMakeFiles/test_posix_sharedmemory.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logging.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_cross_process_shm.dir/build.make CMakeFiles/test_cross_process_shm.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logging.cpp.o
 .PHONY : home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logging.cpp.o
 
 home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logging.i: home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logging.cpp.i
@@ -239,6 +265,7 @@ home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/sourc
 # target to preprocess a source file
 home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logging.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_posix_sharedmemory.dir/build.make CMakeFiles/test_posix_sharedmemory.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logging.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_cross_process_shm.dir/build.make CMakeFiles/test_cross_process_shm.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logging.cpp.i
 .PHONY : home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logging.cpp.i
 
 home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logging.s: home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logging.cpp.s
@@ -247,6 +274,7 @@ home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/sourc
 # target to generate assembly for a file
 home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logging.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_posix_sharedmemory.dir/build.make CMakeFiles/test_posix_sharedmemory.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logging.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_cross_process_shm.dir/build.make CMakeFiles/test_cross_process_shm.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logging.cpp.s
 .PHONY : home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logging.cpp.s
 
 home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logstream.o: home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logstream.cpp.o
@@ -255,6 +283,7 @@ home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/sourc
 # target to build an object file
 home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logstream.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_posix_sharedmemory.dir/build.make CMakeFiles/test_posix_sharedmemory.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logstream.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_cross_process_shm.dir/build.make CMakeFiles/test_cross_process_shm.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logstream.cpp.o
 .PHONY : home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logstream.cpp.o
 
 home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logstream.i: home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logstream.cpp.i
@@ -263,6 +292,7 @@ home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/sourc
 # target to preprocess a source file
 home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logstream.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_posix_sharedmemory.dir/build.make CMakeFiles/test_posix_sharedmemory.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logstream.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_cross_process_shm.dir/build.make CMakeFiles/test_cross_process_shm.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logstream.cpp.i
 .PHONY : home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logstream.cpp.i
 
 home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logstream.s: home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logstream.cpp.s
@@ -271,7 +301,32 @@ home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/sourc
 # target to generate assembly for a file
 home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logstream.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_posix_sharedmemory.dir/build.make CMakeFiles/test_posix_sharedmemory.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logstream.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_cross_process_shm.dir/build.make CMakeFiles/test_cross_process_shm.dir/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logstream.cpp.s
 .PHONY : home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logstream.cpp.s
+
+test_cross_process_shm.o: test_cross_process_shm.cpp.o
+.PHONY : test_cross_process_shm.o
+
+# target to build an object file
+test_cross_process_shm.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_cross_process_shm.dir/build.make CMakeFiles/test_cross_process_shm.dir/test_cross_process_shm.cpp.o
+.PHONY : test_cross_process_shm.cpp.o
+
+test_cross_process_shm.i: test_cross_process_shm.cpp.i
+.PHONY : test_cross_process_shm.i
+
+# target to preprocess a source file
+test_cross_process_shm.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_cross_process_shm.dir/build.make CMakeFiles/test_cross_process_shm.dir/test_cross_process_shm.cpp.i
+.PHONY : test_cross_process_shm.cpp.i
+
+test_cross_process_shm.s: test_cross_process_shm.cpp.s
+.PHONY : test_cross_process_shm.s
+
+# target to generate assembly for a file
+test_cross_process_shm.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_cross_process_shm.dir/build.make CMakeFiles/test_cross_process_shm.dir/test_cross_process_shm.cpp.s
+.PHONY : test_cross_process_shm.cpp.s
 
 test_posix_sharedmemory.o: test_posix_sharedmemory.cpp.o
 .PHONY : test_posix_sharedmemory.o
@@ -305,6 +360,7 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
+	@echo "... test_cross_process_shm"
 	@echo "... test_posix_sharedmemory"
 	@echo "... home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/posix/ipc/source/posix_memorymap.o"
 	@echo "... home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/posix/ipc/source/posix_memorymap.i"
@@ -324,6 +380,9 @@ help:
 	@echo "... home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logstream.o"
 	@echo "... home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logstream.i"
 	@echo "... home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/report/source/logstream.s"
+	@echo "... test_cross_process_shm.o"
+	@echo "... test_cross_process_shm.i"
+	@echo "... test_cross_process_shm.s"
 	@echo "... test_posix_sharedmemory.o"
 	@echo "... test_posix_sharedmemory.i"
 	@echo "... test_posix_sharedmemory.s"

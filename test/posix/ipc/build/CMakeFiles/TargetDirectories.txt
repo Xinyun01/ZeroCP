@@ -1,3 +1,4 @@
 /home/xinyun/Infrastructure/zero_copy_framework/test/posix/ipc/build/CMakeFiles/test_posix_sharedmemory.dir
+/home/xinyun/Infrastructure/zero_copy_framework/test/posix/ipc/build/CMakeFiles/test_cross_process_shm.dir
 /home/xinyun/Infrastructure/zero_copy_framework/test/posix/ipc/build/CMakeFiles/edit_cache.dir
 /home/xinyun/Infrastructure/zero_copy_framework/test/posix/ipc/build/CMakeFiles/rebuild_cache.dir

@@ -6,7 +6,7 @@
 #include <concepts>
 #include <source_location>
 #include <expected>  // C++23: std::expected
-#include "../../../staticstl/include/algorithm.hpp"
+#include "algorithm.hpp"
 
 namespace ZeroCp 
 {

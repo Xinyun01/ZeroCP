@@ -1,0 +1,4 @@
+/home/xinyun/Infrastructure/zero_copy_framework/test/posix/string_test/build/CMakeFiles/test_string.dir
+/home/xinyun/Infrastructure/zero_copy_framework/test/posix/string_test/build/CMakeFiles/test_overflow.dir
+/home/xinyun/Infrastructure/zero_copy_framework/test/posix/string_test/build/CMakeFiles/edit_cache.dir
+/home/xinyun/Infrastructure/zero_copy_framework/test/posix/string_test/build/CMakeFiles/rebuild_cache.dir

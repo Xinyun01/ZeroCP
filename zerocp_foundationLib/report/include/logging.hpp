@@ -104,8 +104,8 @@ private:
 /// @note 提示：使用 __FILE__, __LINE__, __FUNCTION__ 获取源码位置信息
 #define ZEROCP_LOG(level, msg_stream) \
     do { \
-        if (ZeroCP::Log::Log_Manager::getInstance().isLogLevelActive(level)) { \
-            ZeroCP::Log::LogStream(__FILE__, __LINE__, static_cast<const char*>(__FUNCTION__), level) << msg_stream; \
+        if (ZeroCP::Log::Log_Manager::getInstance().isLogLevelActive(ZeroCP::Log::LogLevel::level)) { \
+            ZeroCP::Log::LogStream(__FILE__, __LINE__, static_cast<const char*>(__FUNCTION__), ZeroCP::Log::LogLevel::level) << msg_stream; \
         } \
     } while(0)
 

@@ -64,6 +64,7 @@ CMAKE_BINARY_DIR = /home/xinyun/Infrastructure/zero_copy_framework/test/posix/ip
 
 # The main recursive "all" target.
 all: CMakeFiles/test_posix_sharedmemory.dir/all
+all: CMakeFiles/test_cross_process_shm.dir/all
 .PHONY : all
 
 # The main recursive "preinstall" target.
@@ -72,6 +73,7 @@ preinstall:
 
 # The main recursive "clean" target.
 clean: CMakeFiles/test_posix_sharedmemory.dir/clean
+clean: CMakeFiles/test_cross_process_shm.dir/clean
 .PHONY : clean
 
 #=============================================================================
@@ -81,7 +83,7 @@ clean: CMakeFiles/test_posix_sharedmemory.dir/clean
 CMakeFiles/test_posix_sharedmemory.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_posix_sharedmemory.dir/build.make CMakeFiles/test_posix_sharedmemory.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_posix_sharedmemory.dir/build.make CMakeFiles/test_posix_sharedmemory.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/xinyun/Infrastructure/zero_copy_framework/test/posix/ipc/build/CMakeFiles --progress-num=1,2,3,4,5,6,7,8 "Built target test_posix_sharedmemory"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/xinyun/Infrastructure/zero_copy_framework/test/posix/ipc/build/CMakeFiles --progress-num=9,10,11,12,13,14,15,16 "Built target test_posix_sharedmemory"
 .PHONY : CMakeFiles/test_posix_sharedmemory.dir/all
 
 # Build rule for subdir invocation for target.
@@ -99,6 +101,32 @@ test_posix_sharedmemory: CMakeFiles/test_posix_sharedmemory.dir/rule
 CMakeFiles/test_posix_sharedmemory.dir/clean:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_posix_sharedmemory.dir/build.make CMakeFiles/test_posix_sharedmemory.dir/clean
 .PHONY : CMakeFiles/test_posix_sharedmemory.dir/clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/test_cross_process_shm.dir
+
+# All Build rule for target.
+CMakeFiles/test_cross_process_shm.dir/all:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_cross_process_shm.dir/build.make CMakeFiles/test_cross_process_shm.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_cross_process_shm.dir/build.make CMakeFiles/test_cross_process_shm.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/xinyun/Infrastructure/zero_copy_framework/test/posix/ipc/build/CMakeFiles --progress-num=1,2,3,4,5,6,7,8 "Built target test_cross_process_shm"
+.PHONY : CMakeFiles/test_cross_process_shm.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/test_cross_process_shm.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/xinyun/Infrastructure/zero_copy_framework/test/posix/ipc/build/CMakeFiles 8
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/test_cross_process_shm.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/xinyun/Infrastructure/zero_copy_framework/test/posix/ipc/build/CMakeFiles 0
+.PHONY : CMakeFiles/test_cross_process_shm.dir/rule
+
+# Convenience name for target.
+test_cross_process_shm: CMakeFiles/test_cross_process_shm.dir/rule
+.PHONY : test_cross_process_shm
+
+# clean rule for target.
+CMakeFiles/test_cross_process_shm.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_cross_process_shm.dir/build.make CMakeFiles/test_cross_process_shm.dir/clean
+.PHONY : CMakeFiles/test_cross_process_shm.dir/clean
 
 #=============================================================================
 # Special targets to cleanup operation of make.

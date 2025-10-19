@@ -14,8 +14,6 @@ namespace ZeroCP
 namespace Details
 {
 
-using ZeroCP::Log::LogLevel;
-
 // 将 AccessMode 转换为 PROT_* 标志
 int convertToProtFlags(AccessMode accessMode) noexcept
 {
@@ -51,7 +49,7 @@ std::expected<PosixMemoryMap, PosixMemoryMapError> PosixMemoryMapBuilder::create
     
     if(!result.has_value())   
     {
-        ZEROCP_LOG(LogLevel::Error, "mmap failed: " << strerror(result.error().errnum));
+        ZEROCP_LOG(Error, "mmap failed: " << strerror(result.error().errnum));
         return std::unexpected(PosixMemoryMapError::ACCESS_FAILED);
     }
     
@@ -74,7 +72,7 @@ PosixMemoryMap::~PosixMemoryMap()
 
         if (!unmapResult.has_value())
         {
-            ZEROCP_LOG(LogLevel::Error,
+            ZEROCP_LOG(Error,
                     "Unable to unmap mapped memory [ address = " << m_baseAddress
                                                                  << ", size = " << m_length << " ]");
         }

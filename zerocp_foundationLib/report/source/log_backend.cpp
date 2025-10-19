@@ -25,6 +25,16 @@ LogBackend::~LogBackend() noexcept
 // 启动后台线程
 void LogBackend::start() noexcept
 {
+    // 如果已经在运行，不要重复启动
+    if (running_.load(std::memory_order_acquire)) {
+        return;
+    }
+    
+    // 如果线程对象已经存在且 joinable，先等待它结束
+    if (worker_thread.joinable()) {
+        worker_thread.join();
+    }
+    
     running_.store(true, std::memory_order_release);
     worker_thread = std::thread(&LogBackend::workerThread, this);
 }

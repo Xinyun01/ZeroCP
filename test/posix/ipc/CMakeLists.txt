@@ -20,6 +20,7 @@ include_directories(
     ${FOUNDATION_LIB_ROOT}/filesystem/include
     ${FOUNDATION_LIB_ROOT}/core/include
     ${FOUNDATION_LIB_ROOT}/design
+    ${FOUNDATION_LIB_ROOT}/vocabulary/include
 )
 
 # 收集所有需要的源文件
@@ -50,6 +51,24 @@ target_link_libraries(test_posix_sharedmemory
 
 # 设置输出目录
 set_target_properties(test_posix_sharedmemory PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
+)
+
+# 创建跨进程共享内存测试
+add_executable(test_cross_process_shm
+    test_cross_process_shm.cpp
+    ${POSIX_IPC_SOURCES}
+    ${REPORT_SOURCES}
+)
+
+# 链接必要的库
+target_link_libraries(test_cross_process_shm
+    pthread
+    rt
+)
+
+# 设置输出目录
+set_target_properties(test_cross_process_shm PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
 )
 
