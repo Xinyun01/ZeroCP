@@ -1,0 +1,57 @@
+# ==============================================================================
+# Git Ignore File for Multi-Process Unix Domain Socket Test
+# ==============================================================================
+
+# Build directory
+build/
+Build/
+BUILD/
+
+# Log files
+*.log
+
+# Socket files
+*.sock
+
+# CMake generated files
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile.cmake
+
+# Compiled executables
+uds_server
+uds_client1
+uds_client2
+uds_client3
+
+# Object files
+*.o
+*.obj
+
+# Shared libraries
+*.so
+*.so.*
+*.dylib
+*.dll
+
+# Static libraries
+*.a
+*.lib
+
+# Core dumps
+core
+core.*
+
+# Editor/IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Temporary files
+*.tmp
+*.temp
+

@@ -1,7 +1,0 @@
-/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/posix/ipc/build/CMakeFiles/zerocp_ipc.dir
-/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/posix/ipc/build/CMakeFiles/edit_cache.dir
-/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/posix/ipc/build/CMakeFiles/rebuild_cache.dir
-/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/posix/ipc/build/example/CMakeFiles/test_builder_size.dir
-/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/posix/ipc/build/example/CMakeFiles/shared_memory_example.dir
-/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/posix/ipc/build/example/CMakeFiles/edit_cache.dir
-/home/xinyun/Infrastructure/zero_copy_framework/zerocp_foundationLib/posix/ipc/build/example/CMakeFiles/rebuild_cache.dir

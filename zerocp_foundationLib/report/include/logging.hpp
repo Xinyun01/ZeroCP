@@ -96,7 +96,7 @@ private:
 
 // 包含 LogStream 完整定义以支持宏中的使用
 #include "logsteam.hpp"
-
+#include "log_backend.hpp"
 /// @brief 日志记录宏
 /// @param[in] level 用于日志消息的日志级别
 /// @param[in] msg_stream 日志消息流；可以使用 '<<' 操作符记录多个项目
