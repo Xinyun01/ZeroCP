@@ -39,13 +39,13 @@ namespace TestConfig
     constexpr uint64_t MAX_MESSAGE_SIZE = 256;
     
     /// @brief 每个客户端发送的消息数量
-    constexpr int MESSAGES_PER_CLIENT = 5;
+    constexpr int MESSAGES_PER_CLIENT = 50;
     
     /// @brief 客户端启动延迟（毫秒）- 确保服务端先启动
     constexpr int CLIENT_STARTUP_DELAY_MS = 500;
     
     /// @brief 消息发送间隔（毫秒）- 模拟真实场景
-    constexpr int MESSAGE_INTERVAL_MS = 100;
+    constexpr int MESSAGE_INTERVAL_MS = 10;
     
     // ============================================================================
     // 测试配置

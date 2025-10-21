@@ -2,6 +2,7 @@
 #include <unistd.h>                  // POSIX close、unlink等函数
 #include <cerrno>                    // errno定义
 #include <cstring>                   // strncpy等字符串操作
+#include <vector>                    // std::vector (用于动态缓冲区)
 #include <sys/socket.h>              // socket/bind相关
 #include <sys/un.h>                  // UNIX域socket相关
 #include "logging.hpp"               // 日志接口
@@ -53,7 +54,18 @@ std::expected<UnixDomainSocket, PosixIpcChannelError> UnixDomainSocketBuilder::c
     // 填写UNIX socket地址结构
     sockaddr_un addr{};
     addr.sun_family = AF_UNIX;
-    std::strncpy(addr.sun_path, m_name.c_str(), sizeof(addr.sun_path) - 1);
+    
+    // 检查路径长度，防止截断
+    if (m_name.size() >= sizeof(addr.sun_path))
+    {
+        closeFileDescriptor(m_name, sockfd, addr, m_channelSide);
+        return std::unexpected(PosixIpcChannelError::INVALID_ARGUMENTS);
+    }
+    
+    // 使用 memcpy 替代 strncpy，避免编译器警告
+    // 因为我们已经检查了长度，这是安全的
+    std::memcpy(addr.sun_path, m_name.c_str(), m_name.size());
+    addr.sun_path[m_name.size()] = '\0';  // 手动添加 null 终止符
 
     // 删除老的socket文件（忽略不存在错误）
     ZeroCp_PosixCall(unlink)(m_name.c_str())
@@ -63,8 +75,8 @@ std::expected<UnixDomainSocket, PosixIpcChannelError> UnixDomainSocketBuilder::c
     
     // 绑定socket到文件路径
     auto bindResult = ZeroCp_PosixCall(bind)(sockfd, reinterpret_cast<const struct sockaddr*>(&addr), sizeof(addr))
-        .failureReturnValue(UnixDomainSocket::ERROR_CODE)
-        .evaluate();
+                                            .failureReturnValue(UnixDomainSocket::ERROR_CODE)
+                                            .evaluate();
     
     // 检查bind是否成功
     if (!bindResult.has_value())
@@ -169,6 +181,15 @@ std::expected<void, PosixIpcChannelError> UnixDomainSocket::destroy() noexcept
     return {};
 }
 
+
+
+
+// ssize_t recvfrom(int sockfd, 
+//     void *buf,           // 接收缓冲区
+//     size_t len,          // 缓冲区大小
+//     int flags,           // 标志
+//     struct sockaddr *src_addr,  // ⭐ 发送方地址（输出参数）
+//     socklen_t *addrlen);        // ⭐ 地址长度（输入/输出参数）
 /**
  * @brief 从socket接收数据到msg，fromAddr填充来源地址
  */
@@ -176,12 +197,13 @@ std::expected<std::string, PosixIpcChannelError> UnixDomainSocket::receiveFrom(
     std::string& msg,
     sockaddr_un& fromAddr) const noexcept
 {
-    char buffer[m_maxMsgSize];                 // 用于接收数据的缓冲区
+    // 使用 vector 替代 VLA，避免编译警告
+    std::vector<char> buffer(m_maxMsgSize);
     socklen_t fromLen = sizeof(fromAddr);
     
     auto recvResult = ZeroCp_PosixCall(recvfrom)(m_socketFd,
-                                                  buffer,
-                                                  sizeof(buffer) - 1,
+                                                  buffer.data(),
+                                                  buffer.size() - 1,
                                                   0,
                                                   reinterpret_cast<sockaddr*>(&fromAddr),
                                                   &fromLen)
@@ -196,10 +218,19 @@ std::expected<std::string, PosixIpcChannelError> UnixDomainSocket::receiveFrom(
     
     ssize_t bytesReceived = recvResult.value().value;
     buffer[bytesReceived] = '\0';              // 保证字符串结尾
-    msg = std::string(buffer, bytesReceived);  // 拷贝到输出参数
+    msg = std::string(buffer.data(), bytesReceived);  // 拷贝到输出参数
     
     return msg;
 }
+
+
+
+// ssize_t sendto(int sockfd,                    // 套接字文件描述符
+//                const void *buf,               // 要发送的数据缓冲区
+//                size_t len,                    // 数据长度
+//                int flags,                     // 标志位（通常为 0）
+//                const struct sockaddr *dest_addr,  // ⭐ 目标地址
+//                socklen_t addrlen);            // 地址结构体长度
 
 /**
  * @brief 向toAddr发送msg数据
@@ -229,7 +260,7 @@ std::expected<void, PosixIpcChannelError> UnixDomainSocket::sendTo(
 /**
  * @brief errno转为枚举类型错误码
  */
-PosixIpcChannelError UnixDomainSocket::errnoToEnum(const UdsName_t& name, int32_t errnum) noexcept
+PosixIpcChannelError UnixDomainSocket::errnoToEnum([[maybe_unused]] const UdsName_t& name, int32_t errnum) noexcept
 {
     switch (errnum)
     {
@@ -272,7 +303,7 @@ PosixIpcChannelError UnixDomainSocket::errnoToEnum(const UdsName_t& name, int32_
 std::expected<void, PosixIpcChannelError> UnixDomainSocketBuilder::closeFileDescriptor(
     const UnixDomainSocket::UdsName_t& name,
     const int sockfd,
-    const sockaddr_un& sockAddr,
+    [[maybe_unused]] const sockaddr_un& sockAddr,
     PosixIpcChannelSide channelSide) noexcept
 {
     if (sockfd != UnixDomainSocket::INVALID_FD)

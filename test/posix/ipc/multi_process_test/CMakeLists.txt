@@ -36,8 +36,13 @@ set(REPORT_INCLUDE ${FOUNDATION_LIB_ROOT}/report/include)
 # 源文件
 # ============================================================================
 set(POSIX_IPC_SOURCE ${FOUNDATION_LIB_ROOT}/posix/ipc/source)
+set(REPORT_SOURCE ${FOUNDATION_LIB_ROOT}/report/source)
 set(UDS_SOURCE_FILES
     ${POSIX_IPC_SOURCE}/unix_domainsocket.cpp
+    ${REPORT_SOURCE}/logstream.cpp
+    ${REPORT_SOURCE}/logging.cpp
+    ${REPORT_SOURCE}/log_backend.cpp
+    ${REPORT_SOURCE}/lockfree_ringbuffer.cpp
 )
 
 # ============================================================================
