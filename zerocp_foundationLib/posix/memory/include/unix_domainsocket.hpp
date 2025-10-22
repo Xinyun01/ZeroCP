@@ -88,7 +88,7 @@ namespace Details
 class UnixDomainSocket
 {
 public:
-        static constexpr uint64_t MAX_MESSAGE_SIZE = 256;
+        static constexpr uint64_t MAX_MESSAGE_SIZE = 512;
         static constexpr uint64_t MAX_MESSAGE_NUM = 10;
         using UdsName_t = string<MAX_MESSAGE_SIZE-1>;
 

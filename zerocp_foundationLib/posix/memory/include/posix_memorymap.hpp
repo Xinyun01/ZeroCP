@@ -95,7 +95,7 @@ public:
     PosixMemoryMap& operator=(const PosixMemoryMap&) = delete;
     PosixMemoryMap(PosixMemoryMap&&) noexcept;
     PosixMemoryMap& operator=(PosixMemoryMap&&) noexcept;
-    ~PosixMemoryMap();
+    ~PosixMemoryMap() noexcept = default;
     
     void* getBaseAddress() const noexcept;
     uint64_t getLength() const noexcept;

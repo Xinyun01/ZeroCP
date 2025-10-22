@@ -41,7 +41,7 @@ public:
 
     PosixSharedMemoryObject(PosixSharedMemoryObject&&) noexcept = default;
     PosixSharedMemoryObject& operator=(PosixSharedMemoryObject&&) noexcept = default;
-    
+    ~PosixSharedMemoryObject() noexcept = default;
     // 获取共享内存的基地址
     const void* getBaseAddress() const noexcept;
     void* getBaseAddress() noexcept;

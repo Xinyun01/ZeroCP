@@ -37,7 +37,10 @@ std::expected<UnixDomainSocket, PosixIpcChannelError> UnixDomainSocketBuilder::c
         return std::unexpected(PosixIpcChannelError::CHANNEL_NAME_TOO_LONG);
     }
     
-    // 创建UNIX域DGRAM socket
+    // int socket(int domain,       // 地址族：AF_UNIX(本地通信), AF_INET(IPv4), AF_INET6(IPv6)
+    //            int type,         // 类型：SOCK_STREAM(流式), SOCK_DGRAM(数据报), SOCK_RAW(原始)
+    //            int protocol);    // 协议：通常为0(自动选择)
+    // 返回值：成功返回文件描述符(>=0)，失败返回-1并设置errno
     auto socketResult = ZeroCp_PosixCall(socket)(AF_UNIX, SOCK_DGRAM, 0)
         .failureReturnValue(UnixDomainSocket::ERROR_CODE)
         .evaluate();
@@ -67,13 +70,21 @@ std::expected<UnixDomainSocket, PosixIpcChannelError> UnixDomainSocketBuilder::c
     std::memcpy(addr.sun_path, m_name.c_str(), m_name.size());
     addr.sun_path[m_name.size()] = '\0';  // 手动添加 null 终止符
 
-    // 删除老的socket文件（忽略不存在错误）
+    // int unlink(const char *pathname);  // 要删除的文件路径
+    // 功能：删除文件系统中的文件名，当链接计数为0时删除文件
+    // 返回值：成功返回0，失败返回-1并设置errno
+    // 常见errno：ENOENT(文件不存在), EACCES(权限不足), EISDIR(是目录)
     ZeroCp_PosixCall(unlink)(m_name.c_str())
         .failureReturnValue(UnixDomainSocket::ERROR_CODE)
         .ignoreErrnos(ENOENT)
         .evaluate();
     
-    // 绑定socket到文件路径
+    // int bind(int sockfd,                    // socket文件描述符
+    //          const struct sockaddr *addr,  // 要绑定的地址结构（对于UNIX域socket是sockaddr_un）
+    //          socklen_t addrlen);           // 地址结构的长度
+    // 功能：将socket绑定到指定地址（对于UNIX域socket，在文件系统创建socket文件）
+    // 返回值：成功返回0，失败返回-1并设置errno
+    // 常见errno：EADDRINUSE(地址已被使用), EACCES(权限不足), ENOENT(目录不存在)
     auto bindResult = ZeroCp_PosixCall(bind)(sockfd, reinterpret_cast<const struct sockaddr*>(&addr), sizeof(addr))
                                             .failureReturnValue(UnixDomainSocket::ERROR_CODE)
                                             .evaluate();
