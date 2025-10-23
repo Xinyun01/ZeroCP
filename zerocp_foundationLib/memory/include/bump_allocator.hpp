@@ -1,10 +1,15 @@
 #ifndef BUMP_ALLOCATOR_HPP
 #define BUMP_ALLOCATOR_HPP
 
+#include <cstdint>
+#include <expected>
+
 namespace ZeroCP
 {
 namespace Memory
 {
+
+//改分配函数主要是为了分配池大小，需要池的地址和计算大小
 
 // BumpAllocator 的错误类型
 enum class BumpAllocatorError : uint8_t
@@ -32,7 +37,6 @@ public:
     BumpAllocator(BumpAllocator&&) noexcept = default;
     BumpAllocator& operator=(const BumpAllocator&) = delete;
     BumpAllocator& operator=(BumpAllocator&&) noexcept = default;
-
     /**
      * @brief 析构函数
      */
@@ -42,15 +46,15 @@ public:
      * @brief 分配指定字节数且满足alignment对齐的内存
      * @param size 分配字节数
      * @param alignment 对齐字节数（2的幂）
-     * @return expected<void*, BumpAllocatorError> 分配成功则为指针，失败返回错误码
+     * @return std::expected<void*, BumpAllocatorError> 分配成功则为指针，失败返回错误码
      */
-    expected<void*, BumpAllocatorError> allocate(const uint64_t size, const uint64_t alignment) noexcept;
+    std::expected<void*, BumpAllocatorError> allocate(const uint64_t size, const uint64_t alignment) noexcept;
 
 private:
     uint64_t const m_startAddress{0U}; // 内存块起始地址
     uint64_t m_length{0U};             // 内存总长度
     uint64_t m_currentAddress{0U};     // 当前分配指针
-
+    uint64_t m_alignment{8U};          // 对齐字节数（2的幂）
 };
 
 
