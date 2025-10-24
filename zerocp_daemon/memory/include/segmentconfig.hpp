@@ -8,7 +8,7 @@
 
 namespace ZeroCP
 {
-namespace Daemon
+namespace Memory
 {
 
 /// @brief 内存段条目 - 描述单个共享内存段的配置

@@ -16,13 +16,16 @@ class PoolAllocator
 {
 public:
     /// @brief 构造函数
-    /// @param segment_base 段基地址（用于偏移计算）
-    /// @param pool_offset 内存池起始偏移（相对于段基地址）
-    /// @param block_size 块大小（字节）
-    /// @param block_count 块数量
-    PoolAllocator(  void* segment_base, 
-                    uint64_t block_size, 
-                    uint64_t block_count ) noexcept;
+    /// @param segment_id 段ID
+    /// @param pool_id 内存池ID
+    /// @param pool_base_addr 内存池的基地址（已经是段内的偏移地址）
+    /// @param chunk_count chunk数量
+    /// @param chunk_size 每个chunk的payload大小（字节）
+    PoolAllocator(uint64_t segment_id,
+                  uint32_t pool_id,
+                  void* pool_base_addr, 
+                  uint32_t chunk_count, 
+                  uint32_t chunk_size) noexcept;
     
     /// @brief 析构函数
     ~PoolAllocator() = default;
@@ -33,23 +36,17 @@ public:
     PoolAllocator& operator=(const PoolAllocator&) = delete;
     PoolAllocator& operator=(PoolAllocator&&) = delete;
     
-    /// @brief 分配一个块（O(1)时间复杂度）
-    /// @return 分配的内存偏移（相对于段基地址），0表示分配失败
-    uint64_t memoryPoolSize() noexcept;
-    uint64_t getBlockOffset(uint64_t index) const noexcept;
+    uint64_t getPoolSize() const noexcept;
     
-    void allocateMemoryPool() const noexcept;
 private:
-    const void* m_segmentBase;           // 段基地址（本进程的映射地址）
-    uint64_t m_currentAddress{0U};         // 当前分配地址
-    uint64_t m_blockSize;          // 块大小（已对齐）
-    uint64_t m_blockCount;         // 块总数
-    /// @brief 获取块的偏移（O(1)索引计算）
-
-    
+    uint64_t m_segmentId;           // 所属段ID
+    uint32_t m_poolId;              // 内存池ID
+    void* m_poolBaseAddr;           // 内存池基地址
+    uint32_t m_chunkCount;          // chunk总数
+    uint32_t m_chunkSize;           // 每个chunk的payload大小
+    uint32_t m_availableChunks;     // 当前可用chunk数量
+    uint32_t m_nextFreeIndex;       // 下一个空闲chunk的索引
 };
-
 } // namespace Memory
 } // namespace ZeroCP
-
 #endif // ZEROCP_POOL_ALLOCATOR_HPP

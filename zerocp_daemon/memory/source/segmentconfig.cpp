@@ -47,6 +47,42 @@ const SegmentEntry* SegmentConfig::findSegment(uint64_t segment_id) const noexce
     return (it != segment_entries.end()) ? &(*it) : nullptr;
 }
 
+// 有 3 个 MemPool 对象，每个 MemPool 有：
+//   1️⃣ 1 个 MpmcLoFFLi 对象（管理区）
+//   2️⃣ N 个 Chunk（数据区）
+
+// 具体来说:
+
+// ┌─────────────────────────────────────────────────────────────┐
+// │  MemPool #0                                                 │
+// │  ├─ MpmcLoFFLi #0（1 个对象）                               │
+// │  └─ Chunk Array（10000 个 Chunk）                          │
+// │       ├─ Chunk 0                                            │
+// │       ├─ Chunk 1                                            │
+// │       └─ ... (共 10000 个)                                  │
+// └─────────────────────────────────────────────────────────────┘
+
+// ┌─────────────────────────────────────────────────────────────┐
+// │  MemPool #1                                                 │
+// │  ├─ MpmcLoFFLi #1（1 个对象）                               │
+// │  └─ Chunk Array（5000 个 Chunk）                           │
+// │       ├─ Chunk 0                                            │
+// │       ├─ Chunk 1                                            │
+// │       └─ ... (共 5000 个)                                   │
+// └─────────────────────────────────────────────────────────────┘
+
+// ┌─────────────────────────────────────────────────────────────┐
+// │  MemPool #2                                                 │
+// │  ├─ MpmcLoFFLi #2（1 个对象）                               │
+// │  └─ Chunk Array（1000 个 Chunk）                           │
+// │       ├─ Chunk 0                                            │
+// │       ├─ Chunk 1                                            │
+// │       └─ ... (共 1000 个)                                   │
+// └─────────────────────────────────────────────────────────────┘
+
+总结:
+  - MpmcLoFFLi 对象数量: 3 个
+  - Chunk 总数: 10000 + 5000 + 1000 = 16000 个
 SegmentConfig SegmentConfig::getDefaultConfig() noexcept
 {
     SegmentConfig config;
