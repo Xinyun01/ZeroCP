@@ -1,6 +1,7 @@
 #include "mpmclockfreelist.hpp"
 namespace ZeroCP
 {
+
 namespace Concurrent
 {
 
@@ -49,7 +50,7 @@ bool MPMC_LockFree_List::push(const uint32_t nodeIndex) noexcept
 
 uint64_t MPMC_LockFree_List::requiredIndexMemorySize(const uint32_t capacity) const noexcept
 {
-    retunr ZeroCP::Memory::align(sizeof(Index_t),8U)*(capacity+1);
+    return (capacity+1)*align(sizeof(ZeroCP::Concurrent::Index_t),8) ;
 }
 
 }

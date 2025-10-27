@@ -24,7 +24,7 @@ public:
     ~MPMC_LockFree_List() noexcept = default;
     // 初始化链表
     void Initialize();
-    uint64_t requiredIndexMemorySize(const uint32_t capacity) const noexcept;
+    static uint64_t requiredIndexMemorySize(const uint32_t capacity) const noexcept;
     // 获取节点大小
     uint64_t getNodeSize() const noexcept;
 

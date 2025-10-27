@@ -4,55 +4,13 @@
 
 namespace ZeroCP
 {
-namespace Daemon
+namespace Memory
 {
-
-// ==================== SegmentEntry 实现 ====================
-bool SegmentEntry::isValid() const noexcept
-{
-    // 检查是否为空
-    if (memory_pools.empty())
-    {
-        ZEROCP_LOG(Error, "Invalid SegmentEntry: memory_pools is empty");
-        return false;
-    }
-    
-    // 检查所有大小和数量是否为正数
-    for (const auto& [pool_size, pool_count] : memory_pools)
-    {
-        if (pool_size == 0)
-        {
-            ZEROCP_LOG(Error, "Invalid SegmentEntry: pool_size is zero");
-            return false;
-        }
-        if (pool_count == 0)
-        {
-            ZEROCP_LOG(Error, "Invalid SegmentEntry: pool_count is zero for size=" << pool_size);
-            return false;
-        }
-    }
-    
-    return true;
-}
-
-// ==================== SegmentConfig 实现 ====================
-
-const SegmentEntry* SegmentConfig::findSegment(uint64_t segment_id) const noexcept
-{
-    auto it = std::find_if(segment_entries.begin(), segment_entries.end(),
-                          [segment_id](const SegmentEntry& entry) {
-                              return entry.segment_id == segment_id;
-                          });
-    
-    return (it != segment_entries.end()) ? &(*it) : nullptr;
-}
 
 // 有 3 个 MemPool 对象，每个 MemPool 有：
 //   1️⃣ 1 个 MpmcLoFFLi 对象（管理区）
 //   2️⃣ N 个 Chunk（数据区）
-
 // 具体来说:
-
 // ┌─────────────────────────────────────────────────────────────┐
 // │  MemPool #0                                                 │
 // │  ├─ MpmcLoFFLi #0（1 个对象）                               │
@@ -61,7 +19,6 @@ const SegmentEntry* SegmentConfig::findSegment(uint64_t segment_id) const noexce
 // │       ├─ Chunk 1                                            │
 // │       └─ ... (共 10000 个)                                  │
 // └─────────────────────────────────────────────────────────────┘
-
 // ┌─────────────────────────────────────────────────────────────┐
 // │  MemPool #1                                                 │
 // │  ├─ MpmcLoFFLi #1（1 个对象）                               │
@@ -70,7 +27,6 @@ const SegmentEntry* SegmentConfig::findSegment(uint64_t segment_id) const noexce
 // │       ├─ Chunk 1                                            │
 // │       └─ ... (共 5000 个)                                   │
 // └─────────────────────────────────────────────────────────────┘
-
 // ┌─────────────────────────────────────────────────────────────┐
 // │  MemPool #2                                                 │
 // │  ├─ MpmcLoFFLi #2（1 个对象）                               │
@@ -80,29 +36,27 @@ const SegmentEntry* SegmentConfig::findSegment(uint64_t segment_id) const noexce
 // │       └─ ... (共 1000 个)                                   │
 // └─────────────────────────────────────────────────────────────┘
 
-总结:
-  - MpmcLoFFLi 对象数量: 3 个
-  - Chunk 总数: 10000 + 5000 + 1000 = 16000 个
-SegmentConfig SegmentConfig::getDefaultConfig() noexcept
+void MemPoolConfig::addMemPoolEntry(uint64_t poolSize, uint32_t poolCount) noexcept
 {
-    SegmentConfig config;
-    
-    // 创建默认段配置
-    SegmentEntry defaultEntry;
-    defaultEntry.segment_id = 1;
-    defaultEntry.m_writerGroup = "publisher";
-    defaultEntry.m_readerGroup = "subscriber";
-    
-    // 默认内存池配置
-    defaultEntry.memory_pools = {
-        {128,   10000},  // 128 字节块，10000 个
-        {1024,  5000},   // 1KB 块，5000 个
-        {4096,  1000}    // 4KB 块，1000 个
-    };
-    
-    config.segment_entries.push_back(defaultEntry);
-        
-    return config;
+    m_memPoolEntries.push_back(MemPoolEntry(poolSize, poolCount));
+}
+
+MemPoolConfig& MemPoolConfig::setdefaultPool() noexcept
+{
+    m_memPoolEntries.push_back(MemPoolEntry(128, 10000));
+    m_memPoolEntries.push_back(MemPoolEntry(1024, 5000));
+    m_memPoolEntries.push_back(MemPoolEntry(1024, 1000));
+    m_memPoolEntries.push_back(MemPoolEntry(1024*4, 500));
+    m_memPoolEntries.push_back(MemPoolEntry(1024*8, 100));
+    return *this;
+}
+
+void MemPoolConfig::getMemPoolConfigInfo() noexcept
+{
+    for(const auto& entry :m_memPoolEntries)
+    {
+        ZEROCP_LOG(Info) << "Pool Size: " << entry.m_poolSize << ", Pool Count: " << entry.m_poolCount;
+    }
 }
 
 } // namespace Daemon
