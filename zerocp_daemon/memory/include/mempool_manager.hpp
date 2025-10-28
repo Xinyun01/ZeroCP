@@ -42,17 +42,6 @@ public:
     
     ~MemPoolManager() noexcept = default;
 
-    // ==================== 生命周期管理 ====================
-    
-    /// @brief 初始化所有内存池（布局共享内存）
-    /// @param baseAddress 共享内存基地址
-    /// @param totalSize 共享内存总大小
-    /// @return 成功返回 true
-    bool initialize(void* baseAddress, uint64_t totalSize) noexcept;
-    
-    /// @brief 检查是否已初始化
-    /// @return true 表示已初始化
-    bool isInitialized() const noexcept;
 
     // ==================== 内存大小计算 ====================
     
@@ -79,26 +68,27 @@ public:
     bool releaseChunk(ChunkManager* chunkManager) noexcept;
     /// @brief 打印所有内存池状态
     void printAllPoolStats() const noexcept;
+    
+    // ==================== 访问器接口 ====================
+    
+    /// @brief 获取内存池列表的引用
+    /// @return 内存池列表的引用
+    vector<MemPool, 16>& getMemPools() noexcept;
+    
+    /// @brief 获取 ChunkManager 内存池的引用
+    /// @return ChunkManager 内存池的引用
+    vector<MemPool, 1>& getChunkManagerPool() noexcept;
 
 private:
-    /// @brief 私有构造函数
-    explicit MemPoolManager(const MemPoolConfig& config) noexcept;
-     
-    /// @brief 布局共享内存：创建所有内存池
-    /// @param baseAddress 共享内存基地址
-    /// @param totalSize 共享内存总大小
-    /// @return 成功返回 true
-    bool layoutMemory(void* baseAddress, uint64_t totalSize) noexcept;
+
+    
 
     // ==================== 成员变量 ====================
     
     const MemPoolConfig& m_config;              ///< 配置引用
     vector<MemPool, 16> m_mempools;             ///< 数据 chunk 池（最多16个）
     vector<MemPool, 1> m_chunkManagerPool;      ///< ChunkManager 对象池
-    
-    bool m_initialized{false};                   ///< 初始化标志
-    void* m_baseAddress{nullptr};                ///< 共享内存基地址
-    
+       
     static MemPoolManager* s_instance;           ///< 全局单例实例
     static std::mutex s_mutex;                   ///< 保护单例创建的互斥锁
 };

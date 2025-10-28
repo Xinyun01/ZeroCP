@@ -53,10 +53,9 @@ public:
 private:
     uint64_t const m_startAddress{0U}; // 内存块起始地址
     uint64_t m_length{0U};             // 内存总长度
-    uint64_t m_currentAddress{0U};     // 当前分配指针
+    uint64_t m_currentAddressLength{0U};//当前分配器已经分配的长度
     uint64_t m_alignment{8U};          // 对齐字节数（2的幂）
 };
-
 
 }
 }

@@ -249,67 +249,14 @@ void MemPoolManager::printAllPoolStats() const noexcept
     std::cout << "===============================================================" << std::endl;
 }
 
-// ==================== 私有辅助方法 ====================
-
-bool MemPoolManager::layoutMemory(void* baseAddress, uint64_t totalSize) noexcept
+vector<MemPool, 16>& MemPoolManager::getMemPools() noexcept
 {
-    uint8_t* currentAddr = reinterpret_cast<uint8_t*>(baseAddress);
-    uint64_t totalChunks = 0;
-    
-    // 1. 为每个数据内存池分配空间
-    for (size_t i = 0; i < m_config.m_memPoolEntries.size(); ++i)
-    {
-        const auto& entry = m_config.m_memPoolEntries[i];
-        
-        // 索引数组内存
-        auto indexMemSize = align(
-            Concurrent::MPMC_LockFree_List::requiredIndexMemorySize(entry.m_poolCount), 8U
-        );
-        void* indexMem = currentAddr;
-        currentAddr += indexMemSize;
-        
-        // 数据内存
-        uint64_t dataMemSize = entry.m_poolSize * entry.m_poolCount;
-        void* dataMem = currentAddr;
-        currentAddr += dataMemSize;
-        
-        // 创建内存池
-        m_mempools.emplace_back(dataMem, entry.m_poolSize, entry.m_poolCount, indexMem);
-        
-        totalChunks += entry.m_poolCount;
-    }
-    
-    // 2. 为 ChunkManager 对象池分配空间
-    auto chunkMgrIndexSize = align(
-        Concurrent::MPMC_LockFree_List::requiredIndexMemorySize(totalChunks), 8U
-    );
-    void* chunkMgrIndexMem = currentAddr;
-    currentAddr += chunkMgrIndexSize;
-    
-    uint64_t chunkMgrDataSize = totalChunks * align(sizeof(ChunkManager), 8U);
-    void* chunkMgrDataMem = currentAddr;
-    currentAddr += chunkMgrDataSize;
-    
-    m_chunkManagerPool.emplace_back(
-        chunkMgrDataMem, 
-        align(sizeof(ChunkManager), 8U),
-        totalChunks,
-        chunkMgrIndexMem
-    );
-    
-    // 验证内存布局
-    uint64_t usedSize = currentAddr - reinterpret_cast<uint8_t*>(baseAddress);
-    if (usedSize > totalSize)
-    {
-        std::cerr << "[MemPoolManager] Memory layout overflow: " 
-                  << usedSize << " > " << totalSize << std::endl;
-        return false;
-    }
-    
-    std::cout << "[MemPoolManager] Memory layout complete: " 
-              << usedSize << "/" << totalSize << " bytes used" << std::endl;
-    
-    return true;
+    return m_mempools;
+}
+
+vector<MemPool, 1>& MemPoolManager::getChunkManagerPool() noexcept
+{
+    return m_chunkManagerPool;
 }
 
 } // namespace Memory

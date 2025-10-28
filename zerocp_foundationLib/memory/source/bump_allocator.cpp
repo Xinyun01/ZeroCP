@@ -13,7 +13,7 @@ BumpAllocator::BumpAllocator(void* const startAddress, const uint64_t length) no
 }
 
 BumpAllocator::~BumpAllocator() = default;
-
+//正确返回
 std::expected<void*, BumpAllocatorError> BumpAllocator::allocate(const uint64_t size, const uint64_t alignment) noexcept
 {
     // 检查请求的分配大小是否为0
@@ -24,7 +24,7 @@ std::expected<void*, BumpAllocatorError> BumpAllocator::allocate(const uint64_t 
     }
 
     // 计算当前实际分配地址
-    const uint64_t currentAddress = m_currentAddress + m_startAddress;
+    const uint64_t currentAddress = m_currentAddressLength + m_startAddress;
 
     // 对齐当前地址到 alignment 的倍数
     uint64_t alignedPosition = Memory::align(currentAddress, alignment);
@@ -42,7 +42,7 @@ std::expected<void*, BumpAllocatorError> BumpAllocator::allocate(const uint64_t 
     void* alignedAddress = reinterpret_cast<void*>(alignedPosition + m_startAddress);
 
     // 更新 bump 指针为下一个可用地址
-    m_currentAddress = nextPosition;
+    m_currentAddressLength = nextPosition;
 
     // 返回成功与分配的内存指针
     return alignedAddress;

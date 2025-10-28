@@ -7,7 +7,7 @@
 #include <memory>
 #include <expected>
 #include <cstdint>
-
+#include "mempool_allocator.hpp"
 namespace ZeroCP
 {
 namespace Memory
@@ -42,30 +42,23 @@ public:
     
     /// @brief 析构函数
     ~MemPoolAllocator() noexcept = default;
-
-    /// @brief 初始化共享内存：计算大小并创建
-    /// @param shmName 共享内存名称
-    /// @return 成功返回基地址，失败返回错误
-    std::expected<void*, Details::PosixSharedMemoryObjectError> 
-    initializeSharedMemory(const std::string& shmName) noexcept;
     
-    /// @brief 初始化内存池：按照配置布局并初始化所有内存池
-    /// @details 调用 MemPoolManager::initialize() 在共享内存中创建所有内存池
+    /// @brief 创建共享内存并返回映射的基地址
+    /// @param name 共享内存名称
+    /// @param accessMode 访问模式
+    /// @param openMode 打开模式
+    /// @param permissions 权限设置
+    /// @return 成功返回基地址，失败返回 nullptr
+    void* createSharedMemory(const Name_t& name,
+                            const AccessMode accessMode,
+                            const OpenMode openMode,
+                            const Perms permissions) noexcept;
+    
+    /// @brief 布局内存
+    /// @param baseAddress 共享内存基地址
+    /// @param totalSize 共享内存总大小
     /// @return 成功返回 true，失败返回 false
-    /// @note 必须在 initializeSharedMemory() 成功后调用
-    bool initializeMemPools() noexcept;
-    
-    /// @brief 获取共享内存基地址
-    /// @return 共享内存基地址，未初始化则返回 nullptr
-    void* getBaseAddress() const noexcept;
-    
-    /// @brief 获取共享内存总大小
-    /// @return 共享内存总大小（字节）
-    uint64_t getMemorySize() const noexcept;
-    
-    /// @brief 检查是否已初始化
-    /// @return true 表示共享内存和内存池都已初始化
-    bool isInitialized() const noexcept;
+    bool layoutMemory(void* baseAddress, uint64_t totalSize) noexcept;
     
 private:
     /// @brief 内存池配置引用
