@@ -3,6 +3,7 @@
 #include "mempool.hpp"
 #include "mempool_config.hpp"
 #include "chunk_manager.hpp"
+#include "chunk_header.hpp"
 #include "bump_allocator.hpp"
 #include "mpmclockfreelist.hpp"
 #include "zerocp_foundationLib/report/include/logging.hpp"
@@ -48,7 +49,7 @@ void* MemPoolAllocator::createSharedMemory(const Name_t& name,
     return m_baseAddress;
 }
 //这里需要传入共享内存的映射地址和需要的总大小
-bool MemPoolAllocator::layoutMemory(void* baseAddress,uint64_t memorySize) noexcept
+bool MemPoolAllocator::ManagementMemoryLayout(void* baseAddress,uint64_t memorySize) noexcept
 {
     if (baseAddress == nullptr || memorySize == 0)
     {
@@ -172,6 +173,88 @@ bool MemPoolAllocator::layoutMemory(void* baseAddress,uint64_t memorySize) noexc
     return true;
 }
 
+
+bool MemPoolAllocator::ChunkMemoryLayout(void* baseAddress,uint64_t memorySize) noexcept
+{
+    if (baseAddress == nullptr || memorySize == 0)
+    {
+        ZEROCP_LOG(Error, "Invalid parameters: baseAddress={}, memorySize={}", 
+                   static_cast<void*>(baseAddress), memorySize);
+        return false;
+    }
+
+    // 使用 BumpAllocator 从 chunk 内存中分配
+    BumpAllocator allocator(baseAddress, memorySize);
+    
+    // 获取 MemPoolManager 实例
+    auto& manager = MemPoolManager::getInstance(m_config);
+    // 获取内存池列表和配置
+    auto& mempools = manager.getMemPools();
+    const auto& entries = m_config.m_memPoolEntries;
+    
+    // 为每个内存池分配所有 chunk 块的内存
+    // 每个 chunk 块由 ChunkHeader + 用户数据组成
+    for (size_t poolIndex = 0; poolIndex < entries.size(); ++poolIndex)
+    {
+        const auto& entry = entries[poolIndex];
+        
+        // 计算单个 chunk 的总大小：ChunkHeader + 用户数据
+        uint64_t chunkTotalSize = sizeof(ChunkHeader) + entry.m_poolSize;
+        // 对齐到 8 字节
+        chunkTotalSize = align(chunkTotalSize, 8U);
+        
+        // 为这个池的所有 chunks 分配连续内存
+        // 总共需要：chunkTotalSize * entry.m_poolCount
+        uint64_t totalPoolMemorySize = chunkTotalSize * entry.m_poolCount;
+        
+        auto chunkMemoryResult = allocator.allocate(totalPoolMemorySize, 8U);
+        if (!chunkMemoryResult.has_value())
+        {
+            ZEROCP_LOG(Error, "Failed to allocate chunk memory for MemPool[{}], size={}", poolIndex, totalPoolMemorySize);
+            return false;
+        }
+        void* chunkMemory = chunkMemoryResult.value();
+        
+        // 初始化每个 chunk 的 ChunkHeader
+        // chunks 在内存中连续排列：ChunkHeader+Data, ChunkHeader+Data, ...
+        for (uint32_t chunkIndex = 0; chunkIndex < entry.m_poolCount; ++chunkIndex)
+        {
+            // 计算当前 chunk 的起始地址
+            void* currentChunkAddress = static_cast<char*>(chunkMemory) + chunkIndex * chunkTotalSize;
+            
+            // 使用 placement new 构造 ChunkHeader
+            ChunkHeader* header = new (currentChunkAddress) ChunkHeader();
+            
+            // 初始化 ChunkHeader 的字段
+            header->m_chunkSize = chunkTotalSize;
+            header->m_userPayloadSize = entry.m_poolSize;
+            header->m_userPayloadOffset = sizeof(ChunkHeader);
+            header->m_userPayloadAlignment = 8U;  // 对齐要求
+            header->m_chunkHeaderVersion = CHUNK_HEADER_VERSION;
+        }
+        
+        // 更新对应 MemPool 的 rawMemory 指针
+        // 注意：mempools 应该在 ManagementMemoryLayout 中已经初始化
+        if (poolIndex >= mempools.size())
+        {
+            ZEROCP_LOG(Error, "MemPool[{}] not found in mempools vector, size={}", poolIndex, mempools.size());
+            return false;
+        }
+        
+        // 获取对应的 MemPool（在共享内存中）
+        MemPool& pool = mempools[poolIndex];
+        
+        // 由于 MemPool 已经在 ManagementMemoryLayout 中初始化，但 rawMemory 传的是 nullptr
+        // 现在需要更新 rawMemory。但由于 RelativePointer 的限制，我们需要重新初始化 MemPool
+        // 或者提供一个方法来更新 rawMemory
+        // 这里暂时记录日志，实际更新需要在 MemPool 中添加方法或重新设计
+        
+        ZEROCP_LOG(Info, "Allocated chunk memory for MemPool[{}]: base={}, totalSize={}, chunkCount={}, chunkSize={}", 
+                   poolIndex, chunkMemory, totalPoolMemorySize, entry.m_poolCount, chunkTotalSize);
+    }
+    
+    return true;
+}
 
 } // namespace Memory
 } // namespace ZeroCP

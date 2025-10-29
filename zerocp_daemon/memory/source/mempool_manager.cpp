@@ -112,10 +112,10 @@ bool MemPoolManager::initialize() noexcept
     {
         ZEROCP_LOG(Error, "Failed to create shared memory for chunk");
         return false;
-    }
-    auto resultManager = MemPoolManager::layoutManagementMemory(managementAddress, ManagementMemorySize);
-    auto resultChunk = MemPoolManager::layoutChunkMemory(chunkMemoryAddress, ChunkMemorySize);
-    if (!resultManager || !resultChunk)
+    }   
+    auto resultPool = MemPoolAllocator::layoutMemory(managementAddress, ManagementMemorySize);
+    auto resultChunk = MemPoolAllocator::layoutMemory(chunkMemoryAddress, ChunkMemorySize);
+    if (!managementAddress || !chunkMemoryAddress)
     {
         ZEROCP_LOG(Error, "Failed to layout memory");
         return false;

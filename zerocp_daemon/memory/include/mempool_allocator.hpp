@@ -59,7 +59,8 @@ public:
     /// @param memorySize 共享内存总大小
     /// @param targetPools 目标内存池向量（mempools 或 chunkManagerPool）
     /// @return 成功返回 true，失败返回 false
-    bool layoutMemory(void* baseAddress, uint64_t memorySize, vector<MemPool, 16>& targetPools) noexcept;
+    bool ManagementMemoryLayout(void* baseAddress, uint64_t memorySize) noexcept;
+    bool ChunkMemoryLayout(void* baseAddress, uint64_t memorySize) noexcept;
     
 private:
     /// @brief 内存池配置引用
