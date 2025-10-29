@@ -42,6 +42,8 @@ public:
     
     ~MemPoolManager() noexcept = default;
 
+    /// @brief 初始化内存池管理器
+    bool initialize() noexcept;
 
     // ==================== 内存大小计算 ====================
     
@@ -78,7 +80,7 @@ public:
     /// @brief 获取 ChunkManager 内存池的引用
     /// @return ChunkManager 内存池的引用
     vector<MemPool, 1>& getChunkManagerPool() noexcept;
-
+    
 private:
 
     

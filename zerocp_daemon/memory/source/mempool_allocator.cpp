@@ -6,6 +6,9 @@
 #include "bump_allocator.hpp"
 #include "mpmclockfreelist.hpp"
 #include "zerocp_foundationLib/report/include/logging.hpp"
+#include "zerocp_foundationLib/memory/include/memory.hpp"
+
+using ZeroCP::Memory::align;
 
 namespace ZeroCP
 {
@@ -20,16 +23,14 @@ MemPoolAllocator::MemPoolAllocator(const MemPoolConfig& config) noexcept
 void* MemPoolAllocator::createSharedMemory(const Name_t& name,
                                            const AccessMode accessMode,
                                            const OpenMode openMode,
-                                           const Perms permissions) noexcept
+                                           const Perms permissions
+                                           const uint64_t sharedMemorySize) noexcept
 {
-    // 获取 MemPoolManager 实例以计算总内存大小
-    auto& manager = MemPoolManager::getInstance(m_config);
-    m_totalMemorySize = manager.getTotalMemorySize();
-    
-    // 创建 PosixShmProvider
+    // 获取 MemPoolManager 实例以计算总内存大小 
+
     m_shmProvider = std::make_unique<PosixShmProvider>(
         name,
-        m_totalMemorySize,
+        sharedMemorySize,
         accessMode,
         openMode,
         permissions
@@ -47,111 +48,130 @@ void* MemPoolAllocator::createSharedMemory(const Name_t& name,
     return m_baseAddress;
 }
 //这里需要传入共享内存的映射地址和需要的总大小
-bool MemPoolAllocator::layoutMemory(void* baseAddress, uint64_t totalSize) noexcept
+bool MemPoolAllocator::layoutMemory(void* baseAddress,uint64_t memorySize) noexcept
 {
-    if (baseAddress == nullptr || totalSize == 0)
+    if (baseAddress == nullptr || memorySize == 0)
     {
-        ZEROCP_LOG(Error, "Invalid parameters: baseAddress={}, totalSize={}", 
-                   static_cast<void*>(baseAddress), totalSize);
+        ZEROCP_LOG(Error, "Invalid parameters: baseAddress={}, memorySize={}", 
+                   static_cast<void*>(baseAddress), memorySize);
         return false;
     }
     
     // 获取 MemPoolManager 实例
     auto& manager = MemPoolManager::getInstance(m_config);
-    
     // 获取内存池列表和配置
     auto& chunkManagerPool = manager.getChunkManagerPool();
     auto& mempools = manager.getMemPools();
     const auto& entries = m_config.m_memPoolEntries;
-    
-    // 创建 BumpAllocator 用于内存分配
-    BumpAllocator allocator(baseAddress, totalSize);
-    
-    // ============ 第一步：初始化数据 chunk 内存池 ============
-    ZEROCP_LOG(Info, "Initializing {} data chunk memory pools", entries.size());
-    
-    for (uint64_t i = 0; i < entries.size() && i < mempools.size(); ++i)
+
+    // 使用 BumpAllocator 从管理内存中分配
+    BumpAllocator allocator(baseAddress, memorySize);
+ 
+    // 为每个配置的内存池分配并初始化 MemPool 对象
+    auto totalchunknums = 0;
+    for (size_t i = 0; i < entries.size(); ++i)
     {
         const auto& entry = entries[i];
-        auto& pool = mempools[i];
-                
-        // 1. 为空闲索引链表分配内存
-        uint64_t freeListSize = Concurrent::MPMC_LockFree_List::requiredIndexMemorySize(entry.m_poolCount);
-        void* freeListMemory = allocator.allocate(freeListSize, 8);
-        if (freeListMemory == nullptr)
+        totalchunknums += entry.m_poolCount;
+        // 在共享内存中为 MemPool 对象分配内存
+        auto poolMemoryResult = allocator.allocate(sizeof(MemPool), 8U);
+        if (!poolMemoryResult.has_value())
         {
-            ZEROCP_LOG(Error, "Failed to allocate free list memory for pool {}: size={}", 
-                       i, freeListSize);
+            ZEROCP_LOG(Error, "Failed to allocate memory for MemPool[{}]", i);
             return false;
         }
-        // 2. 为 chunk 数据分配内存 = chunkheadsize+usrloadSize
-        uint64_t chunkDataSize = sizeof(ChunkHead) * entry.m_poolCount + entry.m_usrloadSize * entry.m_poolCount;
-        void* chunkMemory = allocator.allocate(chunkDataSize, 8);
-        if (chunkMemory == nullptr)
-        {
-            ZEROCP_LOG(Error, "Failed to allocate chunk memory for pool {}: size={}", 
-                       i, chunkDataSize);
-            return false;
-        } 
-        // 3. 初始化内存池 传入当前进程
-        if (!pool.initialize(baseAddress,chunkMemory, entry.m_poolSize+ sizeof(ChunkHeader), entry.m_poolCount, freeListMemory, i))
-        {
-            ZEROCP_LOG(Error, "Failed to initialize memory pool {}", i);
-            return false;
-        }
+        void* poolMemory = poolMemoryResult.value();
         
+        // 使用 placement new 在共享内存中构造 MemPool 对象
+        MemPool* pool = new (poolMemory) MemPool();
+        
+        // 为每个池计算需要的 freeList 内存大小
+        // 注意：根据 mempool_manager.cpp 的用法，使用实例方法调用
+        Concurrent::MPMC_LockFree_List tempList(nullptr, 0);
+        uint64_t freeListSize = tempList.requiredIndexMemorySize(entry.m_poolCount);
+        freeListSize = align(freeListSize, 8U);
+        
+        // 分配 freeList 内存
+        auto freeListResult = allocator.allocate(freeListSize, 8U);
+        if (!freeListResult.has_value())
+        {
+            ZEROCP_LOG(Error, "Failed to allocate freeList memory for MemPool[{}]", i);
+            return false;
+        }
+        void* freeListMemory = freeListResult.value();
+        
+        // 初始化 MemPool
+        // 注意：rawMemory 需要从 chunk 内存区域分配，这里暂时传入 nullptr
+        // 实际应该在 layoutChunkMemory 中设置
+        if (!pool->initialize(baseAddress, nullptr, entry.m_poolSize, entry.m_poolCount, freeListMemory, static_cast<uint64_t>(i)))
+        {
+            ZEROCP_LOG(Error, "Failed to initialize MemPool[{}]", i);
+            return false;
+        }
+        //push_back 会调用拷贝构造函数，emplace_back 会调用移动构造函数
+        mempools.emplace_back(*pool);
     }
+
+    // 分配 chunkManager 管理对象内存池
+    // chunkManagerPool 是一个 MemPool，用于管理所有的 ChunkManager 对象
+    // 需要分配：1. ChunkManager 对象内存 2. 静态链表（用于 MemPool 的空闲索引管理）
     
-    // ============ 第二步：初始化 ChunkManager 对象池 ============
-    ZEROCP_LOG(Info, "Initializing ChunkManager object pool");
-    
-    // 计算所有 chunk 的总数（即需要的 ChunkManager 对象数量）
-    uint32_t totalChunkCount = 0;
-    for (const auto& entry : entries)
+    // 1. 为 chunkManager 对象分配内存（这些对象将被 MemPool 管理）
+    auto chunkManagerMemoryResult = allocator.allocate(totalchunknums * sizeof(ChunkManager), 8U);
+    if (!chunkManagerMemoryResult.has_value())
     {
-        totalChunkCount += entry.m_poolCount;
+        ZEROCP_LOG(Error, "Failed to allocate chunkManager memory");
+        return false;
     }
+    void* chunkManagerMemory = chunkManagerMemoryResult.value();
     
-    if (!chunkManagerPool.empty())
+    // 2. 为 MemPool 的静态链表分配内存（用于管理空闲索引）
+    Concurrent::MPMC_LockFree_List tempListForChunkManager(nullptr, 0);
+    uint64_t chunkManagerFreeListSize = tempListForChunkManager.requiredIndexMemorySize(static_cast<uint32_t>(totalchunknums));
+    chunkManagerFreeListSize = align(chunkManagerFreeListSize, 8U);
+    
+    auto chunkManagerFreeListResult = allocator.allocate(chunkManagerFreeListSize, 8U);
+    if (!chunkManagerFreeListResult.has_value())
     {
-        auto& mgmtPool = chunkManagerPool[0];
-        
-        // 1. 为 ChunkManager 对象分配内存
-        uint64_t chunkManagerSize = sizeof(ChunkManager) * totalChunkCount;
-        void* chunkManagerMemory = allocator.allocate(chunkManagerSize, 8);
-        if (chunkManagerMemory == nullptr)
-        {
-            ZEROCP_LOG(Error, "Failed to allocate ChunkManager memory: size={}", chunkManagerSize);
-            return false;
-        }
-        
-        // 2. 为 ChunkManager 池的空闲索引链表分配内存
-        uint64_t mgmtFreeListSize = Concurrent::MPMC_LockFree_List::requiredIndexMemorySize(totalChunkCount);
-        void* mgmtFreeListMemory = allocator.allocate(mgmtFreeListSize, 8);
-        if (mgmtFreeListMemory == nullptr)
-        {
-            ZEROCP_LOG(Error, "Failed to allocate ChunkManager free list memory: size={}", mgmtFreeListSize);
-            return false;
-        }
-        
-        // 3. 初始化 ChunkManager 对象池
-        if (!mgmtPool.initialize(baseAddress,chunkManagerMemory, sizeof(ChunkManager), totalChunkCount, mgmtFreeListMemory))
-        {
-            ZEROCP_LOG(Error, "Failed to initialize ChunkManager pool");
-            return false;
-        }
-        
-        ZEROCP_LOG(Debug, "ChunkManager pool initialized: objectSize={}, objectCount={}, dataMemory={}, freeListMemory={}", 
-                   sizeof(ChunkManager), totalChunkCount, chunkManagerMemory, mgmtFreeListMemory);
+        ZEROCP_LOG(Error, "Failed to allocate freeList memory for chunkManager MemPool");
+        return false;
+    }
+    void* chunkManagerFreeListMemory = chunkManagerFreeListResult.value();
+    
+    // 3. 在共享内存中为 MemPool 对象分配内存
+    auto chunkManagerPoolMemPoolResult = allocator.allocate(sizeof(MemPool), 8U);
+    if (!chunkManagerPoolMemPoolResult.has_value())
+    {
+        ZEROCP_LOG(Error, "Failed to allocate memory for chunkManager MemPool");
+        return false;
+    }
+    void* chunkManagerPoolMemPoolMemory = chunkManagerPoolMemPoolResult.value();
+    
+    // 4. 使用 placement new 在共享内存中构造 MemPool 对象
+    MemPool* chunkManagerMemPool = new (chunkManagerPoolMemPoolMemory) MemPool();
+    
+    // 5. 初始化 chunkManager 的 MemPool
+    // 参数说明：
+    // - baseAddress: 共享内存基地址
+    // - chunkManagerMemory: ChunkManager 对象数组的内存（rawMemory）
+    // - sizeof(ChunkManager): 每个 chunk 的大小（即每个 ChunkManager 对象的大小）
+    // - totalchunknums: chunk 的数量（即 ChunkManager 对象的数量）
+    // - chunkManagerFreeListMemory: 静态链表的内存（用于管理空闲索引）
+    // - 0: pool_id
+    if (!chunkManagerMemPool->initialize(baseAddress, chunkManagerMemory, sizeof(ChunkManager), static_cast<uint32_t>(totalchunknums), chunkManagerFreeListMemory, 0))
+    {
+        ZEROCP_LOG(Error, "Failed to initialize chunkManager MemPool");
+        return false;
     }
     
-    // ============ 第三步：验证内存使用 ============
-    uint64_t usedMemory = allocator.getUsedSize();
-    ZEROCP_LOG(Info, "Memory layout completed: {} data pools, 1 management pool, used {}/{} bytes", 
-               entries.size(), usedMemory, totalSize);
-    
+    // 6. 将 MemPool 添加到 chunkManagerPool vector 中
+    // chunkManagerPool 是 MemPoolManager 的成员变量，直接添加即可
+    chunkManagerPool.emplace_back(*chunkManagerMemPool);
+   
+  
     return true;
 }
+
 
 } // namespace Memory
 } // namespace ZeroCP

@@ -83,35 +83,43 @@ uint64_t MemPoolManager::getTotalMemorySize() const noexcept
 
 // ==================== 生命周期管理 ====================
 
-bool MemPoolManager::initialize(void* baseAddress, uint64_t totalSize) noexcept
+bool MemPoolManager::initialize() noexcept
 {
-    if (m_initialized)
+    // 创建管理内存和chunk内存
+    auto ChunkMemorySize = getChunkMemorySize();
+    auto ManagementMemorySize = getManagementMemorySize();
+    void* managementAddress = MemPoolManager::createSharedMemory(
+                                                                    "/zerocp_memory_management",
+                                                                    AccessMode::READ_WRITE,
+                                                                    OpenMode::OPEN_OR_CREATE,
+                                                                    Perms(0600),
+                                                                    ManagementMemorySize
+                                                                );
+    if (managementMemory == nullptr)
     {
-        std::cerr << "[MemPoolManager] Already initialized" << std::endl;
+        ZEROCP_LOG(Error, "Failed to create shared memory for management");
         return false;
     }
-    
-    if (baseAddress == nullptr)
+    // 创建chunk内存
+    void* chunkMemoryAddress = MemPoolManager::createSharedMemory(
+                                                                    "/zerocp_memory_chunk",
+                                                                    AccessMode::READ_WRITE,
+                                                                    OpenMode::OPEN_OR_CREATE,
+                                                                    Perms(0600),
+                                                                    ChunkMemorySize
+                                                                );
+    if (chunkMemoryAddress == nullptr)
     {
-        std::cerr << "[MemPoolManager] Invalid base address" << std::endl;
+        ZEROCP_LOG(Error, "Failed to create shared memory for chunk");
         return false;
     }
-    
-    if (totalSize < getTotalMemorySize())
+    auto resultManager = MemPoolManager::layoutManagementMemory(managementAddress, ManagementMemorySize);
+    auto resultChunk = MemPoolManager::layoutChunkMemory(chunkMemoryAddress, ChunkMemorySize);
+    if (!resultManager || !resultChunk)
     {
-        std::cerr << "[MemPoolManager] Insufficient memory size" << std::endl;
+        ZEROCP_LOG(Error, "Failed to layout memory");
         return false;
     }
-    
-    m_baseAddress = baseAddress;
-    
-    if (!layoutMemory(baseAddress, totalSize))
-    {
-        std::cerr << "[MemPoolManager] Failed to layout memory" << std::endl;
-        return false;
-    }
-    
-    m_initialized = true;
     return true;
 }
 
