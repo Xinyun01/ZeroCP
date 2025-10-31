@@ -1,10 +1,10 @@
 #include "posixshm_provider.hpp"
-#include "zerocp_foundationLib/posix/memory/include/relative_pointer.hpp"
+#include "relative_pointer.hpp"
 #include <atomic>
 
 namespace ZeroCP
 {
-namespace Daemon
+namespace Memory
 {
 
 // 生成唯一的段ID
@@ -24,12 +24,12 @@ PosixShmProvider::~PosixShmProvider()
 std::expected<void*, PosixSharedMemoryObjectError> PosixShmProvider::createMemory() noexcept
 {
     // 直接创建共享内存对象
-    auto result = PosixSharedMemoryObjectBuilder()
-        .setName(m_name)
-        .setMemorySize(m_memorySize)
-        .setAccessMode(m_accessMode)
-        .setOpenMode(m_openMode)
-        .setPermissions(m_permissions)
+    auto result = Details::PosixSharedMemoryObjectBuilder()
+        .name(m_name)
+        .memorySize(m_memorySize)
+        .accessMode(m_accessMode)
+        .openMode(m_openMode)
+        .permissions(m_permissions)
         .create();
    
     if(!result.has_value())
@@ -50,9 +50,10 @@ std::expected<void*, PosixSharedMemoryObjectError> PosixShmProvider::createMemor
     }
     
     // 注册到全局段注册表，用于 RelativePointer
-    SegmentRegistry::instance().registerSegment(m_segmentId, m_baseAddress);
+    // TODO: 需要实现 SegmentRegistry 类
+    // SegmentRegistry::instance().registerSegment(m_segmentId, m_baseAddress);
     
-    ZEROCP_LOG(Info, "Shared memory created - Segment ID: {}, Base Address: {}", m_segmentId, m_baseAddress);
+    ZEROCP_LOG(Info, "Shared memory created - Segment ID: " << m_segmentId << ", Base Address: " << m_baseAddress);
     
     return m_baseAddress;
 }
@@ -62,8 +63,9 @@ std::expected<void, PosixSharedMemoryObjectError> PosixShmProvider::destroyMemor
     if(m_sharedMemoryObject.has_value())
     {
         // 取消注册段
-        SegmentRegistry::instance().unregisterSegment(m_segmentId);
-        ZEROCP_LOG(Info, "Unregistered segment ID: {}", m_segmentId);
+        // TODO: 需要实现 SegmentRegistry 类
+        // SegmentRegistry::instance().unregisterSegment(m_segmentId);
+        ZEROCP_LOG(Info, "Unregistered segment ID: " << m_segmentId);
         
         // 重置共享内存对象
         m_sharedMemoryObject.reset();
@@ -91,9 +93,9 @@ void* PosixShmProvider::getBaseAddress() const noexcept
 void PosixShmProvider::announceMemoryAvailable() noexcept
 {
     m_memoryAvailableAnnounced = true;
-    ZEROCP_LOG(Info, "Memory available announced for segment ID: {}", m_segmentId);
+    ZEROCP_LOG(Info, "Memory available announced for segment ID: " << m_segmentId);
 }
 
-} // namespace Daemon
+} // namespace Memory
 } // namespace ZeroCP
 

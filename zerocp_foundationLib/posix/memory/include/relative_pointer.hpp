@@ -28,8 +28,10 @@ public:
         RelativePointer(ptr_t baseAddress, ptr_t const ptr, uint64_t pool_id) noexcept;
         RelativePointer(const RelativePointer& other) noexcept = default;
         RelativePointer(RelativePointer&& other) noexcept;
+        RelativePointer& operator=(const RelativePointer& other) noexcept = default;
+        RelativePointer& operator=(RelativePointer&& other) noexcept = default;
         /// @brief 计算ptr对base的偏移
-        static offset_t getOffset(const segment_id_t id, ptr_t const ptr) noexcept;
+        static offset_t getOffset(const pool_id_t pool_id, ptr_t const ptr) noexcept;
         
 private:
     pool_id_t m_pool_id{0};
@@ -39,6 +41,6 @@ private:
 } // namespace ZeroCP
 
 
-#include "zerocp_foundationLib/posix/memory/deital/relative_pointer.inl"
+#include "../deital/relative_pointer.inl"
 
 #endif

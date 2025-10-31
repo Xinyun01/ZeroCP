@@ -1,6 +1,6 @@
 #ifndef ZeroCP_PosixSharedMemory_HPP
 #define ZeroCP_PosixSharedMemory_HPP
-#include "filesystem.hpp"
+#include "../../filesystem/include/filesystem.hpp"
 #include "builder.hpp"
 #include <expected>
 #include <utility>
@@ -48,8 +48,8 @@ public:
 private:
     PosixSharedMemory(const Name_t& name, const shm_handle_t handle, const bool hasOwnership) noexcept;
     
-    shm_handle_t m_handle{INVALID_HANDLE}; // 文件句柄
     Name_t m_name;
+    shm_handle_t m_handle{INVALID_HANDLE}; // 文件句柄
     bool m_hasOwnership{false}; // 是否拥有所有权
 };
 

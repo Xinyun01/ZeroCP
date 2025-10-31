@@ -44,6 +44,22 @@ template <typename T, typename... Values>
     return ((value == static_cast<T>(values)) || ...);
 }
 
+// 最小值函数
+template <typename T>
+    requires std::totally_ordered<T>
+[[nodiscard]] constexpr const T& minVal(const T& a, const T& b) noexcept
+{
+    return (a < b) ? a : b;
+}
+
+// 最大值函数
+template <typename T>
+    requires std::totally_ordered<T>
+[[nodiscard]] constexpr const T& maxVal(const T& a, const T& b) noexcept
+{
+    return (a > b) ? a : b;
+}
+
 } // namespace algorithm
 } // namespace ZeroCP
 

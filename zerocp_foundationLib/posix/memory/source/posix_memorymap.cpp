@@ -66,30 +66,31 @@ PosixMemoryMap::PosixMemoryMap(void* baseMemory, size_t memoryLength) noexcept
 {
 }
 
-PosixMemoryMap::~PosixMemoryMap()
-{
-    if (m_baseAddress != nullptr)
-    {
-        // int munmap(void *addr,     // 要解除映射的起始地址（必须是之前mmap返回的地址）
-        //            size_t length); // 要解除映射的字节长度
-        // 功能：解除addr开始、长度为length的内存映射
-        // 返回值：成功返回0，失败返回-1并设置errno
-        // 常见errno：EINVAL(地址无效或不是页对齐)
-        auto unmapResult = ZeroCp_PosixCall(munmap)(m_baseAddress, static_cast<size_t>(m_length))
-                              .failureReturnValue(-1)
-                              .evaluate();
-
-        if (!unmapResult.has_value())
-        {
-            ZEROCP_LOG(Error,
-                    "Unable to unmap mapped memory [ address = " << m_baseAddress
-                                                                 << ", size = " << m_length << " ]");
-        }
-        
-        m_baseAddress = nullptr;
-        m_length = 0U;
-    }
-}
+// 析构函数已经在头文件中 default 了，这里不需要重复定义
+// PosixMemoryMap::~PosixMemoryMap()
+// {
+//     if (m_baseAddress != nullptr)
+//     {
+//         // int munmap(void *addr,     // 要解除映射的起始地址（必须是之前mmap返回的地址）
+//         //            size_t length); // 要解除映射的字节长度
+//         // 功能：解除addr开始、长度为length的内存映射
+//         // 返回值：成功返回0，失败返回-1并设置errno
+//         // 常见errno：EINVAL(地址无效或不是页对齐)
+//         auto unmapResult = ZeroCp_PosixCall(munmap)(m_baseAddress, static_cast<size_t>(m_length))
+//                               .failureReturnValue(-1)
+//                               .evaluate();
+//
+//         if (!unmapResult.has_value())
+//         {
+//             ZEROCP_LOG(Error,
+//                     "Unable to unmap mapped memory [ address = " << m_baseAddress
+//                                                                  << ", size = " << m_length << " ]");
+//         }
+//         
+//         m_baseAddress = nullptr;
+//         m_length = 0U;
+//     }
+// }
 
 void* PosixMemoryMap::getBaseAddress() const noexcept
 {

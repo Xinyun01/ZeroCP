@@ -21,9 +21,10 @@ namespace Memory
 class MemPoolAllocator
 {
 public:
-    /// @brief 构造函数：接受配置引用
+    /// @brief 构造函数：接受配置引用和共享内存基地址
     /// @param config 内存池配置的唯一实例引用
-    explicit MemPoolAllocator(const MemPoolConfig& config) noexcept;
+    /// @param sharedMemoryBase 共享内存基地址（用于 RelativePointer）
+    explicit MemPoolAllocator(const MemPoolConfig& config, void* sharedMemoryBase) noexcept;
     
     /// @brief 禁用默认构造
     MemPoolAllocator() noexcept = delete;
@@ -43,28 +44,32 @@ public:
     /// @brief 析构函数
     ~MemPoolAllocator() noexcept = default;
     
-    /// @brief 创建共享内存并返回映射的基地址
-    /// @param name 共享内存名称
-    /// @param accessMode 访问模式
-    /// @param openMode 打开模式
-    /// @param permissions 权限设置
-    /// @return 成功返回基地址，失败返回 nullptr
-    void* createSharedMemory(const Name_t& name,
-                            const AccessMode accessMode,
-                            const OpenMode openMode,
-                            const Perms permissions) noexcept;
+
     
-    /// @brief 布局内存
-    /// @param baseAddress 共享内存基地址
-    /// @param memorySize 共享内存总大小
-    /// @param targetPools 目标内存池向量（mempools 或 chunkManagerPool）
+    /// @brief 布局管理内存区：在共享内存中创建 vector 和 MemPool 对象
+    /// @param mgmtBaseAddress 管理内存区基地址
+    /// @param mgmtMemorySize 管理内存区大小
+    /// @param mempools 返回指向共享内存中创建的 MemPool vector 的指针
+    /// @param chunkManagerPool 返回指向共享内存中创建的 ChunkManager pool 的指针
     /// @return 成功返回 true，失败返回 false
-    bool ManagementMemoryLayout(void* baseAddress, uint64_t memorySize) noexcept;
-    bool ChunkMemoryLayout(void* baseAddress, uint64_t memorySize) noexcept;
+    bool ManagementMemoryLayout(void* mgmtBaseAddress, uint64_t mgmtMemorySize,
+                                vector<MemPool, 16>& mempools,
+                                vector<MemPool, 1>& chunkManagerPool) noexcept;
     
+    /// @brief 布局数据内存区（分配 chunk 块并设置到 MemPool）
+    /// @param baseAddress 数据内存区基地址
+    /// @param memorySize 数据内存区大小
+    /// @param mempools 共享内存中的 MemPool vector 引用
+    /// @return 成功返回 true，失败返回 false
+    bool ChunkMemoryLayout(void* baseAddress, uint64_t memorySize,
+                          vector<MemPool, 16>& mempools) noexcept;
+     
 private:
     /// @brief 内存池配置引用
     const MemPoolConfig& m_config;
+    
+    /// @brief 共享内存基地址（用于 RelativePointer）
+    void* m_sharedMemoryBase{nullptr};
     
     /// @brief 共享内存提供者：管理共享内存生命周期
     std::unique_ptr<PosixShmProvider> m_shmProvider;

@@ -1,15 +1,24 @@
 #ifndef ZEROCP_DAEMON_POSIXSHM_PROVIDER_HPP
 #define ZEROCP_DAEMON_POSIXSHM_PROVIDER_HPP
 
-#include "zerocp_foundationLib/posix/ipc/include/posix_sharedmemory.hpp"
-#include "zerocp_foundationLib/posix/ipc/include/posix_sharedmemory_object.hpp"
-#include "zerocp_foundationLib/report/include/logging.hpp"
+#include "posix_sharedmemory.hpp"
+#include "posix_sharedmemory_object.hpp"
+#include "logging.hpp"
 #include <expected>
 #include <optional>
+
 namespace ZeroCP
 {
 namespace Memory
 {
+
+// 使用类型别名
+using Name_t = Details::PosixSharedMemory::Name_t;
+using ZeroCP::AccessMode;
+using ZeroCP::OpenMode;
+using ZeroCP::Perms;
+using PosixSharedMemoryObject = Details::PosixSharedMemoryObject;
+using PosixSharedMemoryObjectError = Details::PosixSharedMemoryObjectError;
 
 // PosixShmProvider类：共享内存的创建、销毁和状态管理
 class PosixShmProvider
@@ -56,11 +65,11 @@ private:
     Perms m_permissions{Perms::OwnerAll};               // 权限设置
     std::optional<PosixSharedMemoryObject> m_sharedMemoryObject; // 共享内存对象
     void* m_baseAddress{nullptr};                       // 共享内存基地址
-    uint64_t m_segmentId{0};                            // 内存段id
     bool m_memoryAvailableAnnounced{false};             // 内存可用标志，是否已通知各MemoryBlock
+    uint64_t m_segmentId{0};                            // 段ID
 };
 
-} // namespace Daemon
+} // namespace Memory
 } // namespace ZeroCP
 
 #endif

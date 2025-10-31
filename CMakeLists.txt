@@ -12,9 +12,10 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 
 # 添加子目录
-add_subdirectory(core)
-add_subdirectory(introspection)           # introspection 组件
-add_subdirectory(tools/introspection)     # introspection 工具
+add_subdirectory(zerocp_core)
+add_subdirectory(zerocp_introspection)
+add_subdirectory(tools/introspection)
+add_subdirectory(zerocp_tests)
 
 # 可选：添加 examples（如果存在）
 if(EXISTS ${CMAKE_SOURCE_DIR}/examples/CMakeLists.txt)

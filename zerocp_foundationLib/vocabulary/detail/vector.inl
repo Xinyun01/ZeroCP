@@ -17,13 +17,19 @@
 #ifndef ZEROCP_VOCABULARY_VECTOR_INL
 #define ZEROCP_VOCABULARY_VECTOR_INL
 
-#include "zerocp_foundationLib/vocabulary/include/vector.hpp"
+#include "../include/vector.hpp"
+#include "../include/macros.hpp"
+#include "../include/algorithm.hpp"
 
+#include <cstdint>
 #include <cstring> // std::memcpy, std::memmove
 #include <iostream>
 #include <type_traits>
+#include <algorithm>
 
-namespace iox
+namespace ZeroCP
+
+
 {
 template <typename T, uint64_t Capacity>
 inline vector<T, Capacity>::vector(const uint64_t count, const T& value) noexcept
@@ -106,7 +112,7 @@ inline vector<T, Capacity>& vector<T, Capacity>::operator=(const vector& rhs) no
             // copy using copy ctor
             for (; i < rhsSize; ++i)
             {
-                IOX_DISCARD_RESULT(emplace_back(rhs.at(i)));
+                ZEROCP_DISCARD_RESULT(emplace_back(rhs.at(i)));
             }
         }
 
@@ -145,7 +151,7 @@ inline vector<T, Capacity>& vector<T, Capacity>::operator=(vector&& rhs) noexcep
             // move using move ctor
             for (; i < rhsSize; ++i)
             {
-                IOX_DISCARD_RESULT(emplace_back(std::move(rhs.at(i))));
+                ZEROCP_DISCARD_RESULT(emplace_back(std::move(rhs.at(i))));
             }
         }
 
@@ -225,7 +231,7 @@ inline bool vector<T, Capacity>::emplace(const uint64_t position, Targs&&... arg
     }
     else
     {
-        IOX_DISCARD_RESULT(emplace_back(std::move(at_unchecked(sizeBeforeEmplace - 1U))));
+        ZEROCP_DISCARD_RESULT(emplace_back(std::move(at_unchecked(sizeBeforeEmplace - 1U))));
         for (uint64_t i{sizeBeforeEmplace - 1U}; i > position; --i)
         {
             at_unchecked(i) = std::move(at_unchecked(i - 1U));
@@ -320,7 +326,7 @@ inline T& vector<T, Capacity>::at(const uint64_t index) noexcept
 template <typename T, uint64_t Capacity>
 inline const T& vector<T, Capacity>::at(const uint64_t index) const noexcept
 {
-    IOX_ENFORCE(index < m_size, "Out of bounds access");
+    ZEROCP_ENFORCE(index < m_size, "Out of bounds access");
     return at_unchecked(index);
 }
 
@@ -339,7 +345,7 @@ inline const T& vector<T, Capacity>::operator[](const uint64_t index) const noex
 template <typename T, uint64_t Capacity>
 inline T& vector<T, Capacity>::front() noexcept
 {
-    IOX_ENFORCE(!empty(), "Attempting to access the front of an empty vector");
+    ZEROCP_ENFORCE(!empty(), "Attempting to access the front of an empty vector");
     return at(0);
 }
 
@@ -354,7 +360,7 @@ inline const T& vector<T, Capacity>::front() const noexcept
 template <typename T, uint64_t Capacity>
 inline T& vector<T, Capacity>::back() noexcept
 {
-    IOX_ENFORCE(!empty(), "Attempting to access the back of an empty vector");
+    ZEROCP_ENFORCE(!empty(), "Attempting to access the back of an empty vector");
     return at(size() - 1U);
 }
 

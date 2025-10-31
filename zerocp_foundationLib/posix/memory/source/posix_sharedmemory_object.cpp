@@ -54,14 +54,14 @@ std::expected<PosixSharedMemoryObject, PosixSharedMemoryObjectError> PosixShared
     
     if (!SharedMemory)
     {
-        ZEROCP_LOG(ZeroCP::Log::LogLevel::Error, "Failed to create shared memory object");
+        ZEROCP_LOG(Error, "Failed to create shared memory object");
         return std::unexpected(PosixSharedMemoryObjectError::UNKNOWN_ERROR);
     }
     auto ResultSize = SharedMemory->getMemorySize();
     
     if (ResultSize == 0)
     {
-        ZEROCP_LOG(ZeroCP::Log::LogLevel::Error,
+        ZEROCP_LOG(Error,
                 "Unable to create SharedMemoryObject since we could not acquire the memory size of the "
                 "underlying object.");
         return std::unexpected(PosixSharedMemoryObjectError::UNABLE_TO_VERIFY_MEMORY_SIZE);
@@ -70,7 +70,7 @@ std::expected<PosixSharedMemoryObject, PosixSharedMemoryObjectError> PosixShared
     const auto realSize = ResultSize;
     if (realSize < m_memorySize)
     {
-        ZEROCP_LOG(ZeroCP::Log::LogLevel::Error,
+        ZEROCP_LOG(Error,
                 "Unable to create SharedMemoryObject since a size of "
                     << m_memorySize << " was requested but the object has only a size of " << realSize);
         return std::unexpected(PosixSharedMemoryObjectError::REQUESTED_SIZE_EXCEEDS_ACTUAL_SIZE);
@@ -87,7 +87,7 @@ std::expected<PosixSharedMemoryObject, PosixSharedMemoryObjectError> PosixShared
 
     if (!memoryMap)
     {
-        ZEROCP_LOG(ZeroCP::Log::LogLevel::Error, "Failed to create memory map");
+        ZEROCP_LOG(Error, "Failed to create memory map");
         return std::unexpected(PosixSharedMemoryObjectError::UNKNOWN_ERROR);
     }
     

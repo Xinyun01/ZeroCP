@@ -1,27 +1,20 @@
 #ifndef MENORY_HPP
 #define MENORY_HPP
 
+#include <cstddef>
+#include <cstdint>
+
 namespace ZeroCP
 {
 
 namespace Memory
 {
- 
-template<typename T>
-/**
- * @brief 向上对齐到指定字节数的倍数
- * 
- * @tparam T 传入的整数类型（通常为size_t, uint32_t等）
- * @param value 需要对齐的值
- * @param alignment 对齐的字节数，必须为2的幂
- * @return T 对齐后的结果
- * 
- * 例如: align(13, 8) == 16
- */
-T align(const T value, const T alignment)
-{
-    return (value + alignment - 1) & ~(alignment - 1);
-}
+
+/// @brief 计算对齐后的大小
+/// @param size 原始大小
+/// @param alignment 对齐字节数，必须是2的幂
+/// @return 对齐后的大小
+uint64_t align(uint64_t size, uint64_t alignment) noexcept;
 /**
  * @brief 对齐分配内存
  * 

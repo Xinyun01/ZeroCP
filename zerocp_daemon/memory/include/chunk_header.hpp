@@ -34,7 +34,9 @@ struct alignas(8) ChunkHeader
     uint16_t m_userHeaderId{NO_USER_HEADER};
     
     // 发送者 ID（哪个端口发送的）
-    popo::UniquePortId m_originId{popo::InvalidPortId};
+    // TODO: 需要定义 popo::UniquePortId
+    // popo::UniquePortId m_originId{popo::InvalidPortId};
+    uint64_t m_originId{0};
     
     // 序列号（发送顺序）
     uint64_t m_sequenceNumber{0U};
@@ -49,7 +51,7 @@ struct alignas(8) ChunkHeader
     uint32_t m_userPayloadAlignment{1U};
     
     // 用户数据相对于 ChunkHeader 的偏移量
-    UserPayloadOffset_t m_userPayloadOffset{sizeof(ChunkHeader)};
+    uint64_t m_userPayloadOffset{sizeof(ChunkHeader)};
 };
 
 

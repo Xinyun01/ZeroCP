@@ -2,7 +2,7 @@
 #define ZEROCP_RELATIVE_POINTER_INL
 
 #include <cassert>
-#include "zerocp_foundationLib/report/include/logging.hpp"
+#include "../../../report/include/logging.hpp"
 
 namespace ZeroCP
 {
@@ -11,26 +11,19 @@ namespace ZeroCP
 // ==================== RelativePointer 实现 ====================
 template<typename T>
 RelativePointer<T>::RelativePointer(ptr_t baseAddress, ptr_t const ptr, uint64_t pool_id) noexcept
-    : m_ptr(getOffset(baseAddress, ptr))
-    , m_pool_id(pool_id)
+    : m_pool_id(pool_id)
+    , m_offset(reinterpret_cast<offset_t>(ptr) - reinterpret_cast<offset_t>(baseAddress))
 {
 }
 
 template<typename T>
-RelativePointer<T>::RelativePointer(ptr_t const ptr, uint64_t pool_id) noexcept
-    : m_ptr(getOffset(pool_id, ptr))
-    , m_pool_id(pool_id)
+RelativePointer<T>::RelativePointer(RelativePointer&& other) noexcept
+    : m_offset(other.m_offset)
+    , m_pool_id(other.m_pool_id)
 {
+    other.m_offset = 0;
+    other.m_pool_id = 0;
 }
-
-
-template<typename T>
-offset_t RelativePointer<T>::get_offset(ptr_t const ptr) noexcept
-{
-    return reinterpret_cast<offset_t>(ptr) - reinterpret_cast<offset_t>(baseAddress);
-}
-
-
 
 } // namespace ZeroCP
 

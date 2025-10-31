@@ -17,8 +17,18 @@
 #ifndef ZEROCP_VOCABULARY_VECTOR_HPP
 #define ZEROCP_VOCABULARY_VECTOR_HPP
 
+#include <cstdint>
+#include <array>
+#include <type_traits>
+#include "macros.hpp"
+#include "algorithm.hpp"
+#include "logging.hpp"
 
-namespace iox
+// 简化的 UninitializedArray 实现
+template<typename T, uint64_t Capacity>
+using UninitializedArray = std::array<std::aligned_storage_t<sizeof(T), alignof(T)>, Capacity>;
+
+namespace ZeroCP
 {
 /// @brief  C++11 兼容的 vector 实现。由于我们不使用异常并且需要一个可以完全位于共享内存中的数据结构，因此我们对 API 进行了一些调整。
 ///
@@ -206,6 +216,6 @@ template <typename T, uint64_t CapacityLeft, uint64_t CapacityRight>
 constexpr bool operator!=(const vector<T, CapacityLeft>& lhs, const vector<T, CapacityRight>& rhs) noexcept;
 } // namespace iox
 
-#include "zerocp_foundationLib/vocabulary/detail/vector.inl"
+#include "../detail/vector.inl"
 
 #endif // IOX_HOOFS_CONTAINER_VECTOR_HPP

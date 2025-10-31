@@ -1,5 +1,6 @@
 #include "memory.hpp"
 #include <cstdlib>
+#include <cassert>
 namespace ZeroCP
 {
 namespace Memory
@@ -18,6 +19,18 @@ namespace Memory
  * 3. 在对齐地址前存储原始 malloc 地址，以供释放
  * 4. 返回对齐后的指针
  */
+/**
+ * @brief 计算对齐后的大小
+ * 
+ * @param size 原始大小
+ * @param alignment 对齐字节数，必须是2的幂
+ * @return uint64_t 对齐后的大小
+ */
+uint64_t align(uint64_t size, uint64_t alignment) noexcept
+{
+    return (size + alignment - 1) & ~(alignment - 1);
+}
+
 void* alignedAlloc(const size_t alignment, const size_t size) noexcept
 {
     // 申请多余的内存：用户需要的大小 + 对齐修正 + 额外存放原指针的位置
