@@ -44,17 +44,22 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/xinyun/Infrastructure/zero_copy_framework/build/core/cmake_install.cmake")
+  include("/home/xinyun/Infrastructure/zero_copy_framework/build/zerocp_core/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/xinyun/Infrastructure/zero_copy_framework/build/introspection/cmake_install.cmake")
+  include("/home/xinyun/Infrastructure/zero_copy_framework/build/zerocp_introspection/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
   include("/home/xinyun/Infrastructure/zero_copy_framework/build/tools/introspection/cmake_install.cmake")
+endif()
+
+if(NOT CMAKE_INSTALL_LOCAL_ONLY)
+  # Include the install script for the subdirectory.
+  include("/home/xinyun/Infrastructure/zero_copy_framework/build/zerocp_tests/cmake_install.cmake")
 endif()
 
 if(CMAKE_INSTALL_COMPONENT)

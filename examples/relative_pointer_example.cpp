@@ -72,10 +72,10 @@ void writerProcess()
     }
     
     void* baseAddress = result.value();
-    uint64_t segmentId = shmProvider.getSegmentId();
+    uint64_t poolId = shmProvider.getPoolId();
     
     std::cout << "Shared Memory Created:" << std::endl;
-    std::cout << "  - Segment ID: " << segmentId << std::endl;
+    std::cout << "  - Pool ID: " << poolId << std::endl;
     std::cout << "  - Base Address: " << baseAddress << std::endl;
     
     // 3. 初始化共享内存头部
@@ -104,19 +104,19 @@ void writerProcess()
         if (i == 0)
         {
             // 第一个消息
-            header->firstMessage = RelativePointer<Message>(currentMsg, segmentId);
+            header->firstMessage = RelativePointer<Message>(currentMsg, poolId);
         }
         else
         {
             // 连接前一个消息
-            prevMsg->next = RelativePointer<Message>(currentMsg, segmentId);
+            prevMsg->next = RelativePointer<Message>(currentMsg, poolId);
         }
         
         prevMsg = currentMsg;
     }
     
     // 最后一个消息的 next 指向 nullptr
-    prevMsg->next = RelativePointer<Message>(nullptr, segmentId);
+    prevMsg->next = RelativePointer<Message>(nullptr, poolId);
     header->messageCount = MESSAGE_COUNT;
     
     std::cout << "Written " << MESSAGE_COUNT << " messages to shared memory" << std::endl;
@@ -169,10 +169,10 @@ void readerProcess()
     }
     
     void* baseAddress = result.value();
-    uint64_t segmentId = shmProvider.getSegmentId();
+    uint64_t poolId = shmProvider.getPoolId();
     
     std::cout << "Shared Memory Opened:" << std::endl;
-    std::cout << "  - Segment ID: " << segmentId << std::endl;
+    std::cout << "  - Pool ID: " << poolId << std::endl;
     std::cout << "  - Base Address: " << baseAddress << std::endl;
     
     // 3. 读取头部
@@ -202,13 +202,13 @@ void readerProcess()
 }
 
 /**
- * @brief 高级示例：跨段引用
+ * @brief 高级示例：跨池引用
  */
-void crossSegmentExample()
+void crossPoolExample()
 {
-    std::cout << "\n=== Cross-Segment Reference Example ===" << std::endl;
+    std::cout << "\n=== Cross-Pool Reference Example ===" << std::endl;
     
-    // 创建两个共享内存段
+    // 创建两个共享内存池
     PosixShmProvider metadataProvider(
         "/zerocopy_metadata",
         4096,
@@ -231,24 +231,24 @@ void crossSegmentExample()
     
     if (!metaResult.has_value() || !dataResult.has_value())
     {
-        std::cerr << "Failed to create shared memory segments!" << std::endl;
+        std::cerr << "Failed to create shared memory pools!" << std::endl;
         return;
     }
     
     void* metaBase = metaResult.value();
     void* dataBase = dataResult.value();
     
-    uint64_t metaSegId = metadataProvider.getSegmentId();
-    uint64_t dataSegId = dataProvider.getSegmentId();
+    uint64_t metaPoolId = metadataProvider.getPoolId();
+    uint64_t dataPoolId = dataProvider.getPoolId();
     
-    std::cout << "Created two segments:" << std::endl;
-    std::cout << "  - Metadata Segment: ID=" << metaSegId << ", Base=" << metaBase << std::endl;
-    std::cout << "  - Data Segment: ID=" << dataSegId << ", Base=" << dataBase << std::endl;
+    std::cout << "Created two pools:" << std::endl;
+    std::cout << "  - Metadata Pool: ID=" << metaPoolId << ", Base=" << metaBase << std::endl;
+    std::cout << "  - Data Pool: ID=" << dataPoolId << ", Base=" << dataBase << std::endl;
     
-    // 在元数据段中存储指向数据段的指针
+    // 在元数据池中存储指向数据池的指针
     struct Metadata
     {
-        RelativePointer<char> dataPtr;  // 指向另一个段
+        RelativePointer<char> dataPtr;  // 指向另一个池
         uint64_t dataSize;
     };
     
@@ -256,15 +256,15 @@ void crossSegmentExample()
     char* data = static_cast<char*>(dataBase);
     
     // 写入数据
-    const char* message = "Hello from data segment!";
+    const char* message = "Hello from data pool!";
     strcpy(data, message);
     
-    // 创建跨段相对指针
-    meta->dataPtr = RelativePointer<char>(data, dataSegId);
+    // 创建跨池相对指针
+    meta->dataPtr = RelativePointer<char>(data, dataPoolId);
     meta->dataSize = strlen(message);
     
     // 读取验证
-    std::cout << "\nCross-segment access:" << std::endl;
+    std::cout << "\nCross-pool access:" << std::endl;
     std::cout << "  Data: " << meta->dataPtr.get() << std::endl;
     std::cout << "  Size: " << meta->dataSize << std::endl;
     
@@ -284,7 +284,7 @@ int main(int argc, char* argv[])
         std::cout << "\nUsage:" << std::endl;
         std::cout << "  " << argv[0] << " writer    - Run as writer process" << std::endl;
         std::cout << "  " << argv[0] << " reader    - Run as reader process" << std::endl;
-        std::cout << "  " << argv[0] << " cross     - Run cross-segment example" << std::endl;
+        std::cout << "  " << argv[0] << " cross     - Run cross-pool example" << std::endl;
         return 0;
     }
     
@@ -300,7 +300,7 @@ int main(int argc, char* argv[])
     }
     else if (mode == "cross")
     {
-        crossSegmentExample();
+        crossPoolExample();
     }
     else
     {

@@ -63,7 +63,7 @@ public:
     /// @return 成功返回 true，失败返回 false
     bool ChunkMemoryLayout(void* baseAddress, uint64_t memorySize,
                           vector<MemPool, 16>& mempools) noexcept;
-     
+    
 private:
     /// @brief 内存池配置引用
     const MemPoolConfig& m_config;

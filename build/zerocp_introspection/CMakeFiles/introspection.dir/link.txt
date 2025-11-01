@@ -1,0 +1,2 @@
+/usr/bin/ar qc ../lib/libintrospection.a CMakeFiles/introspection.dir/source/introspection_server.cpp.o CMakeFiles/introspection.dir/source/introspection_client.cpp.o
+/usr/bin/ranlib ../lib/libintrospection.a

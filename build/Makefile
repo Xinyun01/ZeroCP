@@ -171,8 +171,73 @@ introspection: cmake_check_build_system
 
 # fast build rule for target.
 introspection/fast:
-	$(MAKE) $(MAKESILENT) -f introspection/CMakeFiles/introspection.dir/build.make introspection/CMakeFiles/introspection.dir/build
+	$(MAKE) $(MAKESILENT) -f zerocp_introspection/CMakeFiles/introspection.dir/build.make zerocp_introspection/CMakeFiles/introspection.dir/build
 .PHONY : introspection/fast
+
+#=============================================================================
+# Target rules for targets named introspection_tests
+
+# Build rule for target.
+introspection_tests: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 introspection_tests
+.PHONY : introspection_tests
+
+# fast build rule for target.
+introspection_tests/fast:
+	$(MAKE) $(MAKESILENT) -f zerocp_introspection/test/CMakeFiles/introspection_tests.dir/build.make zerocp_introspection/test/CMakeFiles/introspection_tests.dir/build
+.PHONY : introspection_tests/fast
+
+#=============================================================================
+# Target rules for targets named gmock
+
+# Build rule for target.
+gmock: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 gmock
+.PHONY : gmock
+
+# fast build rule for target.
+gmock/fast:
+	$(MAKE) $(MAKESILENT) -f _deps/googletest-build/googlemock/CMakeFiles/gmock.dir/build.make _deps/googletest-build/googlemock/CMakeFiles/gmock.dir/build
+.PHONY : gmock/fast
+
+#=============================================================================
+# Target rules for targets named gmock_main
+
+# Build rule for target.
+gmock_main: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 gmock_main
+.PHONY : gmock_main
+
+# fast build rule for target.
+gmock_main/fast:
+	$(MAKE) $(MAKESILENT) -f _deps/googletest-build/googlemock/CMakeFiles/gmock_main.dir/build.make _deps/googletest-build/googlemock/CMakeFiles/gmock_main.dir/build
+.PHONY : gmock_main/fast
+
+#=============================================================================
+# Target rules for targets named gtest
+
+# Build rule for target.
+gtest: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 gtest
+.PHONY : gtest
+
+# fast build rule for target.
+gtest/fast:
+	$(MAKE) $(MAKESILENT) -f _deps/googletest-build/googletest/CMakeFiles/gtest.dir/build.make _deps/googletest-build/googletest/CMakeFiles/gtest.dir/build
+.PHONY : gtest/fast
+
+#=============================================================================
+# Target rules for targets named gtest_main
+
+# Build rule for target.
+gtest_main: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 gtest_main
+.PHONY : gtest_main
+
+# fast build rule for target.
+gtest_main/fast:
+	$(MAKE) $(MAKESILENT) -f _deps/googletest-build/googletest/CMakeFiles/gtest_main.dir/build.make _deps/googletest-build/googletest/CMakeFiles/gtest_main.dir/build
+.PHONY : gtest_main/fast
 
 #=============================================================================
 # Target rules for targets named introspection_tool
@@ -187,6 +252,32 @@ introspection_tool/fast:
 	$(MAKE) $(MAKESILENT) -f tools/introspection/CMakeFiles/introspection_tool.dir/build.make tools/introspection/CMakeFiles/introspection_tool.dir/build
 .PHONY : introspection_tool/fast
 
+#=============================================================================
+# Target rules for targets named test_posix_call
+
+# Build rule for target.
+test_posix_call: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test_posix_call
+.PHONY : test_posix_call
+
+# fast build rule for target.
+test_posix_call/fast:
+	$(MAKE) $(MAKESILENT) -f zerocp_tests/posix_call/CMakeFiles/test_posix_call.dir/build.make zerocp_tests/posix_call/CMakeFiles/test_posix_call.dir/build
+.PHONY : test_posix_call/fast
+
+#=============================================================================
+# Target rules for targets named test_posix_call_simple
+
+# Build rule for target.
+test_posix_call_simple: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test_posix_call_simple
+.PHONY : test_posix_call_simple
+
+# fast build rule for target.
+test_posix_call_simple/fast:
+	$(MAKE) $(MAKESILENT) -f zerocp_tests/posix_call/CMakeFiles/test_posix_call_simple.dir/build.make zerocp_tests/posix_call/CMakeFiles/test_posix_call_simple.dir/build
+.PHONY : test_posix_call_simple/fast
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -199,8 +290,15 @@ help:
 	@echo "... install/strip"
 	@echo "... list_install_components"
 	@echo "... rebuild_cache"
+	@echo "... gmock"
+	@echo "... gmock_main"
+	@echo "... gtest"
+	@echo "... gtest_main"
 	@echo "... introspection"
+	@echo "... introspection_tests"
 	@echo "... introspection_tool"
+	@echo "... test_posix_call"
+	@echo "... test_posix_call_simple"
 .PHONY : help
 
 

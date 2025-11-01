@@ -24,9 +24,9 @@
 
 ## 🔧 基本使用
 
-### 1️⃣ 注册共享内存段
+### 1️⃣ 注册共享内存池
 
-在创建共享内存后，需要注册段ID和基地址的映射：
+在创建共享内存后，需要注册池ID和基地址的映射：
 
 ```cpp
 #include "zerocp_foundationLib/posix/memory/include/relative_pointer.hpp"
@@ -40,10 +40,10 @@ auto shmResult = PosixSharedMemoryObjectBuilder()
 if (shmResult.has_value())
 {
     void* baseAddress = shmResult->getBaseAddress();
-    uint64_t segmentId = 42; // 你的段ID（可以从配置或协商中获取）
+    uint64_t poolId = 42; // 你的池ID（可以从配置或协商中获取）
     
     // 注册到全局注册表
-    ZeroCP::SegmentRegistry::instance().registerSegment(segmentId, baseAddress);
+    ZeroCP::PoolRegistry::instance().registerPool(poolId, baseAddress);
 }
 ```
 
@@ -60,7 +60,7 @@ struct MyData {
 MyData* dataPtr = static_cast<MyData*>(baseAddress) + 10;
 
 // 创建相对指针
-ZeroCP::RelativePointer<MyData> relPtr(dataPtr, segmentId);
+ZeroCP::RelativePointer<MyData> relPtr(dataPtr, poolId);
 
 // relPtr 现在存储的是偏移量，可以安全地在共享内存中传递
 ```
@@ -69,7 +69,7 @@ ZeroCP::RelativePointer<MyData> relPtr(dataPtr, segmentId);
 ```cpp
 // 如果你已经知道偏移量（例如从共享内存中读取）
 uint64_t offset = 1024;
-ZeroCP::RelativePointer<MyData> relPtr(offset, segmentId);
+ZeroCP::RelativePointer<MyData> relPtr(offset, poolId);
 ```
 
 ### 3️⃣ 使用 RelativePointer
@@ -91,8 +91,8 @@ if (relPtr) {
     std::cout << "Valid pointer" << std::endl;
 }
 
-// 获取段ID和偏移量
-uint64_t id = relPtr.get_segment_id();
+// 获取池ID和偏移量
+uint64_t id = relPtr.get_pool_id();
 uint64_t offset = relPtr.get_offset();
 ```
 
@@ -109,7 +109,7 @@ struct SharedHeader {
 SharedHeader* header = static_cast<SharedHeader*>(baseAddress);
 MyData* data = static_cast<MyData*>(baseAddress) + sizeof(SharedHeader);
 
-header->dataPtr = ZeroCP::RelativePointer<MyData>(data, segmentId);
+header->dataPtr = ZeroCP::RelativePointer<MyData>(data, poolId);
 header->count = 10;
 ```
 
@@ -126,7 +126,7 @@ auto shmResult = PosixSharedMemoryObjectBuilder()
 void* baseAddressB = shmResult->getBaseAddress();
 
 // 注册（注意：基地址可能不同！）
-ZeroCP::SegmentRegistry::instance().registerSegment(segmentId, baseAddressB);
+ZeroCP::PoolRegistry::instance().registerPool(poolId, baseAddressB);
 
 // 读取共享内存
 SharedHeader* header = static_cast<SharedHeader*>(baseAddressB);
@@ -140,14 +140,14 @@ std::cout << "Value: " << data->value << std::endl;
 
 ```cpp
 // 在销毁共享内存前，取消注册
-ZeroCP::SegmentRegistry::instance().unregisterSegment(segmentId);
+ZeroCP::PoolRegistry::instance().unregisterPool(poolId);
 ```
 
 ## ⚠️ 注意事项
 
-1. **线程安全**：`SegmentRegistry` 是线程安全的，但 `RelativePointer` 本身不是
-2. **段ID唯一性**：确保每个共享内存段有唯一的ID
-3. **注册时机**：必须在使用 `RelativePointer::get()` 之前注册段
+1. **线程安全**：`PoolRegistry` 是线程安全的，但 `RelativePointer` 本身不是
+2. **池ID唯一性**：确保每个共享内存池有唯一的ID
+3. **注册时机**：必须在使用 `RelativePointer::get()` 之前注册池
 4. **生命周期**：确保共享内存在使用 RelativePointer 期间保持有效
 
 ## 📊 完整示例
@@ -175,30 +175,30 @@ int main() {
     }
     
     void* base = shm->getBaseAddress();
-    uint64_t segId = 1;
+    uint64_t poolId = 1;
     
-    // 注册段
-    ZeroCP::SegmentRegistry::instance().registerSegment(segId, base);
+    // 注册池
+    ZeroCP::PoolRegistry::instance().registerPool(poolId, base);
     
     // 创建消息链表
     Message* msg1 = static_cast<Message*>(base);
     Message* msg2 = msg1 + 1;
     
     msg1->id = 1;
-    msg1->next = ZeroCP::RelativePointer<Message>(msg2, segId);
+    msg1->next = ZeroCP::RelativePointer<Message>(msg2, poolId);
     
     msg2->id = 2;
-    msg2->next = ZeroCP::RelativePointer<Message>(nullptr, segId);
+    msg2->next = ZeroCP::RelativePointer<Message>(nullptr, poolId);
     
     // 遍历链表
-    ZeroCP::RelativePointer<Message> current(msg1, segId);
+    ZeroCP::RelativePointer<Message> current(msg1, poolId);
     while (current) {
         std::cout << "Message ID: " << current->id << std::endl;
         current = current->next;
     }
     
     // 清理
-    ZeroCP::SegmentRegistry::instance().unregisterSegment(segId);
+    ZeroCP::PoolRegistry::instance().unregisterPool(poolId);
     
     return 0;
 }
@@ -206,27 +206,27 @@ int main() {
 
 ## 🚀 高级用法
 
-### 多段支持
+### 多池支持
 
 ```cpp
-// 段1：元数据
-uint64_t metaSegId = 1;
+// 池1：元数据
+uint64_t metaPoolId = 1;
 void* metaBase = /* ... */;
-ZeroCP::SegmentRegistry::instance().registerSegment(metaSegId, metaBase);
+ZeroCP::PoolRegistry::instance().registerPool(metaPoolId, metaBase);
 
-// 段2：数据
-uint64_t dataSegId = 2;
+// 池2：数据
+uint64_t dataPoolId = 2;
 void* dataBase = /* ... */;
-ZeroCP::SegmentRegistry::instance().registerSegment(dataSegId, dataBase);
+ZeroCP::PoolRegistry::instance().registerPool(dataPoolId, dataBase);
 
-// 跨段引用
+// 跨池引用
 struct Metadata {
-    ZeroCP::RelativePointer<char> dataPtr; // 指向段2
+    ZeroCP::RelativePointer<char> dataPtr; // 指向池2
 };
 
 Metadata* meta = static_cast<Metadata*>(metaBase);
 char* data = static_cast<char*>(dataBase);
-meta->dataPtr = ZeroCP::RelativePointer<char>(data, dataSegId);
+meta->dataPtr = ZeroCP::RelativePointer<char>(data, dataPoolId);
 ```
 
 ## 📝 总结

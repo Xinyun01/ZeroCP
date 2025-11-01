@@ -46,8 +46,8 @@ public:
     // 销毁共享内存
     std::expected<void, PosixSharedMemoryObjectError> destroyMemory() noexcept;
     
-    // 获取内存段ID
-    uint64_t getSegmentId() const noexcept;
+    // 获取内存池ID
+    uint64_t getPoolId() const noexcept;
     
     // 判断共享内存是否可用
     bool isMemoryAvailable() const noexcept;
@@ -66,7 +66,7 @@ private:
     std::optional<PosixSharedMemoryObject> m_sharedMemoryObject; // 共享内存对象
     void* m_baseAddress{nullptr};                       // 共享内存基地址
     bool m_memoryAvailableAnnounced{false};             // 内存可用标志，是否已通知各MemoryBlock
-    uint64_t m_segmentId{0};                            // 段ID
+    uint64_t m_poolId{0};                               // 池ID
 };
 
 } // namespace Memory

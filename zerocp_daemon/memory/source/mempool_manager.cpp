@@ -31,9 +31,12 @@ void* MemPoolManager::s_chunkBaseAddress = nullptr;
 size_t MemPoolManager::s_managementMemorySize = 0;
 size_t MemPoolManager::s_chunkMemorySize = 0;
 sem_t* MemPoolManager::s_initSemaphore = SEM_FAILED;
-const char* MemPoolManager::MGMT_SHM_NAME = "/zerocp_memory_management";
-const char* MemPoolManager::CHUNK_SHM_NAME = "/zerocp_memory_chunk";
+const char* MemPoolManager::MGMT_SHM_NAME = "zerocp_memory_management";
+const char* MemPoolManager::CHUNK_SHM_NAME = "zerocp_memory_chunk";
 const char* MemPoolManager::SEM_NAME = "/zerocp_init_sem";
+std::unique_ptr<PosixShmProvider> MemPoolManager::s_mgmtProvider = nullptr;
+std::unique_ptr<PosixShmProvider> MemPoolManager::s_chunkProvider = nullptr;
+bool MemPoolManager::s_isOwner = false;
 
 // ==================== 单例模式实现（共享内存版本） ====================
 
@@ -59,7 +62,7 @@ bool MemPoolManager::createSharedInstance(const MemPoolConfig& config) noexcept
     ZEROCP_LOG(Info, "  - Total memory needed: " << (managementSize + chunkSize) << " bytes");
     
     // 2. 创建管理区共享内存
-    PosixShmProvider mgmtProvider(
+    s_mgmtProvider = std::make_unique<PosixShmProvider>(
         Name_t(MGMT_SHM_NAME),
         managementSize,
         AccessMode::ReadWrite,
@@ -67,17 +70,18 @@ bool MemPoolManager::createSharedInstance(const MemPoolConfig& config) noexcept
         Perms::OwnerAll
     );
     
-    auto mgmtResult = mgmtProvider.createMemory();
+    auto mgmtResult = s_mgmtProvider->createMemory();
     if (!mgmtResult.has_value())
     {
         ZEROCP_LOG(Error, "Failed to create management shared memory");
+        s_mgmtProvider.reset();
         return false;
     }
     void* managementAddress = mgmtResult.value();
     ZEROCP_LOG(Info, "Management memory created at: " << managementAddress);
     
     // 3. 创建数据区（chunks）共享内存
-    PosixShmProvider chunkProvider(
+    s_chunkProvider = std::make_unique<PosixShmProvider>(
         Name_t(CHUNK_SHM_NAME),
         chunkSize,
         AccessMode::ReadWrite,
@@ -85,10 +89,12 @@ bool MemPoolManager::createSharedInstance(const MemPoolConfig& config) noexcept
         Perms::OwnerAll
     );
     
-    auto chunkResult = chunkProvider.createMemory();
+    auto chunkResult = s_chunkProvider->createMemory();
     if (!chunkResult.has_value())
     {
         ZEROCP_LOG(Error, "Failed to create chunk shared memory");
+        s_mgmtProvider.reset();
+        s_chunkProvider.reset();
         return false;
     }
     void* chunkMemoryAddress = chunkResult.value();
@@ -98,23 +104,28 @@ bool MemPoolManager::createSharedInstance(const MemPoolConfig& config) noexcept
     s_initSemaphore = sem_open(SEM_NAME, O_CREAT | O_EXCL, 0644, 1);
     bool isFirstProcess = (s_initSemaphore != SEM_FAILED);
     
+    ZEROCP_LOG(Info, "Semaphore check: isFirstProcess=" << isFirstProcess);
+    
     if (!isFirstProcess)
     {
         // 不是第一个进程，打开已存在的信号量
         s_initSemaphore = sem_open(SEM_NAME, 0);
         if (s_initSemaphore == SEM_FAILED)
         {
-            ZEROCP_LOG(Error, "Failed to open existing semaphore");
+            ZEROCP_LOG(Error, "Failed to open existing semaphore, errno=" << errno);
             return false;
         }
+        ZEROCP_LOG(Info, "Opened existing semaphore");
     }
     
     // 5. 等待信号量（加锁）
+    ZEROCP_LOG(Info, "Waiting for semaphore...");
     if (sem_wait(s_initSemaphore) != 0)
     {
-        ZEROCP_LOG(Error, "Failed to wait on semaphore");
+        ZEROCP_LOG(Error, "Failed to wait on semaphore, errno=" << errno);
         return false;
     }
+    ZEROCP_LOG(Info, "Acquired semaphore");
     
     // 6. 在共享内存中构造或获取 MemPoolManager 实例
     // 关键设计：MemPoolManager 对象本身在共享内存中（使用 placement new）
@@ -139,6 +150,7 @@ bool MemPoolManager::createSharedInstance(const MemPoolConfig& config) noexcept
         
         // 使用 placement new 在共享内存中构造 MemPoolManager
         s_instance = new (managerAddress) MemPoolManager(config);
+        s_isOwner = true;  // 标记为拥有者
         
         // 创建 MemPoolAllocator 实例进行内存布局
         MemPoolAllocator allocator(config, managementAddress);
@@ -174,6 +186,7 @@ bool MemPoolManager::createSharedInstance(const MemPoolConfig& config) noexcept
         
         // 其他进程：直接使用 mmap 返回的地址，它指向共享内存中已存在的 MemPoolManager 对象
         s_instance = static_cast<MemPoolManager*>(managerAddress);
+        s_isOwner = false;  // 不是拥有者
     }
     
     // 7. 保存共享内存基地址和大小（进程本地变量）
@@ -189,6 +202,77 @@ bool MemPoolManager::createSharedInstance(const MemPoolConfig& config) noexcept
     return true;
 }
 
+bool MemPoolManager::attachToSharedInstance() noexcept
+{
+    // 如果已经连接，直接返回成功
+    if (s_instance != nullptr)
+    {
+        ZEROCP_LOG(Info, "Already attached to shared instance");
+        return true;
+    }
+    
+    // 1. 打开管理区共享内存（只读模式，不创建）
+    s_mgmtProvider = std::make_unique<PosixShmProvider>(
+        Name_t(MGMT_SHM_NAME),
+        0,  // 大小会从已存在的共享内存中获取
+        AccessMode::ReadWrite,
+        OpenMode::OpenExisting,  // 只打开已存在的
+        Perms::OwnerAll
+    );
+    
+    auto mgmtResult = s_mgmtProvider->createMemory();
+    if (!mgmtResult.has_value())
+    {
+        ZEROCP_LOG(Error, "Failed to open management shared memory - server may not be running");
+        s_mgmtProvider.reset();
+        return false;
+    }
+    void* managementAddress = mgmtResult.value();
+    ZEROCP_LOG(Info, "Opened management memory at: " << managementAddress);
+    
+    // 2. 打开数据区共享内存
+    s_chunkProvider = std::make_unique<PosixShmProvider>(
+        Name_t(CHUNK_SHM_NAME),
+        0,
+        AccessMode::ReadWrite,
+        OpenMode::OpenExisting,
+        Perms::OwnerAll
+    );
+    
+    auto chunkResult = s_chunkProvider->createMemory();
+    if (!chunkResult.has_value())
+    {
+        ZEROCP_LOG(Error, "Failed to open chunk shared memory");
+        s_mgmtProvider.reset();
+        s_chunkProvider.reset();
+        return false;
+    }
+    void* chunkMemoryAddress = chunkResult.value();
+    ZEROCP_LOG(Info, "Opened chunk memory at: " << chunkMemoryAddress);
+    
+    // 3. 打开信号量
+    s_initSemaphore = sem_open(SEM_NAME, 0);
+    if (s_initSemaphore == SEM_FAILED)
+    {
+        ZEROCP_LOG(Error, "Failed to open semaphore, errno=" << errno);
+        return false;
+    }
+    
+    // 4. 获取共享内存中的 MemPoolManager 实例
+    // 客户端不需要构造，直接使用服务端创建的实例
+    s_instance = static_cast<MemPoolManager*>(managementAddress);
+    s_isOwner = false;  // 客户端不是拥有者
+    
+    // 5. 保存共享内存基地址（从 PosixShmProvider 获取实际大小）
+    s_managementBaseAddress = managementAddress;
+    s_chunkBaseAddress = chunkMemoryAddress;
+    // 注意：这里我们不知道确切的大小，但不影响使用
+    // 因为所有的内存布局信息都在共享内存的 MemPoolManager 对象中
+    
+    ZEROCP_LOG(Info, "Successfully attached to shared instance");
+    return true;
+}
+
 MemPoolManager* MemPoolManager::getInstanceIfInitialized() noexcept
 {
     return s_instance;
@@ -198,10 +282,16 @@ void MemPoolManager::destroySharedInstance() noexcept
 {
     if (s_instance != nullptr)
     {
-        ZEROCP_LOG(Info, "Destroying shared instance");
+        ZEROCP_LOG(Info, "Destroying shared instance (isOwner=" << s_isOwner << ")");
         
-        // 删除实例
-        delete s_instance;
+        // 只有拥有者才需要调用析构函数
+        // MemPoolManager 对象在共享内存中，使用 placement new 构造
+        // 所以需要手动调用析构函数，但不能使用 delete
+        if (s_isOwner)
+        {
+            s_instance->~MemPoolManager();
+        }
+        
         s_instance = nullptr;
         
         // 清空静态变量（进程本地）
@@ -209,7 +299,12 @@ void MemPoolManager::destroySharedInstance() noexcept
         s_chunkBaseAddress = nullptr;
         s_managementMemorySize = 0;
         s_chunkMemorySize = 0;
+        s_isOwner = false;
     }
+    
+    // 释放共享内存提供者（会自动取消映射和删除共享内存）
+    s_mgmtProvider.reset();
+    s_chunkProvider.reset();
     
     // 关闭信号量
     if (s_initSemaphore != SEM_FAILED)
@@ -220,11 +315,6 @@ void MemPoolManager::destroySharedInstance() noexcept
     
     // 取消链接信号量（最后一个进程）
     sem_unlink(SEM_NAME);
-    
-    // 注意：共享内存的取消映射和删除由 PosixShmProvider 的析构函数自动处理
-    // 如果需要显式删除共享内存，可以调用 shm_unlink
-    // shm_unlink(MGMT_SHM_NAME);
-    // shm_unlink(CHUNK_SHM_NAME);
     
     ZEROCP_LOG(Info, "Shared instance destroyed");
 }
@@ -369,29 +459,44 @@ bool MemPoolManager::releaseChunk(ChunkManager* chunkManager) noexcept
 void MemPoolManager::printAllPoolStats() const noexcept
 {
     std::cout << "==================== MemPoolManager Stats ====================" << std::endl;
-    std::cout << "Total Memory Size: " << getTotalMemorySize() << " bytes" << std::endl;
-    std::cout << "Data Pools: " << m_mempools.size() << std::endl;
     
-    if (!m_mempools.empty())
-    {
-        for (size_t i = 0; i < m_mempools.size(); ++i)
+    // 安全检查：先检查 m_config 是否有效
+    try {
+        std::cout << "Data Pools: " << m_mempools.size() << std::endl;
+        
+        if (!m_mempools.empty())
         {
-            const MemPool& pool = m_mempools[i];
-            std::cout << "  Pool[" << i << "]: "
-                      << "ChunkSize=" << pool.getChunkSize() << " bytes, "
-                      << "Total=" << pool.getTotalChunks() << ", "
-                      << "Used=" << pool.getUsedChunks() << ", "
-                      << "Free=" << pool.getFreeChunks() << std::endl;
+            for (size_t i = 0; i < m_mempools.size(); ++i)
+            {
+                const MemPool& pool = m_mempools[i];
+                std::cout << "  Pool[" << i << "]: "
+                          << "ChunkSize=" << pool.getChunkSize() << " bytes, "
+                          << "Total=" << pool.getTotalChunks() << ", "
+                          << "Used=" << pool.getUsedChunks() << ", "
+                          << "Free=" << pool.getFreeChunks() << std::endl;
+            }
+        }
+        else
+        {
+            std::cout << "  (No data pools initialized)" << std::endl;
+        }
+
+        if (!m_chunkManagerPool.empty())
+        {
+            const MemPool& mgmtPool = m_chunkManagerPool[0];
+            std::cout << "ChunkManager Pool: "
+                      << "Total=" << mgmtPool.getTotalChunks() << ", "
+                      << "Used=" << mgmtPool.getUsedChunks() << ", "
+                      << "Free=" << mgmtPool.getFreeChunks() << std::endl;
+        }
+        else
+        {
+            std::cout << "ChunkManager Pool: (Not initialized)" << std::endl;
         }
     }
-
-    if (!m_chunkManagerPool.empty())
+    catch (...)
     {
-        const MemPool& mgmtPool = m_chunkManagerPool[0];
-        std::cout << "ChunkManager Pool: "
-                  << "Total=" << mgmtPool.getTotalChunks() << ", "
-                  << "Used=" << mgmtPool.getUsedChunks() << ", "
-                  << "Free=" << mgmtPool.getFreeChunks() << std::endl;
+        std::cout << "ERROR: Exception occurred while printing stats" << std::endl;
     }
     
     std::cout << "===============================================================" << std::endl;

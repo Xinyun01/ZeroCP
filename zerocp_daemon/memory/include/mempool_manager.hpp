@@ -9,6 +9,14 @@
 #include <pthread.h>
 #include <semaphore.h>
 #include <cstdint>
+#include <memory>
+
+// 前向声明
+namespace ZeroCP {
+namespace Memory {
+class PosixShmProvider;
+}
+}
 
 using ZeroCP::vector;
 
@@ -29,10 +37,15 @@ class MemPoolManager
 public:
     // ==================== 单例模式（共享内存版本） ====================
     
-    /// @brief 创建或获取共享内存中的实例
-    /// @param config 内存池配置（仅首次创建时使用）
+    /// @brief 创建共享内存中的实例（服务端使用）
+    /// @param config 内存池配置
     /// @return 成功返回 true
     static bool createSharedInstance(const MemPoolConfig& config) noexcept;
+    
+    /// @brief 连接到已存在的共享内存实例（客户端使用）
+    /// @return 成功返回 true
+    /// @note 客户端不需要提供配置，直接连接到服务端创建的共享内存
+    static bool attachToSharedInstance() noexcept;
     
     /// @brief 获取已初始化的全局实例
     /// @return 全局实例指针，如果未初始化则返回 nullptr
@@ -127,6 +140,13 @@ private:
     static const char* MGMT_SHM_NAME;               ///< 管理区共享内存名称
     static const char* CHUNK_SHM_NAME;              ///< 数据区共享内存名称
     static const char* SEM_NAME;                    ///< 信号量名称
+    
+    // 保存 PosixShmProvider 对象，防止共享内存被析构
+    static std::unique_ptr<PosixShmProvider> s_mgmtProvider;
+    static std::unique_ptr<PosixShmProvider> s_chunkProvider;
+    
+    // 标记当前进程是否是创建者（拥有所有权）
+    static bool s_isOwner;
 };
 
 } // namespace Memory

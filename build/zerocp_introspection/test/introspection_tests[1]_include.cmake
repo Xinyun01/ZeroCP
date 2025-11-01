@@ -1,0 +1,5 @@
+if(EXISTS "/home/xinyun/Infrastructure/zero_copy_framework/build/zerocp_introspection/test/introspection_tests[1]_tests.cmake")
+  include("/home/xinyun/Infrastructure/zero_copy_framework/build/zerocp_introspection/test/introspection_tests[1]_tests.cmake")
+else()
+  add_test(introspection_tests_NOT_BUILT introspection_tests_NOT_BUILT)
+endif()

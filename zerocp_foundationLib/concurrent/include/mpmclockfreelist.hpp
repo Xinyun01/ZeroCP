@@ -37,7 +37,7 @@ private:
 
     std::atomic<Node> m_headIndex; // 头节点索引（含ABA防护计数），使用原子类型以支持无锁并发
     uint32_t m_invalidNodeIndex{0}; // 无效节点索引标记
-    uint32_t* m_freeIndicesHeader{nullptr}; // 空闲节点索引头指针
+    ZeroCP::RelativePointer<uint32_t> m_freeIndicesHeader; // 空闲节点索引头指针（使用相对指针）
     uint32_t m_capacity{0}; // 链表容量
 };
 

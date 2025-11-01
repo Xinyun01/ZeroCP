@@ -7,12 +7,12 @@ namespace ZeroCP
 namespace Memory
 {
 
-// 生成唯一的段ID
-static std::atomic<uint64_t> g_nextSegmentId{1};
+// 生成唯一的池ID
+static std::atomic<uint64_t> g_nextPoolId{1};
 
 PosixShmProvider::PosixShmProvider(const Name_t& name, const uint64_t memorySize, const AccessMode accessMode, const OpenMode openMode, const Perms permissions) noexcept
     : m_name(name), m_memorySize(memorySize), m_accessMode(accessMode), m_openMode(openMode), m_permissions(permissions)
-    , m_segmentId(g_nextSegmentId.fetch_add(1, std::memory_order_relaxed))
+    , m_poolId(g_nextPoolId.fetch_add(1, std::memory_order_relaxed))
 {
 }
 
@@ -49,11 +49,11 @@ std::expected<void*, PosixSharedMemoryObjectError> PosixShmProvider::createMemor
         return std::unexpected(PosixSharedMemoryObjectError::UNKNOWN_ERROR);
     }
     
-    // 注册到全局段注册表，用于 RelativePointer
-    // TODO: 需要实现 SegmentRegistry 类
-    // SegmentRegistry::instance().registerSegment(m_segmentId, m_baseAddress);
+    // 注册到全局池注册表，用于 RelativePointer
+    // TODO: 需要实现 PoolRegistry 类
+    // PoolRegistry::instance().registerPool(m_poolId, m_baseAddress);
     
-    ZEROCP_LOG(Info, "Shared memory created - Segment ID: " << m_segmentId << ", Base Address: " << m_baseAddress);
+    ZEROCP_LOG(Info, "Shared memory created - Pool ID: " << m_poolId << ", Base Address: " << m_baseAddress);
     
     return m_baseAddress;
 }
@@ -62,10 +62,10 @@ std::expected<void, PosixSharedMemoryObjectError> PosixShmProvider::destroyMemor
 {
     if(m_sharedMemoryObject.has_value())
     {
-        // 取消注册段
-        // TODO: 需要实现 SegmentRegistry 类
-        // SegmentRegistry::instance().unregisterSegment(m_segmentId);
-        ZEROCP_LOG(Info, "Unregistered segment ID: " << m_segmentId);
+        // 取消注册池
+        // TODO: 需要实现 PoolRegistry 类
+        // PoolRegistry::instance().unregisterPool(m_poolId);
+        ZEROCP_LOG(Info, "Unregistered pool ID: " << m_poolId);
         
         // 重置共享内存对象
         m_sharedMemoryObject.reset();
@@ -75,9 +75,9 @@ std::expected<void, PosixSharedMemoryObjectError> PosixShmProvider::destroyMemor
     return {};
 }
 
-uint64_t PosixShmProvider::getSegmentId() const noexcept
+uint64_t PosixShmProvider::getPoolId() const noexcept
 {
-    return m_segmentId;
+    return m_poolId;
 }
 
 bool PosixShmProvider::isMemoryAvailable() const noexcept
@@ -93,7 +93,7 @@ void* PosixShmProvider::getBaseAddress() const noexcept
 void PosixShmProvider::announceMemoryAvailable() noexcept
 {
     m_memoryAvailableAnnounced = true;
-    ZEROCP_LOG(Info, "Memory available announced for segment ID: " << m_segmentId);
+    ZEROCP_LOG(Info, "Memory available announced for pool ID: " << m_poolId);
 }
 
 } // namespace Memory

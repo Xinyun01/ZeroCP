@@ -4,7 +4,7 @@
 # compile CXX with /usr/bin/c++
 CXX_DEFINES = -D_GNU_SOURCE
 
-CXX_INCLUDES = -I/home/xinyun/Infrastructure/zero_copy_framework/introspection/include
+CXX_INCLUDES = -I/home/xinyun/Infrastructure/zero_copy_framework/introspection/include -I/home/xinyun/Infrastructure/zero_copy_framework/zerocp_introspection/include
 
 CXX_FLAGS = -O3 -DNDEBUG -D_DEFAULT_SOURCE -D_XOPEN_SOURCE=600 -O3 -DNDEBUG -std=gnu++17
 

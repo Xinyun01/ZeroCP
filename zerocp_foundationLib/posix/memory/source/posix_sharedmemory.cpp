@@ -70,6 +70,7 @@ std::expected<PosixSharedMemory, PosixSharedMemoryError> PosixSharedMemoryBuilde
     }
     
     auto nameWithLeadingSlash = addLeadingSlash(m_name);
+    ZEROCP_LOG(Info, "Creating shared memory with name: " << nameWithLeadingSlash << ", size: " << m_memorySize);
     bool hasOwnership = ((m_openMode == OpenMode::ExclusiveCreate) || (m_openMode == OpenMode::PurgeAndCreate)
                          || m_openMode == OpenMode::OpenOrCreate);
 
@@ -149,6 +150,7 @@ std::expected<PosixSharedMemory, PosixSharedMemoryError> PosixSharedMemoryBuilde
     else
     {
         sharedMemoryFileHandle = result.value().value;
+        ZEROCP_LOG(Info, "shm_open succeeded, handle: " << sharedMemoryFileHandle);
     }
 
     // 如果拥有所有权，需要设置共享内存的大小

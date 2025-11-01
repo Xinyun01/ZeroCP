@@ -70,6 +70,10 @@ bool MemPoolAllocator::ManagementMemoryLayout(void* mgmtBaseAddress, uint64_t mg
         return false;
     }
 
+    ZEROCP_LOG(Info, "ManagementMemoryLayout: Starting layout");
+    ZEROCP_LOG(Info, "  Config entries: " << m_config.m_memPoolEntries.size());
+    ZEROCP_LOG(Info, "  mempools vector size before: " << mempools.size());
+
     // 使用 BumpAllocator 从管理内存中分配
     BumpAllocator allocator(mgmtBaseAddress, mgmtMemorySize);
     
@@ -111,9 +115,13 @@ bool MemPoolAllocator::ManagementMemoryLayout(void* mgmtBaseAddress, uint64_t mg
             return false;
         }
         
+        ZEROCP_LOG(Info, "  Added MemPool[" << poolIndex << "]: " << entry.m_chunkSize << "B x " << entry.m_chunkCount);
+        
         totalChunks += entry.m_chunkCount;
         poolIndex++;
     }
+    
+    ZEROCP_LOG(Info, "  mempools vector size after: " << mempools.size());
     
     // 2. 分配所有 ChunkManager 对象的内存
     uint64_t chunkManagerArraySize = totalChunks * align(sizeof(ChunkManager), 8U);
@@ -166,7 +174,7 @@ bool MemPoolAllocator::ChunkMemoryLayout(void* baseAddress, uint64_t memorySize,
         ZEROCP_LOG(Error, "Invalid parameters");
         return false;
     }
-    
+
     // 使用 BumpAllocator 从数据内存中分配
     BumpAllocator allocator(baseAddress, memorySize);
     
