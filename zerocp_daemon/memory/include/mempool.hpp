@@ -60,6 +60,22 @@ public:
     /// @brief 获取数据区偏移量
     /// @return 相对于数据区基地址的偏移量
     uint64_t getDataOffset() const noexcept { return m_dataOffset; }
+    
+    /// @brief 从空闲链表中获取一个 chunk 索引
+    /// @param index 输出参数，存储获取到的索引
+    /// @return 成功返回 true，失败返回 false
+    bool allocateChunk(uint32_t& index) noexcept { return m_freeIndices.pop(index); }
+    
+    /// @brief 将 chunk 索引归还到空闲链表
+    /// @param index 要归还的索引
+    /// @return 成功返回 true，失败返回 false
+    bool freeChunk(uint32_t index) noexcept { return m_freeIndices.push(index); }
+    
+    /// @brief 增加已使用 chunk 计数
+    void incrementUsedCount() noexcept { m_usedChunk.fetch_add(1, std::memory_order_relaxed); }
+    
+    /// @brief 减少已使用 chunk 计数
+    void decrementUsedCount() noexcept { m_usedChunk.fetch_sub(1, std::memory_order_relaxed); }
 
 private:
     ZeroCP::RelativePointer<void> m_rawMemory;      ///< 数据池的基地址相对指针

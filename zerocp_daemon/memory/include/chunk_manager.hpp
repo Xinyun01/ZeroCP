@@ -21,6 +21,12 @@ struct ChunkManager
     /// @brief 指向ChunkManagement对象池的相对指针
     ZeroCP::RelativePointer<MemPool> m_chunkManagementPool;
     std::atomic<uint64_t> m_refCount{0};
+    
+    // ==================== 跨进程索引信息 ====================
+    /// @brief 数据 chunk 在其所属池中的索引（用于跨进程地址重建）
+    uint32_t m_chunkIndex{0};
+    /// @brief ChunkManager 对象在 ChunkManagerPool 中的索引
+    uint32_t m_chunkManagerIndex{0};
 };
 
 } // namespace Memory

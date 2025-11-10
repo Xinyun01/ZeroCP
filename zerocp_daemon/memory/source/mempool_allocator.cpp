@@ -160,6 +160,11 @@ bool MemPoolAllocator::ManagementMemoryLayout(void* mgmtBaseAddress, uint64_t mg
         return false;
     }
     
+    // 5. 设置 ChunkManagerPool 的 dataOffset
+    // ChunkManager 数组在管理区内存中，计算相对于管理区基地址的偏移量
+    uint64_t chunkMgrDataOffset = static_cast<char*>(chunkManagerMemory) - static_cast<char*>(m_sharedMemoryBase);
+    chunkManagerPool[0].setRawMemory(chunkManagerMemory, chunkMgrDataOffset);
+    
     ZEROCP_LOG(Info, "ManagementMemoryLayout completed successfully");
     return true;
 }

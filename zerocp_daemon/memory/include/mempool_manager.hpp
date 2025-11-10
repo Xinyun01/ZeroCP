@@ -88,6 +88,13 @@ public:
     /// @param chunkManager chunk 管理器指针
     /// @return 成功返回 true
     bool releaseChunk(ChunkManager* chunkManager) noexcept;
+    
+    /// @brief 通过索引获取 ChunkManager（用于跨进程重建）
+    /// @param index ChunkManager 在 ChunkManagerPool 中的索引
+    /// @return ChunkManager 指针，失败返回 nullptr
+    /// @note 用于接收端根据索引重建 ChunkManager 指针
+    ChunkManager* getChunkManagerByIndex(uint32_t index) noexcept;
+    
     /// @brief 打印所有内存池状态
     void printAllPoolStats() const noexcept;
     

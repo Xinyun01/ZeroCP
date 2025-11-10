@@ -23,9 +23,10 @@ MemPool::MemPool(void* baseAddress,
     , m_freeIndices(static_cast<uint32_t*>(freeListMemory), chunkNums)  // 初始化 MPMC_LockFree_List
 {
     // 验证参数
-    if (rawMemory == nullptr || freeListMemory == nullptr)
+    // 注意：rawMemory 可以为 nullptr，因为它会在 ChunkMemoryLayout 中设置
+    if (freeListMemory == nullptr)
     {
-        ZEROCP_LOG(Error, "MemPool constructor - Invalid memory address");
+        ZEROCP_LOG(Error, "MemPool constructor - Invalid freeListMemory address");
         // 注意：构造函数无法返回错误，这里只能记录日志
         // 实际应用中可能需要添加一个 isValid() 方法来检查
         return;

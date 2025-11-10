@@ -54,10 +54,9 @@ private:
     uint64_t m_strSize = 0U;
 };
 
-
 }
 
 // 包含实现文件
-#include "detail/string.inl"
+#include "zerocp_foundationLib/vocabulary/detail/string.inl"
 
 #endif

@@ -1,8 +1,8 @@
 #ifndef UNIX_DOMAIN_SOCKET_HPP
 #define UNIX_DOMAIN_SOCKET_HPP
 
-#include "filesystem.hpp"
-#include "builder.hpp"
+#include "../../filesystem/include/filesystem.hpp"
+#include "../../design/builder.hpp"
 #include <expected>
 #include "string.hpp"
 #include <cstdint>

@@ -89,13 +89,45 @@ int main()
     std::cout << "\n[4] 内存池初始状态:" << std::endl;
     manager->printAllPoolStats();
     
-    // ==================== 5. 验证初始化成功 ====================
-    std::cout << "\n[5] 验证初始化..." << std::endl;
-    std::cout << "  ✓ 所有内存池已就绪" << std::endl;
-    std::cout << "  ✓ 共享内存可供多进程访问" << std::endl;
-    std::cout << "  ℹ️  getChunk/releaseChunk 功能待后续实现" << std::endl;
+    // ==================== 5. 测试 chunk 分配 ====================
+    std::cout << "\n[5] 测试 chunk 分配..." << std::endl;
     
-    // ==================== 6. 保持运行，等待客户端 ====================
+    // 测试分配不同大小的 chunk
+    ChunkManager* chunk1 = manager->getChunk(100);  // 应该从 256B 池分配
+    if (chunk1)
+    {
+        std::cout << "  ✓ 成功分配 100 字节 chunk" << std::endl;
+    }
+    else
+    {
+        std::cout << "  ✗ 分配 100 字节 chunk 失败" << std::endl;
+    }
+    
+    ChunkManager* chunk2 = manager->getChunk(512);  // 应该从 1KB 池分配
+    if (chunk2)
+    {
+        std::cout << "  ✓ 成功分配 512 字节 chunk" << std::endl;
+    }
+    else
+    {
+        std::cout << "  ✗ 分配 512 字节 chunk 失败" << std::endl;
+    }
+    
+    ChunkManager* chunk3 = manager->getChunk(2048);  // 应该从 4KB 池分配
+    if (chunk3)
+    {
+        std::cout << "  ✓ 成功分配 2048 字节 chunk" << std::endl;
+    }
+    else
+    {
+        std::cout << "  ✗ 分配 2048 字节 chunk 失败" << std::endl;
+    }
+    
+    // 打印分配后的内存池状态
+    std::cout << "\n[6] 分配后的内存池状态:" << std::endl;
+    manager->printAllPoolStats();
+    
+    // ==================== 7. 保持运行，等待客户端 ====================
     std::cout << "\n========================================" << std::endl;
     std::cout << "  服务端运行中..." << std::endl;
     std::cout << "  按 Ctrl+C 退出" << std::endl;
@@ -112,8 +144,8 @@ int main()
         manager->printAllPoolStats();
     }
     
-    // ==================== 7. 清理资源 ====================
-    std::cout << "\n[7] 清理资源..." << std::endl;
+    // ==================== 8. 清理资源 ====================
+    std::cout << "\n[8] 清理资源..." << std::endl;
     
     // 销毁共享实例
     MemPoolManager::destroySharedInstance();

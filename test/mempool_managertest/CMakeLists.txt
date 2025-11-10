@@ -17,6 +17,8 @@ set(PROJECT_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/../..)
 include_directories(
     # MemPoolManager 相关
     ${PROJECT_ROOT}/zerocp_daemon/memory/include
+    # Communication (Diroute)
+    ${PROJECT_ROOT}/zerocp_daemon/communication/include
     
     # 基础库
     ${PROJECT_ROOT}/zerocp_foundationLib/posix/memory/include
@@ -59,12 +61,29 @@ set(MEMPOOL_SOURCES
     ${PROJECT_ROOT}/zerocp_foundationLib/report/source/log_backend.cpp
 )
 
+# 仅用于本目录下测试的 IPC 实现（不改动主库源文件）
+set(TEST_COMM_SOURCES
+    ipc_interface_creator_testimpl.cpp
+    ${PROJECT_ROOT}/zerocp_daemon/communication/source/diroute.cpp
+)
+
 # 测试服务端
 add_executable(test_server 
     test_server.cpp
     ${MEMPOOL_SOURCES}
 )
 target_link_libraries(test_server
+    pthread
+    rt
+)
+
+# 简单的 Diroute 服务端测试
+add_executable(server_test
+    server_test.cpp
+    ${TEST_COMM_SOURCES}
+    ${MEMPOOL_SOURCES}
+)
+target_link_libraries(server_test
     pthread
     rt
 )
@@ -80,13 +99,13 @@ target_link_libraries(test_client
 )
 
 # 设置输出目录
-set_target_properties(test_server test_client
+set_target_properties(test_server test_client server_test
     PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
 )
 
 # 安装规则（可选）
-install(TARGETS test_server test_client
+install(TARGETS test_server test_client server_test
     RUNTIME DESTINATION bin
 )
 
