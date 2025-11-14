@@ -8,7 +8,7 @@
 #include <atomic>
 namespace ZeroCP
 {
-
+using RuntimeName_t = string<128>;
 namespace Diroute
 {
 
@@ -26,10 +26,12 @@ public:
     void stop() noexcept;
     void startProcessRuntimeMessagesThread() noexcept;
     void processRuntimeMessagesThread() noexcept;
-
+    void registerProcess(RuntimeName_t m_Runtime
+                                                ) noexcept;
 private:
     std::thread m_startProcessRuntimeMessagesThread; // 监控与发现线程
     std::atomic<bool> m_runMonitoringAndDiscoveryThread{false};
+    ProcessManager m_prcMgr;
 };
 } // namespace Diroute
 

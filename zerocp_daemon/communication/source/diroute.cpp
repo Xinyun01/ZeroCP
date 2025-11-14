@@ -12,6 +12,7 @@ void Diroute::run() noexcept
 {
     m_runMonitoringAndDiscoveryThread = true;
     startProcessRuntimeMessagesThread();
+    m_prcMgr.initRuntime();
 }
     
 Diroute::~Diroute() noexcept

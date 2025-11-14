@@ -4,12 +4,14 @@
 #include "zerocp_foundationLib/vocabulary/include/string.hpp"
 #include "ipc_runtime_interface.hpp"
 //当前代码是为了让每一个进程都注册一个名字app,对外部进程，然后通过路由端口发送到守护进程查看当前进程是否存在
+#include "processinfo.hpp"
+#include <vector>
 namespace ZeroCP
 {
 using RuntimeName_t = ZeroCP::string<108>;
 namespace Runtime
 {
-class ProcessRuntime
+class ProcessManager
 {
 public:
     static void initRuntime(const RuntimeName_t& runtimeName) noexcept;
@@ -20,12 +22,16 @@ public:
     ProcessRuntime& operator=(const ProcessRuntime&) = delete;
     ProcessRuntime& operator=(ProcessRuntime&&) noexcept = delete;
     ~ProcessRuntime() noexcept = default;
-    void registerRuntime(const RuntimeName_t& runtimeName) noexcept;
-    void unregisterRuntime(const RuntimeName_t& runtimeName) noexcept;
+
+    bool registerProcess(   const RuntimeName_t& name,
+                            const uint32_t pid,
+                            const bool isMonitored) noexcept;
+    
 private:
     ProcessRuntime() = default;
     static RuntimeName_t m_runtimeName;
     IpcRuntimeInterface m_ipcRuntimeInterface;
+    std::vector<ProcessInfo> m_processInfo
 };
 }
 }   
