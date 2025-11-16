@@ -1,32 +1,30 @@
-#include "runtime/ipc_interface_creator.hpp"
+#include "popo/posh_runtime.hpp"
 #include "zerocp_foundationLib/report/include/logging.hpp"
-#include <thread>
-#include <chrono>
+#include <unistd.h>
 
 int main() {
     ZEROCP_LOG(Info, "ipc_client starting...");
-    ZeroCP::Runtime::IpcInterfaceCreator creator;
-    ZeroCP::Runtime::RuntimeName_t clientName;
-    clientName.insert(0, "client");
-    auto res = creator.createUnixDomainSocket(clientName, ZeroCP::PosixIpcChannelSide::CLIENT, "client.sock");
-    if (!res.has_value()) {
-        ZEROCP_LOG(Error, "createUnixDomainSocket failed for client. Ignore for test.");
-    }
 
-    ZeroCP::Runtime::RuntimeMessage msg = std::string("hello from client aaaaaa");
-    creator.sendMessage(msg);
-    // 接收服务器回复
-    ZeroCP::Runtime::RuntimeMessage receivedMsg;
-    if (creator.receiveMessage(receivedMsg)) {
-        ZEROCP_LOG(Info, "Received reply: " << receivedMsg);
-    } else {
-        ZEROCP_LOG(Warn, "No reply received.");
+    // 使用 PoshRuntime::initRuntime() 一步完成初始化和连接
+    // 类似 iceoryx: iox::runtime::PoshRuntime::initRuntime("MyApp")
+    ZeroCP::Runtime::RuntimeName_t appName;
+    appName.insert(0, "MyClientApp");
+    
+    auto& runtime = ZeroCP::Runtime::PoshRuntime::initRuntime(appName);
+    
+    ZEROCP_LOG(Info, "PoshRuntime initialized successfully");
+    ZEROCP_LOG(Info, "Runtime name: " << runtime.getRuntimeName().c_str());
+    ZEROCP_LOG(Info, "Connected: " << (runtime.isConnected() ? "Yes" : "No"));
+    
+    // 发送测试消息
+    if (runtime.isConnected()) {
+        runtime.sendMessage("Hello from client application!");
+        ZEROCP_LOG(Info, "Test message sent through PoshRuntime");
     }
-
+    
+    // 保持运行一段时间以便接收响应
+    usleep(2000000);  // 2秒 = 2000000微秒
+    
     ZEROCP_LOG(Info, "ipc_client done.");
-    // Optionally try receive to keep symmetry; ignore result
-    ZEROCP_LOG(Info, "ipc_client done.");
-    // give server time to log
-    std::this_thread::sleep_for(std::chrono::milliseconds(200));
     return 0;
 }

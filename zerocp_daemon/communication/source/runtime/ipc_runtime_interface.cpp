@@ -7,6 +7,7 @@ namespace Runtime
 
 IpcRuntimeInterface::IpcRuntimeInterface(const RuntimeName_t& runtimeName) noexcept
     : m_runtimeName(runtimeName)
+    , m_messagesRuntime(runtimeName)
 {
 }
 
@@ -14,19 +15,19 @@ IpcRuntimeInterface::~IpcRuntimeInterface() noexcept
 {
 }
 
-void IpcRuntimeInterface::registerRuntime(const RuntimeName_t& runtimeName) noexcept
+void IpcRuntimeInterface::registerRuntime([[maybe_unused]] const RuntimeName_t& runtimeName) noexcept
 {
 }
 
-void IpcRuntimeInterface::unregisterRuntime(const RuntimeName_t& runtimeName) noexcept
+void IpcRuntimeInterface::unregisterRuntime([[maybe_unused]] const RuntimeName_t& runtimeName) noexcept
 {
 }
 
-void IpcRuntimeInterface::sendRuntimeMessage(const RuntimeName_t& runtimeName, const RuntimeMessage& message) noexcept
+void IpcRuntimeInterface::sendRuntimeMessage([[maybe_unused]] const RuntimeName_t& runtimeName, [[maybe_unused]] const RuntimeMessage& message) noexcept
 {
 }
 
-void IpcRuntimeInterface::receiveRuntimeMessage(const RuntimeName_t& runtimeName, RuntimeMessage& message) noexcept
+void IpcRuntimeInterface::receiveRuntimeMessage([[maybe_unused]] const RuntimeName_t& runtimeName, [[maybe_unused]] RuntimeMessage& message) noexcept
 {
 }
 

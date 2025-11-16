@@ -1,0 +1,7 @@
+/home/xinyun/Infrastructure/zero_copy_framework/test/zerocp_daemontest/service_description_test/build/CMakeFiles/diroute_daemon.dir
+/home/xinyun/Infrastructure/zero_copy_framework/test/zerocp_daemontest/service_description_test/build/CMakeFiles/ipc_client.dir
+/home/xinyun/Infrastructure/zero_copy_framework/test/zerocp_daemontest/service_description_test/build/CMakeFiles/client1.dir
+/home/xinyun/Infrastructure/zero_copy_framework/test/zerocp_daemontest/service_description_test/build/CMakeFiles/client2.dir
+/home/xinyun/Infrastructure/zero_copy_framework/test/zerocp_daemontest/service_description_test/build/CMakeFiles/client3.dir
+/home/xinyun/Infrastructure/zero_copy_framework/test/zerocp_daemontest/service_description_test/build/CMakeFiles/edit_cache.dir
+/home/xinyun/Infrastructure/zero_copy_framework/test/zerocp_daemontest/service_description_test/build/CMakeFiles/rebuild_cache.dir

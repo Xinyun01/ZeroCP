@@ -10,7 +10,7 @@ namespace Runtime
 
 //创建连接符
 std::expected<void, ZeroCP::PosixIpcChannelError>
-IpcInterfaceCreator::createUnixDomainSocket(const RuntimeName_t& runtimeName, 
+IpcInterfaceCreator::createUnixDomainSocket([[maybe_unused]] const RuntimeName_t& runtimeName, 
                                             const PosixIpcChannelSide& posixSide,
                                             const std::string& udsPath) noexcept
 {
@@ -46,17 +46,27 @@ IpcInterfaceCreator::createUnixDomainSocket(const RuntimeName_t& runtimeName,
 
 bool IpcInterfaceCreator::sendMessage(const RuntimeMessage& message) noexcept
 {
-    // Build destination address: fixed server path (roudi)
     sockaddr_un dest{};
     dest.sun_family = AF_UNIX;
-    const char* roudiPath = "udsServer.sock"; // fixed server socket name
-    std::memset(dest.sun_path, 0, sizeof(dest.sun_path));
-    std::strncpy(dest.sun_path, roudiPath, sizeof(dest.sun_path) - 1);
+    
+    // 如果是服务器端且有客户端地址，发送到客户端
+    if (m_unixDomainSocketSide == PosixIpcChannelSide::SERVER && m_hasClientAddr)
+    {
+        dest = m_lastClientAddr;
+        ZEROCP_LOG(Debug, "Server sending response to client: " << dest.sun_path);
+    }
+    else  // 客户端发送到服务器
+    {
+        const char* serverPath = "udsServer.sock";
+        std::memset(dest.sun_path, 0, sizeof(dest.sun_path));
+        std::strncpy(dest.sun_path, serverPath, sizeof(dest.sun_path) - 1);
+        ZEROCP_LOG(Debug, "Client sending message to server: " << serverPath);
+    }
+    
     auto sendRes = m_unixDomainSocket->sendTo(message, dest);
     if(!sendRes.has_value())
     {
-        ZEROCP_LOG(Error, "Failed to send message to server. server=" << roudiPath
-                     << " err=" << static_cast<int>(sendRes.error()));
+        ZEROCP_LOG(Error, "Failed to send message. err=" << static_cast<int>(sendRes.error()));
         return false;
     }
     return true;
@@ -73,16 +83,17 @@ bool IpcInterfaceCreator::receiveMessage(RuntimeMessage& message) noexcept
         ZEROCP_LOG(Error, "Failed to receive message. err=" << static_cast<int>(recvRes.error()));
         return false;
     }
+    
+    // 如果是服务器端，保存客户端地址用于发送响应
+    if (m_unixDomainSocketSide == PosixIpcChannelSide::SERVER)
+    {
+        m_lastClientAddr = fromAddr;
+        m_hasClientAddr = true;
+        ZEROCP_LOG(Debug, "Server received message from client: " << fromAddr.sun_path);
+    }
+    
     // 如果 RuntimeMessage 是字符串/字符串别名，直接赋值
     message = payload;
-    // 接收成功后向来源地址发送 ACK
-    const char* ack = "ACK";
-    auto ackRes = m_unixDomainSocket->sendTo(ack, fromAddr);
-    if (!ackRes.has_value())
-    {
-        ZEROCP_LOG(Warn, "Failed to send ACK. err=" << static_cast<int>(ackRes.error()));
-        // 仍然认为接收成功，不因 ACK 失败而影响接收流程
-    }
     return true;
 }
 

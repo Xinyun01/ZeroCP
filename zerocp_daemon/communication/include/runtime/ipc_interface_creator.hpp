@@ -7,6 +7,7 @@
 #include <expected>
 #include <string>
 #include <optional>
+#include <sys/un.h>
 
 namespace ZeroCP
 {
@@ -33,6 +34,8 @@ private:
     std::optional<UnixDomainSocket_t> m_unixDomainSocket;
     ZeroCP::Details::UnixDomainSocket::UdsName_t m_udsName_t{};
     ZeroCP::PosixIpcChannelSide m_unixDomainSocketSide {ZeroCP::PosixIpcChannelSide::CLIENT};
+    sockaddr_un m_lastClientAddr{};  // 保存最后一个客户端地址（服务器端使用）
+    bool m_hasClientAddr{false};     // 标记是否有有效的客户端地址
 
 };
 }
