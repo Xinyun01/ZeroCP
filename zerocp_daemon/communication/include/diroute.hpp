@@ -36,6 +36,7 @@ private:
                                     ZeroCP::Runtime::IpcInterfaceCreator& creator) noexcept;
     std::thread m_startProcessRuntimeMessagesThread; // 监控与发现线程
     std::atomic<bool> m_runMonitoringAndDiscoveryThread{false};
+    MemPoolIntrospection m_memPoolIntrospection
 };
 } // namespace Diroute
 
