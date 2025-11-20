@@ -669,9 +669,23 @@ std::vector<Diroute::SubscriberInfo*> Diroute::matchSubscribers(const ServiceDes
     return matched;
 }
 
+std::optional<RuntimeName_t> Diroute::findPublisherName(uint64_t slotIndex,
+                                                        const ServiceDescription& desc) const noexcept
+{
+    std::lock_guard<std::mutex> lock(m_pubSubMutex);
+    for (const auto& publisher : m_publishers)
+    {
+        if (publisher.slotIndex == slotIndex && publisher.serviceDesc == desc)
+        {
+            return publisher.processName;
+        }
+    }
+    return std::nullopt;
+}
+
 /// 将消息路由到订阅者的接收队列
 bool Diroute::routeMessageToSubscriber(const SubscriberInfo& subscriber,
-                                       uint64_t chunkOffset, uint64_t chunkSize, uint64_t payloadSize,
+                                       const Popo::ChunkHandle& chunk,
                                        const RuntimeName_t& publisherName) noexcept
 {
     // TODO: 从共享内存中获取接收队列
@@ -682,15 +696,12 @@ bool Diroute::routeMessageToSubscriber(const SubscriberInfo& subscriber,
     // 3. 创建 MessageHeader 并写入队列
     
     ZEROCP_LOG(Info, "Routing message to Subscriber: " << subscriber.processName.c_str()
-               << " (chunkOffset: " << chunkOffset 
-               << ", chunkSize: " << chunkSize
-               << ", payloadSize: " << payloadSize << ")");
+               << " (poolId: " << chunk.poolId 
+               << ", chunkOffset: " << chunk.chunkOffset << ")");
     
     // 创建消息头
     Popo::MessageHeader msgHeader(subscriber.serviceDesc);
-    msgHeader.chunkOffset = chunkOffset;
-    msgHeader.chunkSize = chunkSize;
-    msgHeader.payloadSize = payloadSize;
+    msgHeader.chunk = chunk;
     msgHeader.sequenceNumber = m_sequenceNumber.fetch_add(1, std::memory_order_relaxed);
     
     auto now = std::chrono::steady_clock::now();
@@ -717,7 +728,7 @@ bool Diroute::routeMessageToSubscriber(const SubscriberInfo& subscriber,
 }
 
 /// 处理消息路由
-/// 消息格式: "ROUTE:<publisherName>:<service>:<instance>:<event>:<chunkOffset>:<chunkSize>:<payloadSize>"
+/// 消息格式: "ROUTE:<slotIndex>:<service>:<instance>:<event>:<poolId>:<chunkOffset>"
 void Diroute::handleMessageRouting(const ZeroCP::Runtime::RuntimeMessage& message,
                                     ZeroCP::Runtime::IpcInterfaceCreator& creator) noexcept
 {
@@ -731,8 +742,8 @@ void Diroute::handleMessageRouting(const ZeroCP::Runtime::RuntimeMessage& messag
     
     // 解析消息
     std::istringstream iss(message);
-    std::string command, publisherName, service, instance, event;
-    std::string chunkOffsetStr, chunkSizeStr, payloadSizeStr;
+    std::string command, slotIndexStr, service, instance, event;
+    std::string poolIdStr, chunkOffsetStr;
     
     if (!std::getline(iss, command, ':') || command != "ROUTE")
     {
@@ -742,13 +753,12 @@ void Diroute::handleMessageRouting(const ZeroCP::Runtime::RuntimeMessage& messag
         return;
     }
     
-    if (!std::getline(iss, publisherName, ':') ||
+    if (!std::getline(iss, slotIndexStr, ':') ||
         !std::getline(iss, service, ':') ||
         !std::getline(iss, instance, ':') ||
         !std::getline(iss, event, ':') ||
-        !std::getline(iss, chunkOffsetStr, ':') ||
-        !std::getline(iss, chunkSizeStr, ':') ||
-        !std::getline(iss, payloadSizeStr))
+        !std::getline(iss, poolIdStr, ':') ||
+        !std::getline(iss, chunkOffsetStr))
     {
         ZEROCP_LOG(Error, "Failed to parse ROUTE message: " << message);
         ZeroCP::Runtime::RuntimeMessage response = "ERROR:PARSE_FAILED";
@@ -757,12 +767,14 @@ void Diroute::handleMessageRouting(const ZeroCP::Runtime::RuntimeMessage& messag
     }
     
     // 转换数值
-    uint64_t chunkOffset = 0, chunkSize = 0, payloadSize = 0;
+    uint64_t slotIndex = 0;
+    uint64_t poolId = 0;
+    uint64_t chunkOffset = 0;
     try
     {
+        slotIndex = std::stoull(slotIndexStr);
+        poolId = std::stoull(poolIdStr);
         chunkOffset = std::stoull(chunkOffsetStr);
-        chunkSize = std::stoull(chunkSizeStr);
-        payloadSize = std::stoull(payloadSizeStr);
     }
     catch (const std::exception& e)
     {
@@ -791,13 +803,22 @@ void Diroute::handleMessageRouting(const ZeroCP::Runtime::RuntimeMessage& messag
     }
     
     // 路由消息到所有匹配的订阅者
-    RuntimeName_t pubName;
-    pubName.insert(0, publisherName.c_str());
+    auto publisherNameOpt = findPublisherName(slotIndex, serviceDesc);
+    if (!publisherNameOpt.has_value())
+    {
+        ZEROCP_LOG(Error, "Publisher not registered for slot: " << slotIndex);
+        ZeroCP::Runtime::RuntimeMessage response = "ERROR:PUBLISHER_NOT_REGISTERED";
+        creator.sendMessage(response);
+        return;
+    }
+    
+    RuntimeName_t pubName = publisherNameOpt.value();
+    Popo::ChunkHandle chunkHandle{poolId, chunkOffset};
     
     bool allSuccess = true;
     for (auto* subscriber : matchedSubscribers)
     {
-        if (!routeMessageToSubscriber(*subscriber, chunkOffset, chunkSize, payloadSize, pubName))
+        if (!routeMessageToSubscriber(*subscriber, chunkHandle, pubName))
         {
             allSuccess = false;
         }

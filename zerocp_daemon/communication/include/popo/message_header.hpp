@@ -12,8 +12,20 @@ namespace Popo
 {
 using RuntimeName_t = ZeroCP::string<108>;
 
+/// @brief Chunk 句柄，描述 chunk 所在内存池及偏移
+struct ChunkHandle
+{
+    uint64_t poolId{0};        ///< 内存池 ID（对应 MemPool）
+    uint64_t chunkOffset{0};   ///< Chunk 在共享内存中的偏移
+
+    [[nodiscard]] bool isValid() const noexcept
+    {
+        return chunkOffset > 0;
+    }
+};
+
 /// @brief 消息头结构（存储在共享内存接收队列中）
-/// @note 包含 ServiceDescription 和 chunk 指针信息
+/// @note 仅携带 ServiceDescription、Chunk 句柄以及必要元信息
 struct MessageHeader
 {
     // ServiceDescription 信息（用于匹配）
@@ -22,9 +34,7 @@ struct MessageHeader
     id_string event;
     
     // Chunk 信息（零拷贝传输）
-    uint64_t chunkOffset{0};      // Chunk 在共享内存中的偏移量（相对地址）
-    uint64_t chunkSize{0};         // Chunk 大小（字节）
-    uint64_t payloadSize{0};       // 用户数据大小（chunkSize - headerSize）
+    ChunkHandle chunk;          ///< Chunk 句柄（池 + 偏移）
     
     // 元数据
     uint64_t sequenceNumber{0};   // 序列号（用于去重和排序）
@@ -46,7 +56,7 @@ struct MessageHeader
     /// @brief 检查消息是否有效
     [[nodiscard]] bool isValid() const noexcept
     {
-        return chunkOffset > 0 && chunkSize > 0;
+        return chunk.isValid();
     }
 };
 

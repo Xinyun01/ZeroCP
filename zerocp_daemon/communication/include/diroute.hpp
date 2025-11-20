@@ -7,6 +7,7 @@
 #include "runtime/process_manager.hpp"
 #include "runtime/message_runtime.hpp"
 #include "service_description.hpp"
+#include "popo/message_header.hpp"
 #include <thread>
 #include <atomic>
 #include <memory>
@@ -14,6 +15,7 @@
 #include <mutex>
 #include <vector>
 #include <set>
+#include <optional>
 namespace ZeroCP
 {
 // RuntimeName_t 已在 process_manager.hpp 中定义为 string<108>
@@ -100,7 +102,7 @@ private:
                                       ZeroCP::Runtime::IpcInterfaceCreator& creator) noexcept;
     
     /// @brief 处理消息路由（从 Publisher 到 Subscriber）
-    /// @param message 格式: "ROUTE:<publisherName>:<service>:<instance>:<event>:<chunkOffset>:<chunkSize>:<payloadSize>"
+    /// @param message 格式: "ROUTE:<slotIndex>:<service>:<instance>:<event>:<poolId>:<chunkOffset>"
     void handleMessageRouting(const ZeroCP::Runtime::RuntimeMessage& message,
                               ZeroCP::Runtime::IpcInterfaceCreator& creator) noexcept;
     
@@ -111,14 +113,16 @@ private:
     
     /// @brief 将消息路由到订阅者的接收队列
     /// @param subscriber 订阅者信息
-    /// @param chunkOffset chunk 在共享内存中的偏移量
-    /// @param chunkSize chunk 大小
-    /// @param payloadSize 用户数据大小
+    /// @param chunk Chunk 句柄
     /// @param publisherName 发布者名称
     /// @return 成功返回 true
     bool routeMessageToSubscriber(const SubscriberInfo& subscriber,
-                                  uint64_t chunkOffset, uint64_t chunkSize, uint64_t payloadSize,
+                                  const Popo::ChunkHandle& chunk,
                                   const RuntimeName_t& publisherName) noexcept;
+
+    /// @brief 通过 slotIndex 查找 Publisher 名称
+    [[nodiscard]] std::optional<RuntimeName_t> findPublisherName(uint64_t slotIndex,
+                                                                 const ServiceDescription& desc) const noexcept;
     
     void startHeartbeatMonitorThread() noexcept;
     void heartbeatMonitorThreadFunc() noexcept;

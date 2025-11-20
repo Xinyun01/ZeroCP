@@ -206,7 +206,7 @@ void Diroute::checkHeartbeatTimeouts() noexcept {
 │         │                                │ 2. 注册 Publisher     │
 │         │                                │    (service/instance/event)
 │         │                                │                       │
-│         │ 3. ROUTE:...:<chunkOffset>     │                       │
+│         │ 3. ROUTE:...:<poolId>:<offset> │                       │
 │         ├───────────────────────────────►│                       │
 │         │                                │ 4. 匹配 Subscribers   │
 │         │                                │    (精确匹配 service/instance/event)
@@ -228,7 +228,7 @@ void Diroute::checkHeartbeatTimeouts() noexcept {
 │         │◄───────────────────────────────┼───────────────────────┼──┘
 │         │                                │                       │
 │         │ 9. 读取 chunk 数据             │                       │
-│         │    (根据 chunkOffset)          │                       │
+│         │    (根据 chunk 句柄)           │                       │
 │         │                                │                       │
 └─────────┴────────────────────────────────┴───────────────────────┘
 ```
@@ -248,7 +248,7 @@ SUBSCRIBER:<processName>:<pid>:<service>:<instance>:<event>
 
 #### 3. 消息路由
 ```
-ROUTE:<publisherName>:<service>:<instance>:<event>:<chunkOffset>:<chunkSize>:<payloadSize>
+ROUTE:<slotIndex>:<service>:<instance>:<event>:<poolId>:<chunkOffset>
 响应: OK:ROUTED:<subscriberCount>
 ```
 
@@ -263,7 +263,7 @@ ROUTE:<publisherName>:<service>:<instance>:<event>:<chunkOffset>:<chunkSize>:<pa
 1. Publisher 发送 `ROUTE` 消息，包含 `ServiceDescription` 和 chunk 信息
 2. Diroute 根据 `ServiceDescription` 匹配所有注册的 Subscriber
 3. 将消息头（`MessageHeader`）写入每个匹配 Subscriber 的接收队列
-4. Subscriber 从接收队列读取消息头，根据 `chunkOffset` 读取 chunk 数据
+4. Subscriber 从接收队列读取消息头，根据 chunk 句柄（`poolId + chunkOffset`）读取数据
 
 ### 共享内存结构
 
@@ -273,9 +273,10 @@ struct MessageHeader {
     id_string service;          // 服务名称
     id_string instance;         // 实例名称
     id_string event;            // 事件名称
-    uint64_t chunkOffset;       // Chunk 在共享内存中的偏移量
-    uint64_t chunkSize;         // Chunk 大小
-    uint64_t payloadSize;       // 用户数据大小
+    struct {
+        uint64_t poolId;        // Chunk 所属内存池
+        uint64_t chunkOffset;   // Chunk 在共享内存中的偏移量
+    } chunk;
     uint64_t sequenceNumber;    // 序列号
     uint64_t timestamp;         // 时间戳
     RuntimeName_t publisherName; // 发布者名称
@@ -535,7 +536,7 @@ struct DirouteComponents {
 2. 发布数据：
    - 从 MemPoolManager 分配 chunk
    - 序列化数据到 chunk
-   - 发送 `ROUTE:<name>:<service>:<instance>:<event>:<chunkOffset>:<chunkSize>:<payloadSize>` 到 Diroute
+   - 发送 `ROUTE:<slotIndex>:<service>:<instance>:<event>:<poolId>:<chunkOffset>` 到 Diroute
 3. Diroute 匹配 Subscribers 并路由消息
 
 **Subscriber 工作流程：**
@@ -543,7 +544,7 @@ struct DirouteComponents {
 2. 接收响应：`OK:SUBSCRIBER_REGISTERED:QUEUE_OFFSET:<offset>`
 3. 打开共享内存，定位接收队列（根据 `queueOffset`）
 4. 循环读取：从 `LockFreeRingBuffer` 读取 `MessageHeader`
-5. 读取 chunk：根据 `chunkOffset` 从共享内存读取数据
+5. 读取 chunk：根据 chunk 句柄（`poolId + offset`）从共享内存读取数据
 6. 反序列化并处理数据
 
 ### 步骤 3：在 Diroute 中管理 Pub-Sub
@@ -649,7 +650,7 @@ public:
 3. **Chunk 管理集成**
    - ⚠️ 需要与 `MemPoolManager` 集成
    - 🔴 Publisher 需要从内存池分配 chunk
-   - 🔴 Subscriber 需要根据 `chunkOffset` 读取 chunk
+   - 🔴 Subscriber 需要根据 chunk 句柄（`poolId + offset`）读取 chunk
 
 ### 📝 下一步工作
 
@@ -673,7 +674,7 @@ public:
    // Publisher::publish():
    // 1. MemPoolManager::getChunk(size)
    // 2. 序列化数据到 chunk
-   // 3. 获取 chunkOffset（相对地址）
+   // 3. 获取 chunk 句柄（poolId + offset）
    // 4. 发送 ROUTE 消息
    ```
 
