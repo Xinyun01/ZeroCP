@@ -1,0 +1,5 @@
+/home/xinyun/Infrastructure/zero_copy_framework/test/zerocp_daemontest/pusu_test/build/CMakeFiles/diroute_main.dir
+/home/xinyun/Infrastructure/zero_copy_framework/test/zerocp_daemontest/pusu_test/build/CMakeFiles/pusu_publisher.dir
+/home/xinyun/Infrastructure/zero_copy_framework/test/zerocp_daemontest/pusu_test/build/CMakeFiles/pusu_subscriber.dir
+/home/xinyun/Infrastructure/zero_copy_framework/test/zerocp_daemontest/pusu_test/build/CMakeFiles/edit_cache.dir
+/home/xinyun/Infrastructure/zero_copy_framework/test/zerocp_daemontest/pusu_test/build/CMakeFiles/rebuild_cache.dir

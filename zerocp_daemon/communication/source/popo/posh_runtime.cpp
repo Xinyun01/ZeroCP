@@ -102,6 +102,41 @@ bool PoshRuntime::isConnected() const noexcept
     return m_isConnected;
 }
 
+bool PoshRuntime::requestReply(const std::string& request, std::string& response) noexcept
+{
+    if (!m_isConnected || !m_ipcCreator)
+    {
+        ZEROCP_LOG(Error, "Cannot perform request-reply: runtime not connected");
+        return false;
+    }
+
+    RuntimeMessage req = request;
+    if (!m_ipcCreator->sendMessage(req))
+    {
+        ZEROCP_LOG(Error, "Failed to send request: " << request);
+        return false;
+    }
+
+    RuntimeMessage resp;
+    if (!m_ipcCreator->receiveMessage(resp))
+    {
+        ZEROCP_LOG(Error, "Failed to receive response for request: " << request);
+        return false;
+    }
+
+    response.assign(resp.c_str());
+    return true;
+}
+
+void* PoshRuntime::getSharedMemoryBaseAddress() const noexcept
+{
+    if (!m_heartbeatShm)
+    {
+        return nullptr;
+    }
+    return m_heartbeatShm->getBaseAddress();
+}
+
 bool PoshRuntime::initializeConnection() noexcept
 {
     try

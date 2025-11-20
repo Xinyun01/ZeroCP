@@ -53,6 +53,9 @@ public:
     const RuntimeName_t& getRuntimeName() const noexcept;
     bool sendMessage(const std::string& message) noexcept;
     bool isConnected() const noexcept;
+    bool requestReply(const std::string& request, std::string& response) noexcept;
+    uint64_t getHeartbeatSlotIndex() const noexcept { return m_heartbeatSlotIndex; }
+    void* getSharedMemoryBaseAddress() const noexcept;
     
     // 心跳相关
     void startHeartbeat() noexcept;

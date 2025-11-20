@@ -30,6 +30,7 @@ DirouteMemoryManager::createMemoryPool(const Config& config) noexcept
     }
     
     auto* components = *componentsResult;
+    components->setBaseAddress(baseAddress);
     
     auto heartbeatResult = constructHeartbeatPool(components);
     if (!heartbeatResult)
@@ -37,6 +38,22 @@ DirouteMemoryManager::createMemoryPool(const Config& config) noexcept
         ZEROCP_LOG(Error, "Failed to construct HeartbeatPool");
         components->~DirouteComponents();
         return std::unexpected(heartbeatResult.error());
+    }
+
+    auto queueResult = constructReceiveQueues(components);
+    if (!queueResult)
+    {
+        ZEROCP_LOG(Error, "Failed to construct receive queues");
+        components->~DirouteComponents();
+        return std::unexpected(queueResult.error());
+    }
+
+    auto descriptorResult = initializeQueueDescriptors(components);
+    if (!descriptorResult)
+    {
+        ZEROCP_LOG(Error, "Failed to initialize queue descriptors");
+        components->~DirouteComponents();
+        return std::unexpected(descriptorResult.error());
     }
     
     ZEROCP_LOG(Info, "Memory pool created successfully at " << baseAddress);
@@ -101,6 +118,44 @@ DirouteMemoryManager::constructHeartbeatPool(DirouteComponents* components) noex
     catch (...)
     {
         return std::unexpected(MemoryManagerError::HEARTBEAT_BLOCK_CONSTRUCTION_FAILED);
+    }
+}
+
+std::expected<void, MemoryManagerError>
+DirouteMemoryManager::constructReceiveQueues(DirouteComponents* components) noexcept
+{
+    if (components == nullptr)
+    {
+        return std::unexpected(MemoryManagerError::COMPONENT_CONSTRUCTION_FAILED);
+    }
+
+    try
+    {
+        components->constructReceiveQueues();
+        return {};
+    }
+    catch (...)
+    {
+        return std::unexpected(MemoryManagerError::RECEIVE_QUEUE_CONSTRUCTION_FAILED);
+    }
+}
+
+std::expected<void, MemoryManagerError>
+DirouteMemoryManager::initializeQueueDescriptors(DirouteComponents* components) noexcept
+{
+    if (components == nullptr)
+    {
+        return std::unexpected(MemoryManagerError::COMPONENT_CONSTRUCTION_FAILED);
+    }
+
+    try
+    {
+        components->initializeQueueDescriptors();
+        return {};
+    }
+    catch (...)
+    {
+        return std::unexpected(MemoryManagerError::QUEUE_DESCRIPTOR_INITIALIZATION_FAILED);
     }
 }
 

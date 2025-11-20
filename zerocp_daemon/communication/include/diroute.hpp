@@ -77,13 +77,18 @@ private:
         RuntimeName_t processName;      // 订阅者进程名称
         ServiceDescription serviceDesc; // 服务描述（service, instance, event）
         uint64_t slotIndex;              // 心跳槽位索引
+        uint32_t queueIndex;             // 接收队列索引
         uint64_t receiveQueueOffset;     // 接收队列在共享内存中的偏移量
         uint32_t pid;                   // 进程 ID
         
         SubscriberInfo(const RuntimeName_t& name, const ServiceDescription& desc,
-                      uint64_t slot, uint64_t queueOffset, uint32_t processId) noexcept
-            : processName(name), serviceDesc(desc), slotIndex(slot), 
-              receiveQueueOffset(queueOffset), pid(processId)
+                      uint64_t slot, uint32_t queueIdx, uint64_t queueOffset, uint32_t processId) noexcept
+            : processName(name)
+            , serviceDesc(desc)
+            , slotIndex(slot)
+            , queueIndex(queueIdx)
+            , receiveQueueOffset(queueOffset)
+            , pid(processId)
         {
         }
     };

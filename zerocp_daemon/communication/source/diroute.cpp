@@ -10,11 +10,22 @@
 #include <unistd.h>
 #include <chrono>
 #include <algorithm>
+#include <cstring>
 
 namespace ZeroCP
 {
 namespace Diroute
 {
+
+namespace
+{
+
+inline bool runtimeNameEquals(const RuntimeName_t& lhs, const RuntimeName_t& rhs) noexcept
+{
+    return std::strcmp(lhs.c_str(), rhs.c_str()) == 0;
+}
+
+} // namespace
 
 Diroute::Diroute(DirouteMemoryManager* memoryManager) noexcept
     : m_memoryManager(memoryManager)
@@ -503,7 +514,7 @@ void Diroute::handlePublisherRegistration(const ZeroCP::Runtime::RuntimeMessage&
         bool alreadyRegistered = false;
         for (const auto& pub : m_publishers)
         {
-            if (pub.processName == runtimeName && pub.serviceDesc == serviceDesc)
+            if (runtimeNameEquals(pub.processName, runtimeName) && pub.serviceDesc == serviceDesc)
             {
                 alreadyRegistered = true;
                 break;
@@ -608,46 +619,87 @@ void Diroute::handleSubscriberRegistration(const ZeroCP::Runtime::RuntimeMessage
     eventStr.insert(0, event.c_str());
     ServiceDescription serviceDesc(serviceStr, instanceStr, eventStr);
     
-    // TODO: 在共享内存中为 Subscriber 分配接收队列
-    // 这里暂时使用 slotIndex 作为队列偏移量的占位符
-    // 实际实现中，应该在 DirouteComponents 中管理接收队列
-    uint64_t receiveQueueOffset = slotIndex * 1024; // 临时方案：每个槽位分配 1KB 队列空间
-    
-    // 注册 Subscriber
+    RuntimeName_t runtimeName;
+    runtimeName.insert(0, processName.c_str());
+
+    uint64_t existingQueueOffset = 0U;
+    bool alreadyRegistered = false;
     {
         std::lock_guard<std::mutex> lock(m_pubSubMutex);
-        RuntimeName_t runtimeName;
-        runtimeName.insert(0, processName.c_str());
-        
-        // 检查是否已注册
-        bool alreadyRegistered = false;
         for (const auto& sub : m_subscribers)
         {
-            if (sub.processName == runtimeName && sub.serviceDesc == serviceDesc)
+            if (runtimeNameEquals(sub.processName, runtimeName) && sub.serviceDesc == serviceDesc)
             {
+                existingQueueOffset = sub.receiveQueueOffset;
                 alreadyRegistered = true;
                 break;
             }
         }
-        
-        if (!alreadyRegistered)
-        {
-            m_subscribers.emplace_back(runtimeName, serviceDesc, slotIndex, receiveQueueOffset, pid);
-            ZEROCP_LOG(Info, "✓ Registered Subscriber: " << processName 
-                      << " -> " << service << "/" << instance << "/" << event
-                      << " (queueOffset: " << receiveQueueOffset << ")");
-        }
-        else
-        {
-            ZEROCP_LOG(Warn, "Subscriber already registered: " << processName);
-        }
+    }
+
+    if (alreadyRegistered)
+    {
+        ZEROCP_LOG(Warn, "Subscriber already registered: " << processName);
+        std::ostringstream responseStream;
+        responseStream << "OK:SUBSCRIBER_REGISTERED:QUEUE_OFFSET:" << existingQueueOffset;
+        ZeroCP::Runtime::RuntimeMessage response = responseStream.str();
+        creator.sendMessage(response);
+        return;
+    }
+
+    auto* components = m_memoryManager->getComponents();
+    if (components == nullptr)
+    {
+        ZEROCP_LOG(Error, "Subscriber registration failed: components unavailable");
+        ZeroCP::Runtime::RuntimeMessage response = "ERROR:COMPONENTS_UNAVAILABLE";
+        creator.sendMessage(response);
+        return;
+    }
+
+    auto queueIndexOpt = components->acquireQueue();
+    if (!queueIndexOpt.has_value())
+    {
+        ZEROCP_LOG(Error, "Subscriber registration failed: no receive queue available");
+        ZeroCP::Runtime::RuntimeMessage response = "ERROR:NO_QUEUE_AVAILABLE";
+        creator.sendMessage(response);
+        return;
+    }
+
+    const uint32_t queueIndex = queueIndexOpt.value();
+    const uint64_t receiveQueueOffset = components->getQueueOffset(queueIndex);
+    
+    // 注册 Subscriber
+    bool subscriberInserted = false;
+    {
+        std::lock_guard<std::mutex> lock(m_pubSubMutex);
+        m_subscribers.emplace_back(runtimeName, serviceDesc, slotIndex, queueIndex, receiveQueueOffset, pid);
+        subscriberInserted = true;
+        ZEROCP_LOG(Info, "✓ Registered Subscriber: " << processName 
+                  << " -> " << service << "/" << instance << "/" << event
+                  << " (queueIndex: " << queueIndex << ", queueOffset: " << receiveQueueOffset << ")");
     }
     
     // 发送成功响应（包含队列偏移量）
     std::ostringstream responseStream;
     responseStream << "OK:SUBSCRIBER_REGISTERED:QUEUE_OFFSET:" << receiveQueueOffset;
     ZeroCP::Runtime::RuntimeMessage response = responseStream.str();
-    creator.sendMessage(response);
+    if (!creator.sendMessage(response))
+    {
+        ZEROCP_LOG(Error, "Failed to send subscriber registration response to " << processName);
+        {
+            std::lock_guard<std::mutex> lock(m_pubSubMutex);
+            m_subscribers.erase(
+                std::remove_if(m_subscribers.begin(), m_subscribers.end(),
+                               [&](const SubscriberInfo& sub) {
+                                   return runtimeNameEquals(sub.processName, runtimeName) && sub.serviceDesc == serviceDesc;
+                               }),
+                m_subscribers.end());
+        }
+        if (subscriberInserted)
+        {
+            components->releaseQueue(queueIndex);
+        }
+    }
 }
 
 /// 匹配 Publisher 和 Subscriber
@@ -688,16 +740,19 @@ bool Diroute::routeMessageToSubscriber(const SubscriberInfo& subscriber,
                                        const Popo::ChunkHandle& chunk,
                                        const RuntimeName_t& publisherName) noexcept
 {
-    // TODO: 从共享内存中获取接收队列
-    // 这里需要访问 DirouteComponents 中的接收队列
-    // 暂时使用日志记录，实际实现需要：
-    // 1. 获取共享内存基地址
-    // 2. 根据 receiveQueueOffset 定位接收队列
-    // 3. 创建 MessageHeader 并写入队列
+    auto* components = m_memoryManager ? m_memoryManager->getComponents() : nullptr;
+    if (components == nullptr)
+    {
+        ZEROCP_LOG(Error, "Cannot route message: Diroute components unavailable");
+        return false;
+    }
     
-    ZEROCP_LOG(Info, "Routing message to Subscriber: " << subscriber.processName.c_str()
-               << " (poolId: " << chunk.poolId 
-               << ", chunkOffset: " << chunk.chunkOffset << ")");
+    auto* receiveQueue = components->getQueueByOffset(subscriber.receiveQueueOffset);
+    if (receiveQueue == nullptr)
+    {
+        ZEROCP_LOG(Error, "Cannot route message: invalid queue offset " << subscriber.receiveQueueOffset);
+        return false;
+    }
     
     // 创建消息头
     Popo::MessageHeader msgHeader(subscriber.serviceDesc);
@@ -710,16 +765,11 @@ bool Diroute::routeMessageToSubscriber(const SubscriberInfo& subscriber,
     
     msgHeader.publisherName = publisherName;
     
-    // TODO: 实际实现中，需要将 msgHeader 写入共享内存中的接收队列
-    // 使用 LockFreeRingBuffer<MessageHeader> 的 tryPush 方法
-    // 例如：
-    // auto* receiveQueue = reinterpret_cast<LockFreeRingBuffer<MessageHeader, 1024>*>(
-    //     static_cast<char*>(sharedMemoryBase) + subscriber.receiveQueueOffset);
-    // if (!receiveQueue->tryPush(msgHeader))
-    // {
-    //     ZEROCP_LOG(Warn, "Subscriber receive queue is full: " << subscriber.processName.c_str());
-    //     return false;
-    // }
+    if (!receiveQueue->tryPush(msgHeader))
+    {
+        ZEROCP_LOG(Warn, "Subscriber receive queue is full: " << subscriber.processName.c_str());
+        return false;
+    }
     
     ZEROCP_LOG(Info, "✓ Message routed successfully to: " << subscriber.processName.c_str()
                << " (seq: " << msgHeader.sequenceNumber << ")");
@@ -873,7 +923,7 @@ void Diroute::cleanupDeadProcessRegistrations(uint64_t slotIndex) noexcept
     m_publishers.erase(
         std::remove_if(m_publishers.begin(), m_publishers.end(),
             [&runtimeName](const PublisherInfo& pub) {
-                return pub.processName == runtimeName;
+                return runtimeNameEquals(pub.processName, runtimeName);
             }),
         m_publishers.end()
     );
@@ -881,8 +931,19 @@ void Diroute::cleanupDeadProcessRegistrations(uint64_t slotIndex) noexcept
     // 清理 Subscriber 注册
     m_subscribers.erase(
         std::remove_if(m_subscribers.begin(), m_subscribers.end(),
-            [&runtimeName](const SubscriberInfo& sub) {
-                return sub.processName == runtimeName;
+            [&](const SubscriberInfo& sub) {
+                if (runtimeNameEquals(sub.processName, runtimeName))
+                {
+                    if (m_memoryManager != nullptr)
+                    {
+                        if (auto* components = m_memoryManager->getComponents(); components != nullptr)
+                        {
+                            components->releaseQueue(sub.queueIndex);
+                        }
+                    }
+                    return true;
+                }
+                return false;
             }),
         m_subscribers.end()
     );

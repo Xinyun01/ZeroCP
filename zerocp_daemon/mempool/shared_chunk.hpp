@@ -71,6 +71,12 @@ public:
     /// @return ChunkManager 在 ChunkManagerPool 中的索引
     /// @note 这个索引可以安全地通过 IPC 传输到其他进程
     uint32_t getChunkManagerIndex() const noexcept;
+
+    /// @brief 获取数据 chunk 在所属内存池中的索引
+    uint32_t getChunkIndex() const noexcept;
+
+    /// @brief 直接访问底层 ChunkManager 指针（与 get() 等价）
+    ChunkManager* chunkManager() const noexcept { return m_chunkManager; }
     
     /// @brief 准备跨进程传输：增加引用计数并返回索引
     /// @return ChunkManager 的索引，可以通过 IPC 传输
@@ -101,6 +107,8 @@ private:
 private:
     /// @brief 指向共享内存中的 ChunkManager
     ChunkManager* m_chunkManager{nullptr};
+    /// @brief 指向所属内存池管理器（用于释放）
+    MemPoolManager* m_memPoolManager{nullptr};
 };
 
 } // namespace Memory

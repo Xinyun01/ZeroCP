@@ -3,6 +3,7 @@
 
 
 #include "zerocp_foundationLib/vocabulary/include/string.hpp"
+#include <cstring>
 
 namespace ZeroCP
 {
@@ -27,9 +28,9 @@ public:
     // 比较操作符（用于匹配）
     bool operator==(const ServiceDescription& other) const noexcept
     {
-        return m_service == other.m_service &&
-               m_instance == other.m_instance &&
-               m_event == other.m_event;
+        return std::strcmp(m_service.c_str(), other.m_service.c_str()) == 0 &&
+               std::strcmp(m_instance.c_str(), other.m_instance.c_str()) == 0 &&
+               std::strcmp(m_event.c_str(), other.m_event.c_str()) == 0;
     }
     
     bool operator!=(const ServiceDescription& other) const noexcept

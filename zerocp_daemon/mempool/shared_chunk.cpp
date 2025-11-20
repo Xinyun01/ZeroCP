@@ -141,6 +141,15 @@ uint32_t SharedChunk::getChunkManagerIndex() const noexcept
     return m_chunkManager->m_chunkManagerIndex;
 }
 
+uint32_t SharedChunk::getChunkIndex() const noexcept
+{
+    if (m_chunkManager == nullptr)
+    {
+        return UINT32_MAX;
+    }
+    return m_chunkManager->m_chunkIndex;
+}
+
 uint32_t SharedChunk::prepareForTransfer() noexcept
 {
     if (m_chunkManager == nullptr)

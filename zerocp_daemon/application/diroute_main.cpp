@@ -5,6 +5,8 @@
 
 #include "zerocp_daemon/diroute/diroute_memory_manager.hpp"
 #include "zerocp_daemon/communication/include/diroute.hpp"
+#include "zerocp_daemon/memory/include/mempool_config.hpp"
+#include "zerocp_daemon/memory/include/mempool_manager.hpp"
 
 // 全局运行标志，用于信号处理
 static std::atomic<bool> g_keepRunning{true};
@@ -51,6 +53,17 @@ int main(int argc, char *argv[])
     auto memoryManager = std::move(*memoryManagerResult);
     std::cout << "[Main] Memory pool initialized: " 
               << (memoryManager.isInitialized() ? "YES" : "NO") << "\n\n";
+
+    std::cout << "[Main] Creating shared MemPoolManager...\n";
+    ZeroCP::Memory::MemPoolConfig memPoolConfig;
+    memPoolConfig.setdefaultPool();
+    bool memPoolInitialized = ZeroCP::Memory::MemPoolManager::createSharedInstance(memPoolConfig);
+    if (!memPoolInitialized)
+    {
+        std::cerr << "[Main Error] Failed to initialize shared MemPoolManager\n";
+        return EXIT_FAILURE;
+    }
+    std::cout << "[Main] Shared MemPoolManager ready\n\n";
 
     // 为守护进程注册心跳槽位（守护进程持有此槽位证明自己存活）
     auto& heartbeatPool = memoryManager.getHeartbeatPool();
@@ -124,6 +137,12 @@ int main(int argc, char *argv[])
 
     std::cout << "\n=== Diroute Daemon: Stopped ===\n";
     
+    if (memPoolInitialized)
+    {
+        std::cout << "[Daemon] Destroying shared MemPoolManager instance...\n";
+        ZeroCP::Memory::MemPoolManager::destroySharedInstance();
+    }
+
     return EXIT_SUCCESS;
 }
 

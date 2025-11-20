@@ -60,6 +60,9 @@ public:
     /// @brief 获取数据区偏移量
     /// @return 相对于数据区基地址的偏移量
     uint64_t getDataOffset() const noexcept { return m_dataOffset; }
+
+    /// @brief 获取内存池的唯一 ID
+    uint64_t getPoolId() const noexcept { return m_pool_id; }
     
     /// @brief 从空闲链表中获取一个 chunk 索引
     /// @param index 输出参数，存储获取到的索引

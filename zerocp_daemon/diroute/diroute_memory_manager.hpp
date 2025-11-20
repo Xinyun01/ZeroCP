@@ -18,6 +18,8 @@ enum class MemoryManagerError
     SHARED_MEMORY_CREATION_FAILED,
     COMPONENT_CONSTRUCTION_FAILED,
     HEARTBEAT_BLOCK_CONSTRUCTION_FAILED,
+    RECEIVE_QUEUE_CONSTRUCTION_FAILED,
+    QUEUE_DESCRIPTOR_INITIALIZATION_FAILED,
     INVALID_BASE_ADDRESS
 };
 
@@ -73,6 +75,14 @@ private:
     // Phase 3: 分布式构造 HeartbeatPool
     [[nodiscard]] static std::expected<void, MemoryManagerError>
     constructHeartbeatPool(DirouteComponents* components) noexcept;
+
+    // Phase 4: 构造接收队列池
+    [[nodiscard]] static std::expected<void, MemoryManagerError>
+    constructReceiveQueues(DirouteComponents* components) noexcept;
+
+    // Phase 5: 初始化队列描述符
+    [[nodiscard]] static std::expected<void, MemoryManagerError>
+    initializeQueueDescriptors(DirouteComponents* components) noexcept;
 
     ZeroCP::Details::PosixSharedMemoryObject m_sharedMemory;
     DirouteComponents* m_components{nullptr};
