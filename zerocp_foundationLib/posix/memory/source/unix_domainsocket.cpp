@@ -269,6 +269,42 @@ std::expected<void, PosixIpcChannelError> UnixDomainSocket::sendTo(
 }
 
 /**
+ * @brief 设置socket接收超时时间，使recvfrom可被周期性中断
+ */
+std::expected<void, PosixIpcChannelError> UnixDomainSocket::setReceiveTimeout(uint32_t timeoutMs) noexcept
+{
+    if (m_socketFd == INVALID_FD)
+    {
+        ZEROCP_LOG(Error, "Cannot set timeout on invalid socket");
+        return std::unexpected(PosixIpcChannelError::INVALID_FILE_DESCRIPTOR);
+    }
+    
+    struct timeval tv;
+    tv.tv_sec = timeoutMs / 1000;           // 秒
+    tv.tv_usec = (timeoutMs % 1000) * 1000; // 微秒
+    
+    // setsockopt() 设置socket选项
+    // SOL_SOCKET: socket层级选项
+    // SO_RCVTIMEO: 接收超时选项
+    auto result = ZeroCp_PosixCall(setsockopt)(m_socketFd,
+                                                SOL_SOCKET,
+                                                SO_RCVTIMEO,
+                                                &tv,
+                                                sizeof(tv))
+        .failureReturnValue(ERROR_CODE)
+        .evaluate();
+    
+    if (!result.has_value())
+    {
+        ZEROCP_LOG(Error, "Failed to set receive timeout: errno=" << result.error().errnum);
+        return std::unexpected(errnoToEnum(m_name, result.error().errnum));
+    }
+    
+    ZEROCP_LOG(Info, "Socket receive timeout set to " << timeoutMs << "ms for: " << m_name.c_str());
+    return {};
+}
+
+/**
  * @brief errno转为枚举类型错误码
  */
 PosixIpcChannelError UnixDomainSocket::errnoToEnum([[maybe_unused]] const UdsName_t& name, int32_t errnum) noexcept
@@ -295,6 +331,7 @@ PosixIpcChannelError UnixDomainSocket::errnoToEnum([[maybe_unused]] const UdsNam
         case EHOSTUNREACH:
             return PosixIpcChannelError::UNREACHABLE;
         case ETIMEDOUT:
+        case EAGAIN:        // recvfrom 超时会返回 EAGAIN (注: EWOULDBLOCK 在某些系统上与 EAGAIN 相同)
             return PosixIpcChannelError::TIMEOUT;
         case EMFILE:
         case ENFILE:

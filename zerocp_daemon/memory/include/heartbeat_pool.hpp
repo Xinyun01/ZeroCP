@@ -36,6 +36,25 @@ class HeartbeatPool
         }
     }
 
+    /// 根据固定槽位 index 获取迭代器（index 稳定不随释放而变化）
+    [[nodiscard]] Iterator iteratorFromIndex(uint64_t index) noexcept
+    {
+        if (index >= kMaxHeartbeats)
+        {
+            return m_slots.end();
+        }
+        return m_slots.iter_from_index(static_cast<typename Container::IndexType>(index));
+    }
+
+    [[nodiscard]] ConstIterator iteratorFromIndex(uint64_t index) const noexcept
+    {
+        if (index >= kMaxHeartbeats)
+        {
+            return m_slots.cend();
+        }
+        return m_slots.iter_from_index(static_cast<typename Container::IndexType>(index));
+    }
+
     /// 遍历所有已分配的槽位（例如：看门狗检查）
     template <typename Fn>
     void for_each(Fn&& fn) noexcept

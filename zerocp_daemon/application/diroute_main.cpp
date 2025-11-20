@@ -8,6 +8,7 @@
 
 // 全局运行标志，用于信号处理
 static std::atomic<bool> g_keepRunning{true};
+static std::atomic<bool> g_manualDumpRequested{false};
 
 // 信号处理函数，用于优雅关闭守护进程
 void signalHandler(int signal)
@@ -16,6 +17,10 @@ void signalHandler(int signal)
     {
         std::cout << "\n[Signal] Received shutdown signal (" << signal << ")\n";
         g_keepRunning.store(false, std::memory_order_release);
+    }
+    else if (signal == SIGUSR1)
+    {
+        g_manualDumpRequested.store(true, std::memory_order_release);
     }
 }
 
@@ -29,7 +34,8 @@ int main(int argc, char *argv[])
     // 设置信号处理器，用于优雅关闭守护进程
     std::signal(SIGINT, signalHandler);
     std::signal(SIGTERM, signalHandler);
-    std::cout << "[Main] Signal handlers registered (SIGINT, SIGTERM)\n\n";
+    std::signal(SIGUSR1, signalHandler);
+    std::cout << "[Main] Signal handlers registered (SIGINT, SIGTERM, SIGUSR1)\n\n";
 
     // 创建并初始化共享内存池（iceoryx 静态构造模式）
     std::cout << "[Main] Creating memory pool...\n";
@@ -66,7 +72,7 @@ int main(int argc, char *argv[])
 
     // 创建并启动 Diroute（多线程监控与路由）
     std::cout << "[Main] Starting Diroute monitoring and routing...\n";
-    ZeroCP::Diroute::Diroute diroute;
+    ZeroCP::Diroute::Diroute diroute(&memoryManager);
     diroute.run();
     std::cout << "[Main] Diroute started (multi-threaded)\n\n";
 
@@ -88,6 +94,12 @@ int main(int argc, char *argv[])
         {
             daemonSlot->touch();  // 写入最新的纳秒级时间戳到共享内存
             loopCount = 0;
+        }
+
+        if (g_manualDumpRequested.exchange(false, std::memory_order_acq_rel))
+        {
+            std::cout << "[Signal] Manual dump requested (SIGUSR1)\n";
+            diroute.printRegisteredProcesses();
         }
     }
 

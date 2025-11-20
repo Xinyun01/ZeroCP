@@ -3,7 +3,11 @@
 
 #include "zerocp_foundationLib/vocabulary/include/string.hpp"
 #include "runtime/ipc_interface_creator.hpp"
+#include "zerocp_foundationLib/posix/memory/include/posix_sharedmemory_object.hpp"
+#include "zerocp_daemon/memory/include/heartbeat.hpp"
 #include <memory>
+#include <thread>
+#include <atomic>
 
 namespace ZeroCP
 {
@@ -50,6 +54,11 @@ public:
     bool sendMessage(const std::string& message) noexcept;
     bool isConnected() const noexcept;
     
+    // 心跳相关
+    void startHeartbeat() noexcept;
+    void stopHeartbeat() noexcept;
+    void updateHeartbeat() noexcept;
+    
 private:
     explicit PoshRuntime(const RuntimeName_t& runtimeName) noexcept;
     
@@ -57,12 +66,25 @@ private:
     bool registerToRouteD() noexcept;
     bool receiveRouteDAck() noexcept;
     
+    // 心跳相关私有方法
+    bool openHeartbeatSharedMemory() noexcept;
+    bool registerHeartbeatSlot(uint64_t slotIndex) noexcept;
+    void heartbeatThreadFunc() noexcept;
+    
     static PoshRuntime* m_instance;
     
     RuntimeName_t m_runtimeName;
     std::unique_ptr<IpcInterfaceCreator> m_ipcCreator;
     bool m_isConnected{false};
     uint32_t m_pid;
+    
+    // 心跳相关成员
+    std::unique_ptr<ZeroCP::Details::PosixSharedMemoryObject> m_heartbeatShm;
+    zerocp::memory::HeartbeatSlot* m_heartbeatSlot{nullptr};
+    uint64_t m_heartbeatSlotIndex{0};
+    
+    std::unique_ptr<std::thread> m_heartbeatThread;
+    std::atomic<bool> m_heartbeatRunning{false};
 };
 
 } // namespace Runtime

@@ -108,6 +108,11 @@ public:
         /// @return 成功返回 void，失败返回错误码
         std::expected<void, PosixIpcChannelError> sendTo(const std::string& msg, const sockaddr_un& toAddr) const noexcept;
         
+        /// @brief 设置接收超时时间
+        /// @param timeoutMs 超时时间（毫秒）
+        /// @return 成功返回 void，失败返回错误码
+        std::expected<void, PosixIpcChannelError> setReceiveTimeout(uint32_t timeoutMs) noexcept;
+        
         /// @brief 将 errno 转换为 PosixIpcChannelError
         /// @param name 套接字名称（用于日志）
         /// @param errnum errno 错误码

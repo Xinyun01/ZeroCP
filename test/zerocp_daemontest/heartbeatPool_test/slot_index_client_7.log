@@ -1,0 +1,10 @@
+[2025-11-19 21:00:05.923] [INFO ] [client_7.cpp:23] Client_7 starting (PID: 63347)
+[2025-11-19 21:00:05.923] [INFO ] [posh_runtime.cpp:24] Initializing PoshRuntime: Client_7
+[2025-11-19 21:00:05.924] [INFO ] [unix_domainsocket.cpp:102] Client socket bound to: client_63347.sock
+[2025-11-19 21:00:05.924] [INFO ] [ipc_interface_creator.cpp:42] UnixDomainSocket created successfully. udsPath=client_63347.sock side=CLIENT
+[2025-11-19 21:00:05.924] [INFO ] [posh_runtime.cpp:272] Heartbeat slot index: 8
+[2025-11-19 21:00:05.924] [INFO ] [posix_sharedmemory.cpp:73] Creating shared memory with name: /zerocp_diroute_components, size: 1112
+[2025-11-19 21:00:05.924] [INFO ] [posix_sharedmemory.cpp:153] shm_open succeeded, handle: 6
+[2025-11-19 21:00:05.924] [INFO ] [posh_runtime.cpp:68] PoshRuntime ready: Client_7 (PID: 63347)
+[2025-11-19 21:00:05.924] [INFO ] [client_7.cpp:35] Client_7 registered successfully
+[2025-11-19 21:00:50.927] [INFO ] [client_7.cpp:42] Client_7 shutting down
